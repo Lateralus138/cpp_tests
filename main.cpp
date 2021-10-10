@@ -10,6 +10,19 @@ struct error
   std::string message = "";
 };
 
+inline int return_function (error _error_, bool _verb_, bool _mono_)
+{
+  if (_error_.error > 0 && _verb_)
+  {
+      std::cerr
+        << ((!_mono_)?"\x1b[91m":"")
+        << _error_.message
+        << ((!_mono_)?"\x1b[0m":"")
+        << std::endl;
+  }
+  return _error_.error;
+}
+
 int main (int argc, char * argv [])
 {
   auto
@@ -248,15 +261,16 @@ int main (int argc, char * argv [])
       << "\n                      without the extensions      "
       << EMPTY_LINE
       << std::endl;
-    if (_error_.error > 0 && is_verbose)
-    {
-        std::cerr
-          << ((!is_monochrome)?"\x1b[91m":"")
-          << _error_.message
-          << ((!is_monochrome)?"\x1b[0m":"")
-          << std::endl;
-    }
-    return _error_.error;
+    return return_function (_error_, is_verbose, is_monochrome);
+    // if (_error_.error > 0 && is_verbose)
+    // {
+    //     std::cerr
+    //       << ((!is_monochrome)?"\x1b[91m":"")
+    //       << _error_.message
+    //       << ((!is_monochrome)?"\x1b[0m":"")
+    //       << std::endl;
+    // }
+    // return _error_.error;
   }
   if (_error_.error == 0)
   {
@@ -426,13 +440,14 @@ int main (int argc, char * argv [])
       }
     }
   }
-  if (_error_.error > 0 && is_verbose)
-  {
-      std::cerr
-        << ((!is_monochrome)?"\x1b[91m":"")
-        << _error_.message
-        << ((!is_monochrome)?"\x1b[0m":"")
-        << std::endl;
-  }
-  return _error_.error;
+  // if (_error_.error > 0 && is_verbose)
+  // {
+  //     std::cerr
+  //       << ((!is_monochrome)?"\x1b[91m":"")
+  //       << _error_.message
+  //       << ((!is_monochrome)?"\x1b[0m":"")
+  //       << std::endl;
+  // }
+  // return _error_.error;
+  return return_function (_error_, is_verbose, is_monochrome);
 }
