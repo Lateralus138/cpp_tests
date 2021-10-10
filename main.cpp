@@ -84,7 +84,7 @@ int main (int argc, char * argv [])
           (
             _error_,
             1,
-            std::vector<std::string>
+            std::vector <std::string>
             {
               "Argument was not provided for the \'",
               args [i],
@@ -113,17 +113,38 @@ int main (int argc, char * argv [])
         skip = true;
         if (!has_next_arg (i))
         {
-          _error_.error = 2;
-          _error_.message = "Argument was not provided for the \'";
-          _error_.message.append (args [i]);
-          _error_.message.append ("\' parameter.");
+          set_error
+          (
+            _error_,
+            2,
+            std::vector <std::string>
+            {
+              "Argument was not provided for the \'",
+              args [i],
+              "\' parameter."
+            }
+          );
+          // _error_.error = 2;
+          // _error_.message = "Argument was not provided for the \'";
+          // _error_.message.append (args [i]);
+          // _error_.message.append ("\' parameter.");
           continue;
         }
         main_name = args [i + 1];
         if (main_name.empty ())
         {
-          _error_.error = 3;
-          _error_.message = "The provided main file name was an empty string.";
+          set_error
+          (
+            _error_,
+            3,
+            std::vector <std::string>
+            {
+              "Argument was not provided for the \'",
+              "The provided main file name was an empty string."
+            }
+          );
+          // _error_.error = 3;
+          // _error_.message = "The provided main file name was an empty string.";
         }
         continue;
       }
@@ -132,25 +153,54 @@ int main (int argc, char * argv [])
         skip = true;
         if (!has_next_arg (i))
         {
-          _error_.error = 4;
-          _error_.message = "Argument was not provided for the \'";
-          _error_.message.append (args [i]);
-          _error_.message.append ("\' parameter.");
+          set_error
+          (
+            _error_,
+            4,
+            std::vector <std::string>
+            {
+              "Argument was not provided for the \'",
+              args [i],
+              "\' parameter."
+            }
+          );
+          // _error_.error = 4;
+          // _error_.message = "Argument was not provided for the \'";
+          // _error_.message.append (args [i]);
+          // _error_.message.append ("\' parameter.");
           continue;
         }
         auto working_string_string = args [i + 1];
         if (working_string_string.empty ())
         {
-          _error_.error = 5;
-          _error_.message = "The provided extra source file list was empty.";
+          set_error
+          (
+            _error_,
+            5,
+            std::vector <std::string>
+            {
+              "The provided extra source file list was empty."
+            }
+          );
+          // _error_.error = 5;
+          // _error_.message = "The provided extra source file list was empty.";
         }
         string_to_vector (working_string_string, extra_cpp_names_vec, ",");
         for (auto & str : extra_cpp_names_vec)
         {
           if (str.empty () || std::regex_match (str, std::regex ("^[\\s]+$")))
           {
-            _error_.error = 6;
-            _error_.message = "Extra source file name is empty.";
+            set_error
+            (
+              _error_,
+              6,
+              std::vector<std::string>
+              {
+                "Extra source file name is empty."
+              }
+            );
+            // _error_.error = 6;
+            // _error_.message = "Extra source file name is empty.";
           }
         }
         continue;
@@ -160,10 +210,21 @@ int main (int argc, char * argv [])
         skip = true;
         if (!has_next_arg (i))
         {
-          _error_.error = 7;
-          _error_.message = "Argument was not provided for the \'";
-          _error_.message.append (args [i]);
-          _error_.message.append ("\' parameter.");
+          set_error
+          (
+            _error_,
+            7,
+            std::vector<std::string>
+            {
+              "Argument was not provided for the \'",
+              args [i],
+              "\' parameter."
+            }
+          );
+          // _error_.error = 7;
+          // _error_.message = "Argument was not provided for the \'";
+          // _error_.message.append (args [i]);
+          // _error_.message.append ("\' parameter.");
           continue;
         }
         auto working_string_string = args [i + 1];
