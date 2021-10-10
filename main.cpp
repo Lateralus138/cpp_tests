@@ -4,24 +4,24 @@
 #include <regex>
 #include <fstream>
 
-struct error
-{
-  int error = 0;
-  std::string message = "";
-};
+// struct error
+// {
+//   int error = 0;
+//   std::string message = "";
+// };
 
-inline int return_function (error _error_, bool _verb_, bool _mono_)
-{
-  if (_error_.error > 0 && _verb_)
-  {
-      std::cerr
-        << ((!_mono_)?"\x1b[91m":"")
-        << _error_.message
-        << ((!_mono_)?"\x1b[0m":"")
-        << std::endl;
-  }
-  return _error_.error;
-}
+// int return_function (error _error_, bool _verb_, bool _mono_)
+// {
+//   if (_error_.error > 0 && _verb_)
+//   {
+//       std::cerr
+//         << ((!_mono_)?"\x1b[91m":"")
+//         << _error_.message
+//         << ((!_mono_)?"\x1b[0m":"")
+//         << std::endl;
+//   }
+//   return _error_.error;
+// }
 
 int main (int argc, char * argv [])
 {
