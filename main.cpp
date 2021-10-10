@@ -177,24 +177,39 @@ int main (int argc, char * argv [])
     }
   }
   (void) argv; (void) argc;
+  auto wrap_with_color = [is_monochrome]
+  (
+    std::string _string_,
+    std::string _color_string_
+  )
+  {
+    return
+    (
+      ((!is_monochrome)?"\x1b[":"") +
+      ((!is_monochrome)?_color_string_:"") +
+      ((!is_monochrome)?"m":"") +
+      _string_ +
+      ((!is_monochrome)?"\x1b[0m":"")
+    );
+  };
   if (is_help)
   {
     const std::string EMPTY_LINE (50, ' ');
-    auto wrap_with_color = [is_monochrome]
-    (
-      std::string _string_,
-      std::string _color_string_
-    )
-    {
-      return
-      (
-        ((!is_monochrome)?"\x1b[":"") +
-        ((!is_monochrome)?_color_string_:"") +
-        ((!is_monochrome)?"m":"") +
-        _string_ +
-        ((!is_monochrome)?"\x1b[0m":"")
-      );
-    };
+    // auto wrap_with_color = [is_monochrome]
+    // (
+    //   std::string _string_,
+    //   std::string _color_string_
+    // )
+    // {
+    //   return
+    //   (
+    //     ((!is_monochrome)?"\x1b[":"") +
+    //     ((!is_monochrome)?_color_string_:"") +
+    //     ((!is_monochrome)?"m":"") +
+    //     _string_ +
+    //     ((!is_monochrome)?"\x1b[0m":"")
+    //   );
+    // };
     std::cout
       << EMPTY_LINE
       << "\n  \'mkcppproj\' - Create a basic cpp project tree   "
