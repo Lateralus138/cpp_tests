@@ -66,35 +66,39 @@ int main (int argc, char * argv [])
     std::vector <std::string> args (argv + 1, argv + argc);
     argc--;
     auto skip = false;
+    auto is_match = [args] (std::regex _regex_, int _index_)
+    {
+      return std::regex_match (args [_index_], _regex_);
+    };
     for (auto i = 0; i < argc; i++)
     {
       // bool has_next_arg = (!((i + 1) > (argc - 1)));
       auto has_next_arg = [argc, i] () { return (!((i + 1) > (argc - 1))); };
-      auto is_match = [args, i] (std::regex _regex_)
-      {
-        return std::regex_match (args [i], _regex_);
-      };
+      // auto is_match = [args, i] (std::regex _regex_)
+      // {
+      //   return std::regex_match (args [i], _regex_);
+      // };
       if (skip)
       {
         skip = false;
         continue;
       }
-      if (is_match (std::regex ("^-([hH]|-[hH][eE][lL][pP])$")))
+      if (is_match (std::regex ("^-([hH]|-[hH][eE][lL][pP])$"), i))
       {
         is_help = true;
         continue;
       }
-      if (is_match (std::regex ("^-([qQ]|-[qQ][uU][iI][eE][tT])$")))
+      if (is_match (std::regex ("^-([qQ]|-[qQ][uU][iI][eE][tT])$"), i))
       {
         is_verbose = false;
         continue;
       }
-      if (is_match (std::regex("^-([mM]|-[mM][oO][nN][oO][cC][hH][rR][oO][mM][eE])$")))
+      if (is_match (std::regex("^-([mM]|-[mM][oO][nN][oO][cC][hH][rR][oO][mM][eE])$"), i))
       {
         is_monochrome = true;
         continue;
       }
-      if (is_match (std::regex("^-([pP]|-[pP][aA][tT][hH])$")))
+      if (is_match (std::regex("^-([pP]|-[pP][aA][tT][hH])$"), i))
       {
         skip = true;
         if (!has_next_arg ())
@@ -116,7 +120,7 @@ int main (int argc, char * argv [])
         project_path = std::filesystem::path (working_string);
         continue;
       }
-      if (is_match (std::regex("^-([nN]|-[nN][aA][mM][eE])$")))
+      if (is_match (std::regex("^-([nN]|-[nN][aA][mM][eE])$"), i))
       {
         skip = true;
         if (!has_next_arg ())
@@ -135,7 +139,7 @@ int main (int argc, char * argv [])
         }
         continue;
       }
-      if (is_match (std::regex("^-([xX]|-[eE][xX][tT][rR][aA]-[sS][rR][cC])$")))
+      if (is_match (std::regex("^-([xX]|-[eE][xX][tT][rR][aA]-[sS][rR][cC])$"), i))
       {
         skip = true;
         if (!has_next_arg ())
@@ -163,7 +167,7 @@ int main (int argc, char * argv [])
         }
         continue;
       }
-      if (is_match (std::regex("^-([cC]|-[cC][lL][aA][sS][sS]-[fF][iI][lL][eE][sS])$")))
+      if (is_match (std::regex("^-([cC]|-[cC][lL][aA][sS][sS]-[fF][iI][lL][eE][sS])$"), i))
       {
         skip = true;
         if (!has_next_arg ())
