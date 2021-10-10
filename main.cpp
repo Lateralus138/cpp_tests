@@ -195,44 +195,44 @@ int main (int argc, char * argv [])
         ((!is_monochrome)?"\x1b[0m":"")
       );
     };
-    std::cout
-      << EMPTY_LINE
-      << "\n  \'mkcppproj\' - Create a basic cpp project tree   "
-      << EMPTY_LINE
-      << "\n  "
-      << wrap_with_color ("USAGE", "32")
-      << ":                                          "
-      << "\n    mkcppproj ["
-      << wrap_with_color ("OPTIONS", "34")
-      << " ["
-      << wrap_with_color ("ARGUMENTS", "35")
-      << "]...]...         \n"
-      << EMPTY_LINE
-      << "\n  "
-      << wrap_with_color ("OPTIONS", "34")
-      << ":                                        "
-      << "\n    -h, --help        This help screen            "
-      << "\n    -q, --quiet       All errors are non-verbose  "
-      << "\n    -m, --monochrome  No color in output          "
-      << "\n    -p, --path        "
-      << wrap_with_color ("PATH", "35")
-      << " to project             "
-      << "\n    -n, --name        "
-      << wrap_with_color ("NAME", "35")
-      << " of the main source     "
-      << "\n                      file without the extension  "
-      << "\n    -x, --extra-src   Comma [,] delimitied "
-      << wrap_with_color ("LIST", "35")
-      << "\n   "
-      << "\n                      of extra source files       "
-      << "\n                      without the extension       "
-      << "\n    -c, --class-files Comma [,] delimitied "
-      << wrap_with_color ("LIST", "35")
-      << "   "
-      << "\n                      of extra class/header files "
-      << "\n                      without the extensions      "
-      << EMPTY_LINE
-      << std::endl;
+    // std::cout
+    //   << EMPTY_LINE
+    //   << "\n  \'mkcppproj\' - Create a basic cpp project tree   "
+    //   << EMPTY_LINE
+    //   << "\n  "
+    //   << wrap_with_color ("USAGE", "32")
+    //   << ":                                          "
+    //   << "\n    mkcppproj ["
+    //   << wrap_with_color ("OPTIONS", "34")
+    //   << " ["
+    //   << wrap_with_color ("ARGUMENTS", "35")
+    //   << "]...]...         \n"
+    //   << EMPTY_LINE
+    //   << "\n  "
+    //   << wrap_with_color ("OPTIONS", "34")
+    //   << ":                                        "
+    //   << "\n    -h, --help        This help screen            "
+    //   << "\n    -q, --quiet       All errors are non-verbose  "
+    //   << "\n    -m, --monochrome  No color in output          "
+    //   << "\n    -p, --path        "
+    //   << wrap_with_color ("PATH", "35")
+    //   << " to project             "
+    //   << "\n    -n, --name        "
+    //   << wrap_with_color ("NAME", "35")
+    //   << " of the main source     "
+    //   << "\n                      file without the extension  "
+    //   << "\n    -x, --extra-src   Comma [,] delimitied "
+    //   << wrap_with_color ("LIST", "35")
+    //   << "\n   "
+    //   << "\n                      of extra source files       "
+    //   << "\n                      without the extension       "
+    //   << "\n    -c, --class-files Comma [,] delimitied "
+    //   << wrap_with_color ("LIST", "35")
+    //   << "   "
+    //   << "\n                      of extra class/header files "
+    //   << "\n                      without the extensions      "
+    //   << EMPTY_LINE
+    //   << std::endl;
     if (_error_.error > 0 && is_verbose)
     {
         std::cerr
