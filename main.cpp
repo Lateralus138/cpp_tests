@@ -9,33 +9,58 @@ struct error
   int error = 0;
   std::string message = "";
 };
+auto
+  is_verbose = true,
+  is_monochrome = false,
+  is_help = false;
+std::string main_name = "main";
+std::vector <std::string>
+  extra_cpp_names_vec,
+  extra_class_names_vec,
+  project_branches_string_vec
+  {
+    "/src",
+    "/src/include",
+    "/src/lib"
+  },
+  project_files_string_vec
+  {
+    "/makefile",
+    "/src/[PLACEHOLDER].cpp"
+  };
+error _error_;
+auto project_path = std::filesystem::current_path ();
+std::vector <std::filesystem::path>
+  project_branches_path_vec,
+  project_files_path_vec;
 
 int main (int argc, char * argv [])
 {
-  auto
-    is_verbose = true,
-    is_monochrome = false,
-    is_help = false;
-  std::string main_name = "main";
-  std::vector <std::string>
-    extra_cpp_names_vec,
-    extra_class_names_vec,
-    project_branches_string_vec
-    {
-      "/src",
-      "/src/include",
-      "/src/lib"
-    },
-    project_files_string_vec
-    {
-      "/makefile",
-      "/src/[PLACEHOLDER].cpp"
-    };
-  error _error_;
-  auto project_path = std::filesystem::current_path ();
-  std::vector <std::filesystem::path>
-    project_branches_path_vec,
-    project_files_path_vec;
+  auto is_monochrome = false;
+  // auto
+  //   is_verbose = true,
+  //   is_monochrome = false,
+  //   is_help = false;
+  // std::string main_name = "main";
+  // std::vector <std::string>
+  //   extra_cpp_names_vec,
+  //   extra_class_names_vec,
+  //   project_branches_string_vec
+  //   {
+  //     "/src",
+  //     "/src/include",
+  //     "/src/lib"
+  //   },
+  //   project_files_string_vec
+  //   {
+  //     "/makefile",
+  //     "/src/[PLACEHOLDER].cpp"
+  //   };
+  // error _error_;
+  // auto project_path = std::filesystem::current_path ();
+  // std::vector <std::filesystem::path>
+  //   project_branches_path_vec,
+  //   project_files_path_vec;
   if (argc > 1)
   {
     std::vector <std::string> args (argv + 1, argv + argc);
