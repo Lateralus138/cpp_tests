@@ -68,7 +68,8 @@ int main (int argc, char * argv [])
     auto skip = false;
     for (auto i = 0; i < argc; i++)
     {
-      bool has_next_arg = (!((i + 1) > (argc - 1)));
+      // bool has_next_arg = (!((i + 1) > (argc - 1)));
+      auto has_next_arg = [argc, i] () { return (!((i + 1) > (argc - 1))); };
       auto is_match = [args, i] (std::regex _regex_)
       {
         return std::regex_match (args [i], _regex_);
@@ -96,7 +97,7 @@ int main (int argc, char * argv [])
       if (is_match (std::regex("^-([pP]|-[pP][aA][tT][hH])$")))
       {
         skip = true;
-        if (!has_next_arg)
+        if (!has_next_arg ())
         {
           _error_.error = 1;
           _error_.message = "Argument was not provided for the \'";
@@ -118,7 +119,7 @@ int main (int argc, char * argv [])
       if (is_match (std::regex("^-([nN]|-[nN][aA][mM][eE])$")))
       {
         skip = true;
-        if (!has_next_arg)
+        if (!has_next_arg ())
         {
           _error_.error = 2;
           _error_.message = "Argument was not provided for the \'";
@@ -137,7 +138,7 @@ int main (int argc, char * argv [])
       if (is_match (std::regex("^-([xX]|-[eE][xX][tT][rR][aA]-[sS][rR][cC])$")))
       {
         skip = true;
-        if (!has_next_arg)
+        if (!has_next_arg ())
         {
           _error_.error = 4;
           _error_.message = "Argument was not provided for the \'";
@@ -165,7 +166,7 @@ int main (int argc, char * argv [])
       if (is_match (std::regex("^-([cC]|-[cC][lL][aA][sS][sS]-[fF][iI][lL][eE][sS])$")))
       {
         skip = true;
-        if (!has_next_arg)
+        if (!has_next_arg ())
         {
           _error_.error = 7;
           _error_.message = "Argument was not provided for the \'";
