@@ -10,18 +10,18 @@ struct error
   std::string message = "";
 };
 
-// inline int return_function (error _error_, bool _verb_, bool _mono_)
-// {
-//   if (_error_.error > 0 && _verb_)
-//   {
-//       std::cerr
-//         << ((!_mono_)?"\x1b[91m":"")
-//         << _error_.message
-//         << ((!_mono_)?"\x1b[0m":"")
-//         << std::endl;
-//   }
-//   return _error_.error;
-// }
+inline int return_function (error _error_, bool _verb_, bool _mono_)
+{
+  if (_error_.error > 0 && _verb_)
+  {
+      std::cerr
+        << ((!_mono_)?"\x1b[91m":"")
+        << _error_.message
+        << ((!_mono_)?"\x1b[0m":"")
+        << std::endl;
+  }
+  return _error_.error;
+}
 
 int main (int argc, char * argv [])
 {
@@ -205,20 +205,6 @@ int main (int argc, char * argv [])
       ((!is_monochrome)?"\x1b[0m":"")
     );
   };
-
-  auto return_function = [is_verbose, is_monochrome] (error _error_)
-  {
-    if (_error_.error > 0 && is_verbose)
-    {
-        std::cerr
-          << ((!is_monochrome)?"\x1b[91m":"")
-          << _error_.message
-          << ((!is_monochrome)?"\x1b[0m":"")
-          << std::endl;
-    }
-    return _error_.error;
-  };
-
   if (is_help)
   {
     const std::string EMPTY_LINE (50, ' ');
@@ -275,8 +261,7 @@ int main (int argc, char * argv [])
       << "\n                      without the extensions      "
       << EMPTY_LINE
       << std::endl;
-    // return return_function (_error_, is_verbose, is_monochrome);
-    return return_function (_error_);
+    return return_function (_error_, is_verbose, is_monochrome);
     // if (_error_.error > 0 && is_verbose)
     // {
     //     std::cerr
@@ -464,6 +449,5 @@ int main (int argc, char * argv [])
   //       << std::endl;
   // }
   // return _error_.error;
-  // return return_function (_error_, is_verbose, is_monochrome);
-  return return_function (_error_);
+  return return_function (_error_, is_verbose, is_monochrome);
 }
