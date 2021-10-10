@@ -9,58 +9,33 @@ struct error
   int error = 0;
   std::string message = "";
 };
-auto
-  is_verbose = true,
-  is_monochrome = false,
-  is_help = false;
-std::string main_name = "main";
-std::vector <std::string>
-  extra_cpp_names_vec,
-  extra_class_names_vec,
-  project_branches_string_vec
-  {
-    "/src",
-    "/src/include",
-    "/src/lib"
-  },
-  project_files_string_vec
-  {
-    "/makefile",
-    "/src/[PLACEHOLDER].cpp"
-  };
-error _error_;
-auto project_path = std::filesystem::current_path ();
-std::vector <std::filesystem::path>
-  project_branches_path_vec,
-  project_files_path_vec;
 
 int main (int argc, char * argv [])
 {
-  auto is_monochrome = false;
-  // auto
-  //   is_verbose = true,
-  //   is_monochrome = false,
-  //   is_help = false;
-  // std::string main_name = "main";
-  // std::vector <std::string>
-  //   extra_cpp_names_vec,
-  //   extra_class_names_vec,
-  //   project_branches_string_vec
-  //   {
-  //     "/src",
-  //     "/src/include",
-  //     "/src/lib"
-  //   },
-  //   project_files_string_vec
-  //   {
-  //     "/makefile",
-  //     "/src/[PLACEHOLDER].cpp"
-  //   };
-  // error _error_;
-  // auto project_path = std::filesystem::current_path ();
-  // std::vector <std::filesystem::path>
-  //   project_branches_path_vec,
-  //   project_files_path_vec;
+  auto
+    is_verbose = true,
+    is_monochrome = false,
+    is_help = false;
+  std::string main_name = "main";
+  std::vector <std::string>
+    extra_cpp_names_vec,
+    extra_class_names_vec,
+    project_branches_string_vec
+    {
+      "/src",
+      "/src/include",
+      "/src/lib"
+    },
+    project_files_string_vec
+    {
+      "/makefile",
+      "/src/[PLACEHOLDER].cpp"
+    };
+  error _error_;
+  auto project_path = std::filesystem::current_path ();
+  std::vector <std::filesystem::path>
+    project_branches_path_vec,
+    project_files_path_vec;
   if (argc > 1)
   {
     std::vector <std::string> args (argv + 1, argv + argc);
@@ -70,10 +45,14 @@ int main (int argc, char * argv [])
     {
       return std::regex_match (args [_index_], _regex_);
     };
+    auto has_next_arg = [argc] (int _index_)
+    {
+      return (!((_index_ + 1) > (argc - 1)));
+    };
     for (auto i = 0; i < argc; i++)
     {
       // bool has_next_arg = (!((i + 1) > (argc - 1)));
-      auto has_next_arg = [argc, i] () { return (!((i + 1) > (argc - 1))); };
+      // auto has_next_arg = [argc, i] () { return (!((i + 1) > (argc - 1))); };
       // auto is_match = [args, i] (std::regex _regex_)
       // {
       //   return std::regex_match (args [i], _regex_);
@@ -101,7 +80,7 @@ int main (int argc, char * argv [])
       if (is_match (std::regex("^-([pP]|-[pP][aA][tT][hH])$"), i))
       {
         skip = true;
-        if (!has_next_arg ())
+        if (!has_next_arg (i))
         {
           _error_.error = 1;
           _error_.message = "Argument was not provided for the \'";
@@ -123,7 +102,7 @@ int main (int argc, char * argv [])
       if (is_match (std::regex("^-([nN]|-[nN][aA][mM][eE])$"), i))
       {
         skip = true;
-        if (!has_next_arg ())
+        if (!has_next_arg (i))
         {
           _error_.error = 2;
           _error_.message = "Argument was not provided for the \'";
@@ -142,7 +121,7 @@ int main (int argc, char * argv [])
       if (is_match (std::regex("^-([xX]|-[eE][xX][tT][rR][aA]-[sS][rR][cC])$"), i))
       {
         skip = true;
-        if (!has_next_arg ())
+        if (!has_next_arg (i))
         {
           _error_.error = 4;
           _error_.message = "Argument was not provided for the \'";
@@ -170,7 +149,7 @@ int main (int argc, char * argv [])
       if (is_match (std::regex("^-([cC]|-[cC][lL][aA][sS][sS]-[fF][iI][lL][eE][sS])$"), i))
       {
         skip = true;
-        if (!has_next_arg ())
+        if (!has_next_arg (i))
         {
           _error_.error = 7;
           _error_.message = "Argument was not provided for the \'";
