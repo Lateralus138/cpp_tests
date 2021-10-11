@@ -5,14 +5,14 @@
 #include <fstream>
 
 // template <typename... T>
-inline void set_error (error & _error_, int _err_, std::vector <std::string> args)
-{
-  _error_.error = _err_;
-  for (auto x :  args)
-  {
-    _error_.message.append (x);
-  }
-}
+// inline void set_error (error & _error_, int _err_, std::vector <std::string> args)
+// {
+//   _error_.error = _err_;
+//   for (auto x :  args)
+//   {
+//     _error_.message.append (x);
+//   }
+// }
 
 int main (int argc, char * argv [])
 {
