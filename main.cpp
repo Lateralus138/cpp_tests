@@ -4,15 +4,22 @@
 #include <regex>
 #include <fstream>
 
-// template <typename... T>
-// inline void set_error (error & _error_, int _err_, std::vector <std::string> args)
-// {
-//   _error_.error = _err_;
-//   for (auto x :  args)
-//   {
-//     _error_.message.append (x);
-//   }
-// }
+inline void build_path_string
+(
+  std::vector<std::string> _in_vec_,
+  std::vector<std::string> & _out_vec_,
+  std::string _path_,
+  std::string _ext_
+)
+{
+  for (auto elem : _in_vec_)
+  {
+    std::string working_string  =  _path_;
+    working_string.append (elem);
+    working_string.append (_ext_);
+    _out_vec_.push_back (working_string);
+  }
+}
 
 int main (int argc, char * argv [])
 {
@@ -91,10 +98,6 @@ int main (int argc, char * argv [])
               "\' parameter."
             }
           );
-          // _error_.error = 1;
-          // _error_.message = "Argument was not provided for the \'";
-          // _error_.message.append (args [i]);
-          // _error_.message.append ("\' parameter.");
           continue;
         }
         auto working_string = args [i + 1];
@@ -124,10 +127,6 @@ int main (int argc, char * argv [])
               "\' parameter."
             }
           );
-          // _error_.error = 2;
-          // _error_.message = "Argument was not provided for the \'";
-          // _error_.message.append (args [i]);
-          // _error_.message.append ("\' parameter.");
           continue;
         }
         main_name = args [i + 1];
@@ -143,8 +142,6 @@ int main (int argc, char * argv [])
               "The provided main file name was an empty string."
             }
           );
-          // _error_.error = 3;
-          // _error_.message = "The provided main file name was an empty string.";
         }
         continue;
       }
@@ -164,10 +161,6 @@ int main (int argc, char * argv [])
               "\' parameter."
             }
           );
-          // _error_.error = 4;
-          // _error_.message = "Argument was not provided for the \'";
-          // _error_.message.append (args [i]);
-          // _error_.message.append ("\' parameter.");
           continue;
         }
         auto working_string_string = args [i + 1];
@@ -182,8 +175,6 @@ int main (int argc, char * argv [])
               "The provided extra source file list was empty."
             }
           );
-          // _error_.error = 5;
-          // _error_.message = "The provided extra source file list was empty.";
         }
         string_to_vector (working_string_string, extra_cpp_names_vec, ",");
         for (auto & str : extra_cpp_names_vec)
@@ -199,8 +190,6 @@ int main (int argc, char * argv [])
                 "Extra source file name is empty."
               }
             );
-            // _error_.error = 6;
-            // _error_.message = "Extra source file name is empty.";
           }
         }
         continue;
@@ -221,10 +210,6 @@ int main (int argc, char * argv [])
               "\' parameter."
             }
           );
-          // _error_.error = 7;
-          // _error_.message = "Argument was not provided for the \'";
-          // _error_.message.append (args [i]);
-          // _error_.message.append ("\' parameter.");
           continue;
         }
         auto working_string_string = args [i + 1];
@@ -239,8 +224,6 @@ int main (int argc, char * argv [])
               "The provided extra class file list was empty."
             }
           );
-          // _error_.error = 8;
-          // _error_.message = "The provided extra class file list was empty.";
         }
         string_to_vector (working_string_string, extra_class_names_vec, ",");
         for (auto & str : extra_class_names_vec)
@@ -256,8 +239,6 @@ int main (int argc, char * argv [])
                 "Extra class file name is empty."
               }
             );
-            // _error_.error = 9;
-            // _error_.message = "Extra class file name is empty.";
           }
         }
         continue;
@@ -352,9 +333,6 @@ int main (int argc, char * argv [])
               " already exists, but is not a directory."
             }
           );
-          // _error_.error = 12;
-          // _error_.message = path;
-          // _error_.message.append (" already exists, but is not a directory.");
           break;
         }
         else
@@ -370,8 +348,6 @@ int main (int argc, char * argv [])
                 error_fs.message ()
               }
             );
-            // _error_.error = 11;
-            // _error_.message = error_fs.message ();
             break;
           }
         }
@@ -390,8 +366,6 @@ int main (int argc, char * argv [])
               error_fs.message ()
             }
           );
-          // _error_.error = 10;
-          // _error_.message = error_fs.message ();
           break;
         }
       }
@@ -402,28 +376,31 @@ int main (int argc, char * argv [])
     std::string pp  =  project_path.c_str ();
     if (extra_cpp_names_vec.size () > 0)
     {
-      for (auto elem : extra_cpp_names_vec)
-      {
-        std::string working_string  =  "/src/";
-        working_string.append (elem);
-        working_string.append (".cpp");
-        project_files_string_vec.push_back (working_string);
-      }
+      build_path_string (extra_cpp_names_vec, project_files_string_vec, "/src/", "cpp");
+      // for (auto elem : extra_cpp_names_vec)
+      // {
+      //   std::string working_string  =  "/src/";
+      //   working_string.append (elem);
+      //   working_string.append (".cpp");
+      //   project_files_string_vec.push_back (working_string);
+      // }
     }
     if (extra_class_names_vec .size () > 0)
     {
-      for (auto elem : extra_class_names_vec)
-      {
-        std::string
-          working_string1  =  "/src/include/",
-          working_string2  =  working_string1;
-        working_string1.append (elem);
-        working_string2.append (elem);
-        working_string1.append (".cpp");
-        working_string2.append (".h");
-        project_files_string_vec.push_back (working_string1);
-        project_files_string_vec.push_back (working_string2);
-      }
+      build_path_string (extra_class_names_vec, project_files_string_vec, "/src/include/", ".cpp");
+      build_path_string (extra_class_names_vec, project_files_string_vec, "/src/include/", ".h");
+      // for (auto elem : extra_class_names_vec)
+      // {
+      //   std::string
+      //     working_string1  =  "/src/include/",
+      //     working_string2  =  working_string1;
+      //   working_string1.append (elem);
+      //   working_string2.append (elem);
+      //   working_string1.append (".cpp");
+      //   working_string2.append (".h");
+      //   project_files_string_vec.push_back (working_string1);
+      //   project_files_string_vec.push_back (working_string2);
+      // }
     }
     for (auto elem : project_files_string_vec)
     {
@@ -449,9 +426,6 @@ int main (int argc, char * argv [])
               " already exists, but is not a regular file."
             }
           );
-          // _error_.error = 15;
-          // _error_.message = elem;
-          // _error_.message.append (" already exists, but is not a regular file.");
           break;
         }
         else
@@ -467,8 +441,6 @@ int main (int argc, char * argv [])
                 error_fs.message ()
               }
             );
-            // _error_.error = 14;
-            // _error_.message = error_fs.message ();
             break;
           }
         }
@@ -487,8 +459,6 @@ int main (int argc, char * argv [])
               error_fs.message ()
             }
           );
-          // _error_.error = 13;
-          // _error_.message = error_fs.message ();
           break;
         }
       }
@@ -513,8 +483,6 @@ int main (int argc, char * argv [])
               error_fs.message ()
             }
           );
-          // _error_.error = 17;
-          // _error_.message = error_fs.message ();
           break;
         }
       }
@@ -531,8 +499,6 @@ int main (int argc, char * argv [])
               error_fs.message ()
             }
           );
-          // _error_.error = 16;
-          // _error_.message = error_fs.message ();
           break;
         }
       }
@@ -558,9 +524,6 @@ int main (int argc, char * argv [])
               " was not created."
             }
           );
-          // _error_.error = 19;
-          // _error_.message = file;
-          // _error_.message.append (" was not created.");
           break;
         }
       }
@@ -577,8 +540,6 @@ int main (int argc, char * argv [])
               error_fs.message ()
             }
           );
-          // _error_.error = 18;
-          // _error_.message = error_fs.message ();
           break;
         }
       }
