@@ -4,22 +4,22 @@
 #include <regex>
 #include <fstream>
 
-inline void build_path_string
-(
-  std::vector<std::string> _in_vec_,
-  std::vector<std::string> & _out_vec_,
-  std::string _path_,
-  std::string _ext_
-)
-{
-  for (auto elem : _in_vec_)
-  {
-    std::string working_string  =  _path_;
-    working_string.append (elem);
-    working_string.append (_ext_);
-    _out_vec_.push_back (working_string);
-  }
-}
+// inline void build_path_string
+// (
+//   std::vector<std::string> _in_vec_,
+//   std::vector<std::string> & _out_vec_,
+//   std::string _path_,
+//   std::string _ext_
+// )
+// {
+//   for (auto elem : _in_vec_)
+//   {
+//     std::string working_string  =  _path_;
+//     working_string.append (elem);
+//     working_string.append (_ext_);
+//     _out_vec_.push_back (working_string);
+//   }
+// }
 
 int main (int argc, char * argv [])
 {
