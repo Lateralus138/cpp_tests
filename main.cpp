@@ -230,16 +230,34 @@ int main (int argc, char * argv [])
         auto working_string_string = args [i + 1];
         if (working_string_string.empty ())
         {
-          _error_.error = 8;
-          _error_.message = "The provided extra class file list was empty.";
+          set_error
+          (
+            _error_,
+            8,
+            std::vector<std::string>
+            {
+              "The provided extra class file list was empty."
+            }
+          );
+          // _error_.error = 8;
+          // _error_.message = "The provided extra class file list was empty.";
         }
         string_to_vector (working_string_string, extra_class_names_vec, ",");
         for (auto & str : extra_class_names_vec)
         {
           if (str.empty () || std::regex_match (str, std::regex ("^[\\s]+$")))
           {
-            _error_.error = 9;
-            _error_.message = "Extra class file name is empty.";
+            set_error
+            (
+              _error_,
+              9,
+              std::vector<std::string>
+              {
+                "Extra class file name is empty."
+              }
+            );
+            // _error_.error = 9;
+            // _error_.message = "Extra class file name is empty.";
           }
         }
         continue;
@@ -324,17 +342,36 @@ int main (int argc, char * argv [])
       {
         if (!std::filesystem::is_directory (path, error_fs))
         {
-          _error_.error = 12;
-          _error_.message = path;
-          _error_.message.append (" already exists, but is not a directory.");
+          set_error
+          (
+            _error_,
+            12,
+            std::vector<std::string>
+            {
+              path,
+              " already exists, but is not a directory."
+            }
+          );
+          // _error_.error = 12;
+          // _error_.message = path;
+          // _error_.message.append (" already exists, but is not a directory.");
           break;
         }
         else
         {
           if (error_fs.message () != "Success")
           {
-            _error_.error = 11;
-            _error_.message = error_fs.message ();
+            set_error
+            (
+              _error_,
+              11,
+              std::vector<std::string>
+              {
+                error_fs.message ()
+              }
+            );
+            // _error_.error = 11;
+            // _error_.message = error_fs.message ();
             break;
           }
         }
@@ -344,8 +381,17 @@ int main (int argc, char * argv [])
       {
         if (error_fs.message () != "Success")
         {
-          _error_.error = 10;
-          _error_.message = error_fs.message ();
+          set_error
+          (
+            _error_,
+            10,
+            std::vector<std::string>
+            {
+              error_fs.message ()
+            }
+          );
+          // _error_.error = 10;
+          // _error_.message = error_fs.message ();
           break;
         }
       }
@@ -393,17 +439,36 @@ int main (int argc, char * argv [])
       {
         if (!std::filesystem::is_regular_file (elem, error_fs))
         {
-          _error_.error = 15;
-          _error_.message = elem;
-          _error_.message.append (" already exists, but is not a regular file.");
+          set_error
+          (
+            _error_,
+            15,
+            std::vector<std::string>
+            {
+              elem,
+              " already exists, but is not a regular file."
+            }
+          );
+          // _error_.error = 15;
+          // _error_.message = elem;
+          // _error_.message.append (" already exists, but is not a regular file.");
           break;
         }
         else
         {
           if (error_fs.message () != "Success")
           {
-            _error_.error = 14;
-            _error_.message = error_fs.message ();
+            set_error
+            (
+              _error_,
+              14,
+              std::vector<std::string>
+              {
+                error_fs.message ()
+              }
+            );
+            // _error_.error = 14;
+            // _error_.message = error_fs.message ();
             break;
           }
         }
@@ -413,8 +478,17 @@ int main (int argc, char * argv [])
       {
         if (error_fs.message () != "Success")
         {
-          _error_.error = 13;
-          _error_.message = error_fs.message ();
+          set_error
+          (
+            _error_,
+            13,
+            std::vector<std::string>
+            {
+              error_fs.message ()
+            }
+          );
+          // _error_.error = 13;
+          // _error_.message = error_fs.message ();
           break;
         }
       }
@@ -430,8 +504,17 @@ int main (int argc, char * argv [])
         std::filesystem::create_directories (path, error_fs);
         if (error_fs.value () > 0)
         {
-          _error_.error = 17;
-          _error_.message = error_fs.message ();
+          set_error
+          (
+            _error_,
+            17,
+            std::vector<std::string>
+            {
+              error_fs.message ()
+            }
+          );
+          // _error_.error = 17;
+          // _error_.message = error_fs.message ();
           break;
         }
       }
@@ -439,8 +522,17 @@ int main (int argc, char * argv [])
       {
         if (error_fs.message () != "Success")
         {
-          _error_.error = 16;
-          _error_.message = error_fs.message ();
+          set_error
+          (
+            _error_,
+            16,
+            std::vector<std::string>
+            {
+              error_fs.message ()
+            }
+          );
+          // _error_.error = 16;
+          // _error_.message = error_fs.message ();
           break;
         }
       }
@@ -456,9 +548,19 @@ int main (int argc, char * argv [])
         std::ofstream f_s (file);
         if (!f_s.is_open ())
         {
-          _error_.error = 19;
-          _error_.message = file;
-          _error_.message.append (" was not created.");
+          set_error
+          (
+            _error_,
+            19,
+            std::vector<std::string>
+            {
+              file,
+              " was not created."
+            }
+          );
+          // _error_.error = 19;
+          // _error_.message = file;
+          // _error_.message.append (" was not created.");
           break;
         }
       }
@@ -466,8 +568,17 @@ int main (int argc, char * argv [])
       {
         if (error_fs.message () != "Success")
         {
-          _error_.error = 18;
-          _error_.message = error_fs.message ();
+          set_error
+          (
+            _error_,
+            8,
+            std::vector<std::string>
+            {
+              error_fs.message ()
+            }
+          );
+          // _error_.error = 18;
+          // _error_.message = error_fs.message ();
           break;
         }
       }
