@@ -83,7 +83,6 @@ void Strings::delim_to_vector
         _vector_.push_back (line);
       }
     }
-
   }
 }
 
