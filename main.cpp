@@ -49,8 +49,59 @@ int main (int argc, const char * argv [])
       };
       if (check_regex ("^-([hH]|-[hH][eE][lL][pP])$"))
       {
-        // TODO Finish HELP section
-        // std::cout << "HELP" << std::endl;
+        ansi a;
+        auto c = a.color_map;
+        std::cout
+          <<  std::string (50, ' ')
+          <<  "\n  \'String Case\' - [strcase]                       "
+          <<  "\n     Manipulate the case of a string from normal  "
+              "\n     input or from a pipe with a few options.     \n"
+          <<  std::string (50, ' ')
+          <<  "\n  "
+          <<  wrap_string ("USAGE", wrap_data {c ["fg_light_green"], a.ANSI_M})
+          <<  ":" << std::string (42, ' ')
+          <<  "\n    strcase ["
+          <<  wrap_string ("OPTIONS", wrap_data {c ["fg_light_blue"], a.ANSI_M})
+          <<  " ["
+          <<  wrap_string ("ARGUMENTS", wrap_data {c ["fg_light_magenta"], a.ANSI_M})
+          <<  "]...]...           \n"
+          <<  std::string (50, ' ')
+          <<  "\n  "
+          <<  wrap_string ("OPTIONS", wrap_data {c ["fg_light_blue"], a.ANSI_M})
+          <<  ":" << std::string (40, ' ')
+          <<  "\n    -h, --help        This help screen.           "
+          <<  "\n    -u, --upper       Force upper case. This is   "
+          <<  "\n                      the default mode, but can   "
+          <<  "\n                      be forced with this option. "
+          <<  "\n    -l, --lower       Force lower case. If the -u "
+          <<  "\n                      option is passed after this "
+          <<  "\n                      then this option is         "
+          <<  "\n                      overridden.                 "
+          <<  "\n    -p, --phrases     Comma delimited "
+          <<  wrap_string ("LIST", wrap_data {c ["fg_light_magenta"], a.ANSI_M})
+          <<  " of     "
+          <<  "\n                      phrases to be case          "
+          <<  "\n                      manipulated. These are      "
+          <<  "\n                      processed before the        "
+          <<  "\n                      character list.             "
+          <<  "\n    -c, --characters  Comma delimited "
+          <<  wrap_string ("LIST", wrap_data {c ["fg_light_magenta"], a.ANSI_M})
+          <<  " of     "
+          <<  "\n                      characters to be case       "
+          <<  "\n                      manipulated.                \n"
+          <<  std::string (50, ' ')
+          <<  "\n  "
+          <<  wrap_string ("ARGUMENTS", wrap_data {c ["fg_light_magenta"], a.ANSI_M})
+          <<  ":" << std::string (38, ' ')
+          <<  "\n    "
+          <<  wrap_string ("LIST", wrap_data {c ["fg_light_magenta"], a.ANSI_M})
+          <<  "              Lists of phrases or         "
+          <<  "\n                      characters separated by a   "
+          <<  "\n                      comma. It is best to        "
+          <<  "\n                      surround this list with     "
+          <<  "\n                      quotation marks.            \n"
+          <<  std::string (50, ' ')
+          << std::endl;
         return 0;
       }
       if (check_regex ("^-([uU]|-[uU][pP][pP][eE][rR])$"))
