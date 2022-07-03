@@ -3,6 +3,7 @@ on:
   push:
     paths:
     - '**.cpp'
+    - '**.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,7 +14,7 @@ jobs:
         if ! [[ -d "docs/json" ]]; then
           mkdir -p "docs/json" || exit 1
         fi
-        latest="$(ls -l -rt *.cpp | tail -1 | awk '{for(i=9;i<=NF;i++) printf $i" "; print ""}' | sed -e 's/[ \t]$//')"
+        latest="$(ls -l -rt ./src/*.cpp | tail -1 | awk '{for(i=9;i<=NF;i++) printf $i" "; print ""}' | sed -e 's/[ \t]$//')"
         file_text='{\n\t"schemaVersion": 1,\n\t"color": "b91d47",\n\t"label": "PLACEHOLDER",\n\t"message": "PLACEHOLDER",\n\t"labelColor": "1d1d1d",\n\t"style": "for-the-badge",\n\t"namedLogo": "cpp"\n}'
         echo -e "$file_text" > docs/json/file.json
         sed -i "s/\"label\": \".*\"/\"label\": \"File\"/g" docs/json/file.json
