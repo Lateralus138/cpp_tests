@@ -1,27 +1,31 @@
 #pragma once
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#ifndef Globals_H
+#define Globals_H
 #include <map>
 
-namespace GLOBALS
+namespace Globals
 {
-  namespace FUNCTIONS
+  namespace Functions
   {
     extern void rt_err_exit(const char * err_string, int exit);
   };
-  namespace VARIABLES
+  namespace Variables
   {
-    namespace ERRORS
+    namespace Paths
+    {
+      extern const char * PROCDIR;
+    };
+    namespace Errors
     {
       extern int error;
     };
-    namespace MESSAGES
+    namespace Messages
     {
       extern const char * SUCCESS;
       extern const char * TMA;
       extern std::map <int, const char *> ERRORMESSAGES;
     };
-    namespace VALUES
+    namespace Values
     {
       extern const int ARGMAX;
     };
