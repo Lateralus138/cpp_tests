@@ -1,5 +1,5 @@
 SHELL = bash
-PROJNM = upgg
+PROJNM = lspids
 AND32GXX = arm-linux-gnueabihf-g++
 AND64GXX = aarch64-linux-gnu-g++
 
@@ -67,18 +67,22 @@ all: releasedynamicall
 releasedynamicall: cleanreleasedynamic builddirectories buildlibslinux
 	@echo Building dynamic executable
 	$(CXX) $(GTKINC) $(LDFLAG) $(SRCFLS) -o $(TGTDYN) $(LDLIBS) $(GTKLIB)
+	strip $(TGTDYN)
 
 releasedynamic: cleanreleasedynamic builddirectories
 	@echo Building dynamic executable
 	$(CXX) $(GTKINC) $(LDFLAG) $(SRCFLS) -o $(TGTDYN) $(LDLIBS) $(GTKLIB)
+	strip $(TGTDYN)
 
 releasestaticall: cleanreleasestatic builddirectories buildlibslinux
 	@echo Building static executable
 	$(CXX) $(GTKINC) $(STFLAG) $(LDFLAG) $(SRCFLS) -o $(TGTSTC) $(LDLIBS) $(GTKLIB)
+	strip $(TGTSTC)
 
 releasestatic: cleanreleasestatic builddirectories
 	@echo Building static executable
 	$(CXX) $(GTKINC) $(STFLAG) $(LDFLAG) $(SRCFLS) -o $(TGTSTC) $(LDLIBS) $(GTKLIB)
+	strip $(TGTSTC)
 
 androidall: androidstaticall androiddynamicall
 
