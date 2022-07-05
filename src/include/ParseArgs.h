@@ -2,11 +2,15 @@
 #ifndef PARSEARGS_H
 #define PARSEARGS_H
 
+#include <vector>
+#include <string>
+
 class ParseArgs
 {
 private:
   int argC;
   char ** argV;
+  std::vector<std::string_view> argS;
 public:
   ParseArgs(int argc_, char ** argv_)
   {
@@ -15,7 +19,8 @@ public:
   void parseArgs(int argc_, char ** argv_)
   {
     setArgC(argc_);
-    setArgV(argv_);   
+    setArgV(argv_);
+    setArgS();
   }
   void setArgC(int argc_)
   {
@@ -32,6 +37,14 @@ public:
   char ** getArgV()
   {
     return argV;
+  }
+  void setArgS()
+  {
+    argS = std::vector<std::string_view>(argV + 0, argV + argC);
+  }
+  std::vector<std::string_view> getArgS()
+  {
+    return argS;
   }
   void parse(int min, int max);
 };
