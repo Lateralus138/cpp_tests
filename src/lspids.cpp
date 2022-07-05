@@ -6,23 +6,20 @@
 // -----------------------------------------------
 
 #include "globals.h"
+#include "ParseArgs.h"
 #include <iostream>
-//#include "Bench.h"
+#include "Bench.h"
 
 int main(int argc, char *argv[])
 {
   (void) argv;
-  //  using namespace Bench;
-  //  start();
+  using namespace Bench;
   using namespace Globals::Variables::Errors;
   using namespace Globals::Variables::Messages;
   using namespace Globals::Variables::Values;
   using namespace Globals::Variables::Paths;
   using namespace Globals::Functions;
-  //  stop();
-  //  print_duration("Execution time: ", "\n", Start, Stop);
-//  if (argc > (ARGMAX + 1)) error = 1;
-  if (error > 0) rt_err_exit(ERRORMESSAGES[error], error);
+
   try
   {
     if (argc > (ARGMAX + 1))
@@ -33,6 +30,16 @@ int main(int argc, char *argv[])
     std::cerr << rerr.what() << '\n';
     return error;
   }
+  
+  if (argc > 1)
+  {
+    start();
+    ParseArgs args(argc, argv);
+    stop();
+    print_duration("Execution time: ", "\n", Start, Stop);
+  }
+
+  if (error > 0) rt_err_exit(ERRORMESSAGES[error], error);
   return (EXIT_SUCCESS);
 }
 

@@ -37,7 +37,7 @@ namespace Globals
     };
     namespace Values
     {
-      const int ARGMAX = 64;
+      const int ARGMAX = 256;
     };
   };
 };
