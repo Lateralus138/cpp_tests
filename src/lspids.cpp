@@ -39,12 +39,12 @@ int main(int argc, char *argv[])
   }
 
   const std::filesystem::path PROCPATH(PROCDIR);
-  
+
   try
   {
     std::error_code ec;
-    auto PROCEXISTS = std::filesystem::exists(PROCPATH, ec);
-    const int ECV = (int) ec.value();
+    const auto PROCEXISTS = std::filesystem::exists(PROCPATH, ec);
+    int ECV = (int) ec.value();
     switch (ECV)
     {
     case 0:
@@ -58,13 +58,27 @@ int main(int argc, char *argv[])
       error = 2;
       throw std::runtime_error(ERRORMESSAGES[error]);
     }
+    const auto PROCISDIR = std::filesystem::is_directory(PROCPATH, ec);
+    switch (ECV)
+    {
+    case 0:
+      break;
+    default:
+      std::cerr << ec.message() << '\n';
+      std::exit(ECV);
+    }
+    if (!PROCISDIR)
+    {
+      error = 3;
+      throw std::runtime_error(ERRORMESSAGES[error]);
+    }
   }
   catch (std::runtime_error & rerr)
   {
     std::cerr << rerr.what() << '\n';
     std::exit(error);
   }
-
+  
   if (error > 0) rt_err_exit(ERRORMESSAGES[error], error);
   return (EXIT_SUCCESS);
 }
