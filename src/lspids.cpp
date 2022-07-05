@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
   {
     start();
     ParseArgs args(argc, argv);
+    args.parse(1, argc);
     stop();
     print_duration("Execution time: ", "\n", Start, Stop);
   }

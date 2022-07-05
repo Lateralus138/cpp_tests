@@ -33,6 +33,7 @@ public:
   {
     return argV;
   }
+  void parse(int min, int max);
 };
 
 #endif
