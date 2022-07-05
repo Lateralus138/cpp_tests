@@ -20,7 +20,7 @@ namespace Globals
   {
     namespace Paths
     {
-      const char * PROCDIR = "/proc";
+      const char * PROCDIR = "/procs";
     };
     namespace Errors
     {
@@ -30,9 +30,11 @@ namespace Globals
     {
       const char * SUCCESS = "Success...";
       const char * TMA = "Too many arguments...";
+      const char * NOEXIST = "Does not exist...";
       std::map <int, const char *> ERRORMESSAGES ={
         {0, SUCCESS},
-        {1, TMA}
+        {1, TMA},
+        {2, NOEXIST}
       };
     };
     namespace Values

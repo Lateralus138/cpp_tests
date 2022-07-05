@@ -23,6 +23,7 @@ namespace Globals
     {
       extern const char * SUCCESS;
       extern const char * TMA;
+      extern const char * NOEXIST;
       extern std::map <int, const char *> ERRORMESSAGES;
     };
     namespace Values
