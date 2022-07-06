@@ -15,7 +15,7 @@ namespace Globals
         std::cout << rerr.what() << '\n';
       std::exit(exit);
     }
-    bool path_exists_or_exit(std::filesystem::path path_, int err_msg_index = 2)
+    bool path_exists_or_exit(std::filesystem::path path_, int err_index, int err_msg_index = 2)
     {
       try
       {
@@ -32,8 +32,8 @@ namespace Globals
         }
         if (!EXISTS)
         {
-          Globals::Variables::Errors::error = err_msg_index;
-          throw std::runtime_error(Globals::Variables::Messages::ERRORMESSAGES[Globals::Variables::Errors::error]);
+          Globals::Variables::Errors::error = err_index;
+          throw std::runtime_error(Globals::Variables::Messages::ERRORMESSAGES[err_msg_index]);
         }
         return EXISTS;
       }
@@ -43,7 +43,7 @@ namespace Globals
         std::exit(Globals::Variables::Errors::error);
       }
     }
-    bool path_is_directory_or_exit(std::filesystem::path path_, int err_msg_index = 3)
+    bool path_is_directory_or_exit(std::filesystem::path path_, int err_index, int err_msg_index = 3)
     {
       try
       {
@@ -60,8 +60,8 @@ namespace Globals
         }
         if (!ISDIRECTORY)
         {
-          Globals::Variables::Errors::error = err_msg_index;
-          throw std::runtime_error(Globals::Variables::Messages::ERRORMESSAGES[Globals::Variables::Errors::error]);
+          Globals::Variables::Errors::error = err_index;
+          throw std::runtime_error(Globals::Variables::Messages::ERRORMESSAGES[err_msg_index]);
         }
         return ISDIRECTORY;
       }
@@ -71,7 +71,7 @@ namespace Globals
         std::exit(Globals::Variables::Errors::error);
       }
     }
-    bool path_is_regular_file_or_exit(std::filesystem::path path_, int err_msg_index = 4)
+    bool path_is_regular_file_or_exit(std::filesystem::path path_, int err_index, int err_msg_index = 4)
     {
       try
       {
@@ -88,8 +88,8 @@ namespace Globals
         }
         if (!ISREGULARFILE)
         {
-          Globals::Variables::Errors::error = err_msg_index;
-          throw std::runtime_error(Globals::Variables::Messages::ERRORMESSAGES[Globals::Variables::Errors::error]);
+          Globals::Variables::Errors::error = err_index;
+          throw std::runtime_error(Globals::Variables::Messages::ERRORMESSAGES[err_msg_index]);
         }
         return ISREGULARFILE;
       }
@@ -117,12 +117,16 @@ namespace Globals
       const char * NOEXIST = "Does not exist...";
       const char * NODIR = "Not a directory...";
       const char * NOFILE = "Not a regular file...";
+      const char * PROCNOEXIST  = "'/proc' does not exist...";
+      const char * PROCNODIR    = "'/proc' is not a directory...";
       std::map <int, const char *> ERRORMESSAGES ={
         {0, SUCCESS},
         {1, TMA},
         {2, NOEXIST},
         {3, NODIR},
-        {4, NOFILE}
+        {4, NOFILE},
+        {5, PROCNOEXIST},
+        {6, PROCNODIR}
       };
     };
     namespace Values

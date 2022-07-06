@@ -37,10 +37,9 @@ int main(int argc, char *argv[])
     ParseArgs args(argc, argv);
     args.parse(1, argc);
   }
-
   const std::filesystem::path PROCPATH(PROCDIR);
-  bool PROCEXISTS = path_exists_or_exit(PROCPATH, 2);
-  bool PROCISDIR  = path_is_directory_or_exit(PROCPATH, 3);
+  path_exists_or_exit(PROCPATH, 2, 5);
+  path_is_directory_or_exit(PROCPATH, 3, 6);
 
   if (error > 0) rt_err_exit(ERRORMESSAGES[error], error);
   return (EXIT_SUCCESS);
