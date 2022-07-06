@@ -9,15 +9,18 @@
 #include "ParseArgs.h"
 #include <iostream>
 #include <filesystem>
+#include <regex>
 //#include "Bench.h"
 
 int main(int argc, char *argv[])
 {
-  //  using namespace Bench;
+//  using namespace Bench;
+    
   using namespace Globals::Variables::Errors;
   using namespace Globals::Variables::Messages;
   using namespace Globals::Variables::Values;
   using namespace Globals::Variables::Paths;
+  using namespace Globals::Variables::Regex;
   using namespace Globals::Functions;
 
   try
@@ -54,15 +57,30 @@ int main(int argc, char *argv[])
       std::cerr << ec.message() << '\n';
       std::exit(ECV);
     }
+//    start();
     for (auto & iter : PROC_ITERATOR)
     {
-      bool id = iter.is_directory();
-      std::cout << iter.path().native().c_str() << " is a directory [" << BOOLS[id] << ']' << std::endl;
+      const bool is_directory = iter.is_directory();
+      if (is_directory)
+      {
+        const std::string DIRNAME =
+          iter.path().filename().native().c_str();
+        if (std::regex_match(DIRNAME, R_UINT))
+          std::cout << DIRNAME << std::endl;
+      }
     }
+//    stop();
+//    print_duration("Loop duration: ", "\n", Start, Stop);
   }
   catch (std::filesystem::filesystem_error & fserr)
   {
-    (void) fserr;
+    std::cerr
+      << "What         : " << fserr.what() << '\n'
+      << "Path 1       : " << fserr.path1() << '\n'
+      << "Path 2       : " << fserr.path2() << '\n'
+      << "Code Value   : " << fserr.code().value() << '\n'
+      << "Code Message : " << fserr.code().message() << '\n'
+      << "Code Category: " << fserr.code().category().name() << '\n';
     try
     {
       error = 4;
@@ -75,7 +93,7 @@ int main(int argc, char *argv[])
     }
   }
 
-  if (error > 0) rt_err_exit(ERRORMESSAGES[error], error);
+//  if (error > 0) rt_err_exit(ERRORMESSAGES[error], error);
   return (EXIT_SUCCESS);
 }
 

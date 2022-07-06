@@ -5,16 +5,16 @@ namespace Globals
 {
   namespace Functions
   {
-    void rt_err_exit(const char * err_string, int exit)
-    {
-      std::runtime_error rerr =
-              std::runtime_error(err_string);
-      if (exit > 0)
-        std::cerr << rerr.what() << '\n';
-      else
-        std::cout << rerr.what() << '\n';
-      std::exit(exit);
-    }
+//    void rt_err_exit(const char * err_string, int exit)
+//    {
+//      std::runtime_error rerr =
+//              std::runtime_error(err_string);
+//      if (exit > 0)
+//        std::cerr << rerr.what() << '\n';
+//      else
+//        std::cout << rerr.what() << '\n';
+//      std::exit(exit);
+//    }
     bool path_exists_or_exit(std::filesystem::path path_, int err_index, int err_msg_index = 2)
     {
       try
@@ -102,6 +102,11 @@ namespace Globals
   };
   namespace Variables
   {
+    namespace Regex
+    {
+      const std::regex R_HELP("^-([hH]|-[hH][eE][lL][pP])$");
+      const std::regex R_UINT("^[0-9]+$");
+    };
     namespace Paths
     {
       const char * PROCDIR = "/proc";
@@ -129,10 +134,10 @@ namespace Globals
         {5, NOEXIST},
         {6, NODIR}
       };
-      std::map <int, const std::string_view> BOOLS = {
-        {0, "False"},
-        {1, "True"}
-      };
+//      std::map <int, const std::string_view> BOOLS = {
+//        {0, "False"},
+//        {1, "True"}
+//      };
     };
     namespace Values
     {
