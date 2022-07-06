@@ -21,7 +21,7 @@ namespace Globals
       {
         std::error_code ec;
         const auto EXISTS = std::filesystem::exists(path_, ec);
-        int ECV = (int) ec.value();
+        const int ECV = (int) ec.value();
         switch (ECV)
         {
         case 0:
@@ -49,7 +49,7 @@ namespace Globals
       {
         std::error_code ec;
         const auto ISDIRECTORY = std::filesystem::is_directory(path_, ec);
-        int ECV = (int) ec.value();
+        const int ECV = (int) ec.value();
         switch (ECV)
         {
         case 0:
@@ -77,7 +77,7 @@ namespace Globals
       {
         std::error_code ec;
         const auto ISREGULARFILE = std::filesystem::is_regular_file(path_, ec);
-        int ECV = (int) ec.value();
+        const int ECV = (int) ec.value();
         switch (ECV)
         {
         case 0:
@@ -117,16 +117,21 @@ namespace Globals
       const char * NOEXIST = "Does not exist...";
       const char * NODIR = "Not a directory...";
       const char * NOFILE = "Not a regular file...";
-      const char * PROCNOEXIST  = "'/proc' does not exist...";
-      const char * PROCNODIR    = "'/proc' is not a directory...";
-      std::map <int, const char *> ERRORMESSAGES ={
+      const char * PROCNOEXIST = "'/proc' does not exist...";
+      const char * PROCNODIR = "'/proc' is not a directory...";
+      const char * CANTITERDIR = "Can't iterate '/proc' directory";
+      std::map <int, const char *> ERRORMESSAGES = {
         {0, SUCCESS},
         {1, TMA},
-        {2, NOEXIST},
-        {3, NODIR},
-        {4, NOFILE},
-        {5, PROCNOEXIST},
-        {6, PROCNODIR}
+        {2, PROCNOEXIST},
+        {3, PROCNODIR},
+        {4, CANTITERDIR},
+        {5, NOEXIST},
+        {6, NODIR}
+      };
+      std::map <int, const std::string_view> BOOLS = {
+        {0, "False"},
+        {1, "True"}
       };
     };
     namespace Values
