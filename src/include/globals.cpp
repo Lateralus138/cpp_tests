@@ -134,10 +134,6 @@ namespace Globals
         {5, NOEXIST},
         {6, NODIR}
       };
-//      std::map <int, const std::string_view> BOOLS = {
-//        {0, "False"},
-//        {1, "True"}
-//      };
     };
     namespace Values
     {

@@ -10,19 +10,15 @@
 #include <iostream>
 #include <filesystem>
 #include <regex>
-//#include "Bench.h"
 
 int main(int argc, char *argv[])
 {
-//  using namespace Bench;
-    
   using namespace Globals::Variables::Errors;
   using namespace Globals::Variables::Messages;
   using namespace Globals::Variables::Values;
   using namespace Globals::Variables::Paths;
   using namespace Globals::Variables::Regex;
   using namespace Globals::Functions;
-
   try
   {
     if (argc > (ARGMAX + 1))
@@ -33,7 +29,6 @@ int main(int argc, char *argv[])
     std::cerr << rerr.what() << '\n';
     return error;
   }
-
   // TODO Finish HELP message
   if (argc > 1)
   {
@@ -43,7 +38,6 @@ int main(int argc, char *argv[])
   const std::filesystem::path PROCPATH(PROCDIR);
   path_exists_or_exit(PROCPATH, 2, 2);
   path_is_directory_or_exit(PROCPATH, 3, 3);
-
   try
   {
     std::error_code ec;
@@ -57,7 +51,6 @@ int main(int argc, char *argv[])
       std::cerr << ec.message() << '\n';
       std::exit(ECV);
     }
-//    start();
     for (auto & iter : PROC_ITERATOR)
     {
       const bool is_directory = iter.is_directory();
@@ -69,8 +62,6 @@ int main(int argc, char *argv[])
           std::cout << DIRNAME << std::endl;
       }
     }
-//    stop();
-//    print_duration("Loop duration: ", "\n", Start, Stop);
   }
   catch (std::filesystem::filesystem_error & fserr)
   {
@@ -92,8 +83,6 @@ int main(int argc, char *argv[])
       std::exit(error);
     }
   }
-
-//  if (error > 0) rt_err_exit(ERRORMESSAGES[error], error);
   return (EXIT_SUCCESS);
 }
 

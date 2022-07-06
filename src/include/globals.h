@@ -38,7 +38,6 @@ namespace Globals
       extern const char * PROCNOEXIST;
       extern const char * PROCNODIR;
       extern std::map <int, const char *> ERRORMESSAGES;
-//      extern std::map <int, const std::string_view> BOOLS;
     };
     namespace Values
     {
