@@ -118,13 +118,13 @@ namespace Globals
     namespace Messages
     {
       const char * SUCCESS = "Success...";
-      const char * TMA = "Too many arguments passed to this program...";
+      const char * TMA = "Too many options passed to this program...";
       const char * NOEXIST = "Does not exist...";
       const char * NODIR = "Not a directory...";
       const char * NOFILE = "Not a regular file...";
       const char * PROCNOEXIST = "'/proc' does not exist...";
       const char * PROCNODIR = "'/proc' is not a directory...";
-      const char * CANTITERDIR = "Can't iterate '/proc' directory";
+      const char * CANTITERDIR = "Can't iterate '/proc' directory...";
       std::map <int, const char *> ERRORMESSAGES = {
         {0, SUCCESS},
         {1, TMA},

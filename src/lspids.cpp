@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
   using namespace Globals::Variables::Paths;
   using namespace Globals::Variables::Regex;
   using namespace Globals::Functions;
+  args.delimiter = "\n";
   try
   {
     if (argc > (ARGMAX + 1))
@@ -29,9 +30,6 @@ int main(int argc, char *argv[])
     std::cerr << rerr.what() << '\n';
     return error;
   }
-  // TODO Finish adding args
-  // TODO Add -0,--null Output is null terminated.
-  // TODO Add -d,--delim Set a string delimiter to separate output. Defaults to a space.
   if (argc > 1)
   {
     ParseArgs args(argc, argv);
@@ -53,27 +51,35 @@ int main(int argc, char *argv[])
       std::cerr << ec.message() << '\n';
       std::exit(ECV);
     }
+    int iter_index = 0;
     for (auto & iter : PROC_ITERATOR)
     {
       const bool is_directory = iter.is_directory();
       if (is_directory)
       {
         const std::string DIRNAME =
-          iter.path().filename().native().c_str();
+                iter.path().filename().native().c_str();
         if (std::regex_match(DIRNAME, R_UINT))
-          std::cout << DIRNAME << std::endl;
+        {
+          iter_index++;
+          if (iter_index > 1)
+            std::cout << args.delimiter;
+          std::cout << DIRNAME;
+        }
       }
     }
+    if (!args.formatIsNull)
+      std::cout << '\n';
   }
   catch (std::filesystem::filesystem_error & fserr)
   {
     std::cerr
-      << "What         : " << fserr.what() << '\n'
-      << "Path 1       : " << fserr.path1() << '\n'
-      << "Path 2       : " << fserr.path2() << '\n'
-      << "Code Value   : " << fserr.code().value() << '\n'
-      << "Code Message : " << fserr.code().message() << '\n'
-      << "Code Category: " << fserr.code().category().name() << '\n';
+            << "What         : " << fserr.what() << '\n'
+            << "Path 1       : " << fserr.path1() << '\n'
+            << "Path 2       : " << fserr.path2() << '\n'
+            << "Code Value   : " << fserr.code().value() << '\n'
+            << "Code Message : " << fserr.code().message() << '\n'
+            << "Code Category: " << fserr.code().category().name() << '\n';
     try
     {
       error = 4;
@@ -85,7 +91,6 @@ int main(int argc, char *argv[])
       std::exit(error);
     }
   }
-//  std::cout << args.formatIsNull << '\n';
   return (EXIT_SUCCESS);
 }
 
