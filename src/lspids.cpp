@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
       std::exit(error);
     }
   }
+  std::cout << args_.formatIsNull << '\n';
   return (EXIT_SUCCESS);
 }
 

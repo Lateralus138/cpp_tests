@@ -5,6 +5,12 @@
 #include <vector>
 #include <string>
 
+struct args_
+{
+  bool formatIsNull;
+};
+extern struct args_ args;
+
 class ParseArgs
 {
 private:

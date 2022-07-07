@@ -3,9 +3,25 @@
 #include <regex>
 #include <vector>
 
+//namespace Args
+//{
+//  struct args
+//  {
+//    bool formatIsNull = false;
+//  };
+//};
+//  struct args
+//  {
+//    bool formatIsNull = false;
+//  };
+args args_;
 void ParseArgs::parse(int min, int max)
 {
-  const std::regex R_HELP("^-([hH]|-[hH][eE][lL][pP])$");
+//  using namespace Args;
+//  Args::args.formatIsNull = true;
+  const std::regex R_HELP   ("^-([hH]|-[hH][eE][lL][pP])$");
+  const std::regex R_NULL   ("^-(0|-[nN][uU][lL][lL])$");
+  const std::regex R_DELIM  ("^-([dD]|-[dD][eE][lL][iI][mM])$");
   const std::vector<std::string> BOX =
   {
     u8"\u250C", u8"\u2500", u8"\u2510", u8"\u2502",
@@ -44,6 +60,11 @@ void ParseArgs::parse(int min, int max)
     {
       std::cout << HELPMESSAGE;
       std::exit(0);
+    }
+    if (std::regex_match(str, R_NULL))
+    {
+      args.formatIsNull = true;
+      continue;
     }
   }
 }
