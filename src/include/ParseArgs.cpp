@@ -3,22 +3,9 @@
 #include <regex>
 #include <vector>
 
-//namespace Args
-//{
-//  struct args
-//  {
-//    bool formatIsNull = false;
-//  };
-//};
-//  struct args
-//  {
-//    bool formatIsNull = false;
-//  };
-args args_;
+args_ args;
 void ParseArgs::parse(int min, int max)
 {
-//  using namespace Args;
-//  Args::args.formatIsNull = true;
   const std::regex R_HELP   ("^-([hH]|-[hH][eE][lL][pP])$");
   const std::regex R_NULL   ("^-(0|-[nN][uU][lL][lL])$");
   const std::regex R_DELIM  ("^-([dD]|-[dD][eE][lL][iI][mM])$");

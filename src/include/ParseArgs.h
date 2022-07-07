@@ -8,6 +8,7 @@
 struct args_
 {
   bool formatIsNull;
+  std::string delimter;
 };
 extern struct args_ args;
 
