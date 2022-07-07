@@ -68,7 +68,8 @@
 *.cmd linguist-detectable=false
 *.bat linguist-detectable=false
 *.sh linguist-detectable=false
-**.sh linguist-detectable=false
+scripts/*.sh linguist-detectable=false
+scripts/* linguist-detectable=false
 *.bash linguist-detectable=false
 *Makefile linguist-detectable=false
 *makefile linguist-detectable=false
