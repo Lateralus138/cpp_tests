@@ -29,7 +29,9 @@ int main(int argc, char *argv[])
     std::cerr << rerr.what() << '\n';
     return error;
   }
-  // TODO Finish HELP message
+  // TODO Finish adding args
+  // TODO Add -0,--null Output is null terminated.
+  // TODO Add -d,--delim Set a string delimiter to separate output. Defaults to a space.
   if (argc > 1)
   {
     ParseArgs args(argc, argv);

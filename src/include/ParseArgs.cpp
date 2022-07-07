@@ -23,6 +23,10 @@ void ParseArgs::parse(int min, int max)
     BOX[6] + line + BOX[7] + "\n" +
     BOX[3] + " OPTIONS:                                       " + BOX[3] + "\n" +
     BOX[3] + "   -h,--help     This HELP message.             " + BOX[3] + "\n" +
+    BOX[3] + "   -0,--null     Output is null terminated.     " + BOX[3] + "\n" +
+    BOX[3] + "   -d,--delim    Set a string delimiter to      " + BOX[3] + "\n" +
+    BOX[3] + "                 separate output. Defaults to a " + BOX[3] + "\n" +
+    BOX[3] + "                 space, but can be any string.  " + BOX[3] + "\n" +
     BOX[6] + line + BOX[7] + "\n" +
     BOX[3] + " Exit Codes: Error codes and their meanings.    " + BOX[3] + "\n" +
     BOX[3] + "   0   No errors.                               " + BOX[3] + "\n" +
