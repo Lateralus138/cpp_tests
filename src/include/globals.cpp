@@ -104,7 +104,7 @@ namespace Globals
   {
     namespace Regex
     {
-      const std::regex R_HELP("^-([hH]|-[hH][eE][lL][pP])$");
+//      const std::regex R_HELP("^-([hH]|-[hH][eE][lL][pP])$");
       const std::regex R_UINT("^[0-9]+$");
     };
     namespace Paths
