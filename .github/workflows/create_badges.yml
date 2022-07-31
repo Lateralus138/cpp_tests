@@ -1,12 +1,15 @@
 name: Create Badges
+
 on:
   push:
     paths:
     - '**.cpp'
     - '**.yml'
+
 env:
   TIME_STAMP:
   LATEST_FILE:
+
 jobs:
   build:
     runs-on: ubuntu-latest
