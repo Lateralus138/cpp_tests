@@ -4,6 +4,9 @@ on:
     paths:
     - '**.cpp'
     - '**.yml'
+env:
+  TIME_STAMP:
+  LATEST_FILE:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,6 +22,8 @@ jobs:
         echo -e "$file_text" > docs/json/file.json
         sed -i "s/\"label\": \".*\"/\"label\": \"File\"/g" docs/json/file.json
         sed -i "s/\"message\": \".*\"/\"message\": \"$latest\"/g" docs/json/file.json
+        echo "TIME_STAMP=$(date -u)" >> $GITHUB_ENV
+        echo "LATEST_FILE=${latest}" >> $GITHUB_ENV
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: Pushed new file and created badges
+        commit_message: Pushed new file [${{ env.LATEST_FILE }}] and created badges @ ${{ env.TIME_STAMP }}
