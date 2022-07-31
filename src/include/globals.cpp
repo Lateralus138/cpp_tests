@@ -104,13 +104,16 @@ namespace Globals
   {
     namespace Regex
     {
-//      const std::regex R_HELP("^-([hH]|-[hH][eE][lL][pP])$");
+      const std::regex R_HELP("^-([hH]|-[hH][eE][lL][pP])$");
+      const std::regex R_CONF("^-([cC]|-[cC][oO][nN][fF][iI][gG])$");
+      const std::regex R_SUPP("^-([sS]|-[sS][uU][pP][pP][rR][eE][sS][sS])$");
+      const std::regex R_MONO("^-([mM]|-[mM][oO][nN][oO][cC][hH][rR][oO][mM][eE])$");
       const std::regex R_UINT("^[0-9]+$");
     };
-    namespace Paths
-    {
-      const char * PROCDIR = "/proc";
-    };
+//    namespace Paths
+//    {
+//      const char * PROCDIR = "/proc";
+//    };
     namespace Errors
     {
       int error = 0;
@@ -122,15 +125,15 @@ namespace Globals
       const char * NOEXIST = "Does not exist...";
       const char * NODIR = "Not a directory...";
       const char * NOFILE = "Not a regular file...";
-      const char * PROCNOEXIST = "'/proc' does not exist...";
-      const char * PROCNODIR = "'/proc' is not a directory...";
-      const char * CANTITERDIR = "Can't iterate '/proc' directory...";
+//      const char * PROCNOEXIST = "'/proc' does not exist...";
+//      const char * PROCNODIR = "'/proc' is not a directory...";
+//      const char * CANTITERDIR = "Can't iterate '/proc' directory...";
       std::map <int, const char *> ERRORMESSAGES = {
         {0, SUCCESS},
         {1, TMA},
-        {2, PROCNOEXIST},
-        {3, PROCNODIR},
-        {4, CANTITERDIR},
+//        {2, PROCNOEXIST},
+//        {3, PROCNODIR},
+//        {4, CANTITERDIR},
         {5, NOEXIST},
         {6, NODIR}
       };

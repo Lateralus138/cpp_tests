@@ -28,7 +28,7 @@ void ParseArgs::parse(int min, int max)
           BOX[3] + "   -h,--help     This HELP message.             " + BOX[3] + "\n" +
           BOX[3] + "   -0,--null     Output is null terminated. If  " + BOX[3] + "\n" +
           BOX[3] + "                 this switch is enabled before  " + BOX[3] + "\n" +
-          BOX[3] + "                 delimiter is set than you can  " + BOX[3] + "\n" +
+          BOX[3] + "                 delimiter is set then you can  " + BOX[3] + "\n" +
           BOX[3] + "                 still delimiter the output.    " + BOX[3] + "\n" +
           BOX[3] + "   -d,--delim    Set a string delimiter to      " + BOX[3] + "\n" +
           BOX[3] + "                 separate output. Defaults to a " + BOX[3] + "\n" +

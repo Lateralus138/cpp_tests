@@ -5,6 +5,13 @@
 #include <filesystem>
 #include <regex>
 
+struct Shell
+{
+  std::string Title;
+  std::string Path;
+  std::string Args;
+};
+
 namespace Globals
 {
   namespace Functions
@@ -18,13 +25,16 @@ namespace Globals
   {
     namespace Regex
     {
-//      extern const std::regex R_HELP;
+      extern const std::regex R_HELP;
+      extern const std::regex R_CONF;
+      extern const std::regex R_SUPP;
+      extern const std::regex R_MONO;
       extern const std::regex R_UINT;
     };
-    namespace Paths
-    {
-      extern const char * PROCDIR;
-    };
+//    namespace Paths
+//    {
+//      extern const char * PROCDIR;
+//    };
     namespace Errors
     {
       extern int error;

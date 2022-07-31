@@ -1,5 +1,5 @@
 SHELL = bash
-PROJNM = lspids
+PROJNM = unishellect
 AND32GXX = arm-linux-gnueabihf-g++
 AND64GXX = aarch64-linux-gnu-g++
 
@@ -60,7 +60,8 @@ SNFLGS = 	-fsanitize=undefined \
 
 SNFLGD = $(SNFLGS) -fsanitize=address
 
-STFLAG = -static -static-libgcc -static-libstdc++
+#STFLAG = -static -static-libgcc -static-libstdc++
+STFLAG = -static
 
 all: releasedynamicall
 
@@ -88,17 +89,17 @@ androidall: androidstaticall androiddynamicall
 
 androidstaticall:	android32staticall android64staticall
 
-android32staticall: cleanandroid32static builddirectories
+android32staticall: cleanandroid32static builddirectories buildallobjectsandroidarm32 buildarchivelinux
 	@echo Building static Android 32 bit executable
-	$(AND32GXX) -static $(ANDFLG) $(SRCFLS) -o $(ANDSTC32) $(LDLIBS)
+	$(AND32GXX) -static $(ANDFLG) $(SRCFLS) -o $(ANDSTC32).arm32 $(LDLIBS)
 
 android32static: cleanandroid32static builddirectories
 	@echo Building static Android 32 bit executable
 	$(AND32GXX) -static $(ANDFLG) $(SRCFLS) -o $(ANDSTC32) $(LDLIBS)
 
-android64staticall: cleanandroid64static builddirectories
+android64staticall: cleanandroid64static builddirectories buildallobjectsandroidaarch64 buildarchivelinux
 	@echo Building static Android 64 bit executable
-	$(AND64GXX) -static $(ANDFLG) $(SRCFLS) -o $(ANDSTC64) $(LDLIBS)
+	$(AND64GXX) $(STFLAG) $(ANDFLG) $(SRCFLS) -o $(ANDSTC64).aarch64 $(LDLIBS)
 
 android64static: cleanandroid64static builddirectories
 	@echo Building static Android 64 bit executable
@@ -172,7 +173,7 @@ buildallobjectsandroidarm32: cleanobjects
 		for file in "$${array[@]}";do \
 			lib=$${file//include/lib}; \
 			lib=$${lib//.cpp/.o}; \
-			$(AND32GXX) $(GTKINC) $(LDFLAG) -c $${file} -o $${lib} $(LDLIBS) $(GTKLIB); \
+			$(AND32GXX) $(STFLAG) $(GTKINC) $(LDFLAG) -c $${file} -o $${lib} $(LDLIBS) $(GTKLIB); \
 		done \
 	)
 
@@ -182,7 +183,7 @@ buildallobjectsandroidaarch64: cleanobjects
 		for file in "$${array[@]}";do \
 			lib=$${file//include/lib}; \
 			lib=$${lib//.cpp/.o}; \
-			$(AND64GXX) $(GTKINC) $(LDFLAG) -c $${file} -o $${lib} $(LDLIBS) $(GTKLIB); \
+			$(AND64GXX) $(STFLAG) $(GTKINC) $(LDFLAG) -c $${file} -o $${lib} $(LDLIBS) $(GTKLIB); \
 		done \
 	)
 
