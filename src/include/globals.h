@@ -22,6 +22,7 @@ namespace Globals
     extern bool path_is_regular_file_or_exit(std::filesystem::path path_, int err_index, int err_msg_index);
     extern int random_in_range(int begin, int end);
     extern int random_color_int(bool fullRange);
+    extern void check_arg_max(int argc, char *argv[]);
   };
   namespace Variables
   {

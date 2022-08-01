@@ -19,21 +19,21 @@ using namespace Globals::Variables::Errors;
 using namespace Globals::Variables::Values;
 using namespace Globals::Variables::Messages;
 
-void check_arg_max(int argc, char *argv[])
-{
-  try
-  {
-    if (argc > (ARGMAX + 1))
-    {
-      throw std::runtime_error(ERRORMESSAGES[++error]);
-    }
-  }
-  catch (std::runtime_error & rerr)
-  {
-    std::cerr << rerr.what() << '\n';
-    std::exit(error);
-  }
-}
+//void check_arg_max(int argc, char *argv[])
+//{
+//  try
+//  {
+//    if (argc > (ARGMAX + 1))
+//    {
+//      throw std::runtime_error(ERRORMESSAGES[++error]);
+//    }
+//  }
+//  catch (std::runtime_error & rerr)
+//  {
+//    std::cerr << rerr.what() << '\n';
+//    std::exit(error);
+//  }
+//}
 
 int main(int argc, char *argv[])
 {

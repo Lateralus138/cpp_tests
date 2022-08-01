@@ -128,6 +128,21 @@ namespace Globals
         random_in_range(lightLow, lightHigh)
       );
     }
+    void check_arg_max(int argc, char *argv[])
+    {
+      try
+      {
+        if (argc > (Globals::Variables::Values::ARGMAX + 1))
+        {
+          throw std::runtime_error(Globals::Variables::Messages::ERRORMESSAGES[++Globals::Variables::Errors::error]);
+        }
+      }
+      catch (std::runtime_error & rerr)
+      {
+        std::cerr << rerr.what() << '\n';
+        std::exit(Globals::Variables::Errors::error);
+      }
+    }
   };
   namespace Variables
   {
