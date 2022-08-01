@@ -12,12 +12,28 @@
 #include "json.h"
 #include <map>
 
-  using json = nlohmann::json;
-  using namespace Bench;
-  using namespace Globals::Functions;
-  using namespace Globals::Variables::Errors;
-  using namespace Globals::Variables::Values;
-  using namespace Globals::Variables::Messages;
+using json = nlohmann::json;
+using namespace Bench;
+using namespace Globals::Functions;
+using namespace Globals::Variables::Errors;
+using namespace Globals::Variables::Values;
+using namespace Globals::Variables::Messages;
+
+void check_arg_max(int argc, char *argv[])
+{
+  try
+  {
+    if (argc > (ARGMAX + 1))
+    {
+      throw std::runtime_error(ERRORMESSAGES[++error]);
+    }
+  }
+  catch (std::runtime_error & rerr)
+  {
+    std::cerr << rerr.what() << '\n';
+    std::exit(error);
+  }
+}
 
 int main(int argc, char *argv[])
 {
@@ -33,18 +49,19 @@ int main(int argc, char *argv[])
   
   // TODO Not done parsing args
   
-  try
-  {
-    if (argc > (ARGMAX + 1))
-    {
-      throw std::runtime_error(ERRORMESSAGES[++error]);
-    }
-  }
-  catch (std::runtime_error & rerr)
-  {
-    std::cerr << rerr.what() << '\n';
-    return error;
-  }
+//  try
+//  {
+//    if (argc > (ARGMAX + 1))
+//    {
+//      throw std::runtime_error(ERRORMESSAGES[++error]);
+//    }
+//  }
+//  catch (std::runtime_error & rerr)
+//  {
+//    std::cerr << rerr.what() << '\n';
+//    return error;
+//  }
+  check_arg_max(argc, argv);
   if (argc > 1)
   {
     ParseArgs args(argc, argv);
