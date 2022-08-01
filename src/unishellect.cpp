@@ -12,14 +12,21 @@
 #include "json.h"
 #include <map>
 
-int main(int argc, char *argv[])
-{
   using json = nlohmann::json;
   using namespace Bench;
   using namespace Globals::Functions;
   using namespace Globals::Variables::Errors;
   using namespace Globals::Variables::Values;
   using namespace Globals::Variables::Messages;
+
+int main(int argc, char *argv[])
+{
+//  using json = nlohmann::json;
+//  using namespace Bench;
+//  using namespace Globals::Functions;
+//  using namespace Globals::Variables::Errors;
+//  using namespace Globals::Variables::Values;
+//  using namespace Globals::Variables::Messages;
   
   char * HOMEPATH;  
   std::map<int, Shell> shellMap;
