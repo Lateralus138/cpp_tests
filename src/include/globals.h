@@ -27,10 +27,10 @@ namespace Globals
   {
     namespace Regex
     {
-      extern const std::regex R_HELP;
-      extern const std::regex R_CONF;
-      extern const std::regex R_SUPP;
-      extern const std::regex R_MONO;
+//      extern const std::regex R_HELP;
+//      extern const std::regex R_CONF;
+//      extern const std::regex R_SUPP;
+//      extern const std::regex R_MONO;
       extern const std::regex R_UINT;
     };
 //    namespace Paths

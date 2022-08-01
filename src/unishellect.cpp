@@ -6,6 +6,7 @@
 // -----------------------------------------------
 #include "Bench.h"
 #include "globals.h"
+#include "ParseArgs.h"
 #include <iostream>
 #include <fstream>
 #include "json.h"
@@ -16,13 +17,48 @@ int main(int argc, char *argv[])
   using json = nlohmann::json;
   using namespace Bench;
   using namespace Globals::Functions;
+  using namespace Globals::Variables::Errors;
+  using namespace Globals::Variables::Values;
+  using namespace Globals::Variables::Messages;
   
-  // TODO Voids are temporary, always
-  (void) argc; (void) argv;
-  
+  char * HOMEPATH;  
   std::map<int, Shell> shellMap;
   
-  // TODO Parse args here.
+  // TODO Not done parsing args
+  
+  try
+  {
+    if (argc > (ARGMAX + 1))
+    {
+      throw std::runtime_error(ERRORMESSAGES[++error]);
+    }
+  }
+  catch (std::runtime_error & rerr)
+  {
+    std::cerr << rerr.what() << '\n';
+    return error;
+  }
+  if (argc > 1)
+  {
+    ParseArgs args(argc, argv);
+    args.parse(1, argc);
+  }
+  
+  try
+  {
+    HOMEPATH = getenv("HOME");
+    if (HOMEPATH == NULL)
+    {
+      error=5;
+      throw std::runtime_error(ERRORMESSAGES[error]);
+    }
+  }
+  catch (std::runtime_error & err)
+  {
+    std::cerr << err.what() << '\n';
+    return error;
+  }
+  
   try
   {
     std::ifstream confFileStream("/home/flux/.config/UniShellect/unishellect.json");
