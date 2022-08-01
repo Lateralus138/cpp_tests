@@ -10,26 +10,19 @@
 #include <fstream>
 #include "json.h"
 #include <map>
-#include <random>
-
-using json = nlohmann::json;
-using namespace Bench;
-
-int random_in_range(int begin, int end)
-{
-  std::random_device rdev;
-  std::mt19937 generator(rdev());
-  std::uniform_int_distribution<> distribute(begin, end);
-  return distribute(generator);
-}
 
 int main(int argc, char *argv[])
 {
+  using json = nlohmann::json;
+  using namespace Bench;
+  using namespace Globals::Functions;
+  
+  // TODO Voids are temporary, always
   (void) argc; (void) argv;
+  
   std::map<int, Shell> shellMap;
   
   // TODO Parse args here.
-//  start();
   try
   {
     std::ifstream confFileStream("/home/flux/.config/UniShellect/unishellect.json");
@@ -59,8 +52,6 @@ int main(int argc, char *argv[])
         std::cerr << err.what() << '\n';
         return err.id; // 101
       }
-
-//      std::cout << "HERE\n";   
     }
     else
     {
@@ -72,22 +63,15 @@ int main(int argc, char *argv[])
     std::cerr << fail.what() << '\n';     
     return (int) errno;
   }
-//  stop();
-//  print_duration("\nExecution duration of try-catch ", "\n", Start, Stop);
   const int SHELLMAPSZ = (int) shellMap.size();
   if (SHELLMAPSZ > 0)
   {
     for (auto index = 0; index < SHELLMAPSZ; index++)
     {
-      const int RANDOMCOLOR =
-      (
-        random_in_range(0,1)?
-        random_in_range(91, 96):
-        random_in_range(31, 36)
-      );
-      std::cout
-        << "[" << "\x1b[" << RANDOMCOLOR << "m" << index << "\x1b[m] " 
-        << shellMap[index].Title << '\n';
+      const std::string MESSAGE =
+        "[\x1b[" + std::to_string(random_color_int(false)) + "m" +
+        std::to_string(index) + "\x1b[m] " + shellMap[index].Title + "\n";
+      std::cout << MESSAGE;
     }
   }
   else

@@ -7,6 +7,7 @@
 
 struct args_
 {
+  bool ioIsMono;
   bool formatIsNull;
   std::string delimiter;
 };

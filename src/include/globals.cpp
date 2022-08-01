@@ -1,5 +1,6 @@
 #include "globals.h"
 #include <iostream>
+#include <random>
 
 namespace Globals
 {
@@ -98,6 +99,34 @@ namespace Globals
         std::cerr << rerr.what() << '\n';
         std::exit(Globals::Variables::Errors::error);
       }
+    }
+    int random_in_range(int begin, int end)
+    {
+      std::random_device rdev;
+      std::mt19937 generator(rdev());
+      std::uniform_int_distribution<> distribute(begin, end);
+      return distribute(generator);
+    }
+    int random_color_int(bool fullRange)
+    {
+      int
+        darkLow   = 30,
+        darkHigh  = 37,
+        lightLow  = 90,
+        lightHigh = 97;
+      if (fullRange == false)
+      {
+        darkLow++;
+        darkHigh--;
+        lightLow++;
+        lightHigh--;
+      }
+      return
+      (
+        random_in_range(0,1)?
+        random_in_range(darkLow, darkHigh):
+        random_in_range(lightLow, lightHigh)
+      );
     }
   };
   namespace Variables
