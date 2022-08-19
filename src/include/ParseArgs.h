@@ -4,12 +4,13 @@
 
 #include <vector>
 #include <string>
+#include <filesystem>
 
 struct args_
 {
   bool ioIsMono;
-  bool formatIsNull;
-  std::string delimiter;
+  bool isDefaultConfig;
+  std::filesystem::path configFile;
 };
 extern struct args_ args;
 

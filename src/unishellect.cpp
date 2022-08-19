@@ -12,81 +12,58 @@
 #include "json.h"
 #include <map>
 
-using json = nlohmann::json;
-using namespace Bench;
-using namespace Globals::Functions;
-using namespace Globals::Variables::Errors;
-using namespace Globals::Variables::Values;
-using namespace Globals::Variables::Messages;
-
-//void check_arg_max(int argc, char *argv[])
-//{
-//  try
-//  {
-//    if (argc > (ARGMAX + 1))
-//    {
-//      throw std::runtime_error(ERRORMESSAGES[++error]);
-//    }
-//  }
-//  catch (std::runtime_error & rerr)
-//  {
-//    std::cerr << rerr.what() << '\n';
-//    std::exit(error);
-//  }
-//}
-
 int main(int argc, char *argv[])
 {
-//  using json = nlohmann::json;
-//  using namespace Bench;
-//  using namespace Globals::Functions;
-//  using namespace Globals::Variables::Errors;
-//  using namespace Globals::Variables::Values;
-//  using namespace Globals::Variables::Messages;
-  
-  char * HOMEPATH;  
+  using json = nlohmann::json;
+  using namespace Bench;
+  using namespace Globals::Functions;
+  using namespace Globals::Variables::Errors;
+  using namespace Globals::Variables::Values;
+  using namespace Globals::Variables::Messages;
   std::map<int, Shell> shellMap;
-  
-  // TODO Not done parsing args
-  
-//  try
-//  {
-//    if (argc > (ARGMAX + 1))
-//    {
-//      throw std::runtime_error(ERRORMESSAGES[++error]);
-//    }
-//  }
-//  catch (std::runtime_error & rerr)
-//  {
-//    std::cerr << rerr.what() << '\n';
-//    return error;
-//  }
+
+  // TODO : Not done parsing args
+  // TODO : Deal with mono txt after complete.
+
+  // check_arg_max may seem redundant, but may have an impact on
+  // a future recursive feature where multiple config files
+  // may be used consecutively.
   check_arg_max(argc, argv);
+
+  args.isDefaultConfig = true;
+
   if (argc > 1)
   {
     ParseArgs args(argc, argv);
     args.parse(1, argc);
   }
-  
-  try
+
+  if (args.isDefaultConfig)
   {
-    HOMEPATH = getenv("HOME");
-    if (HOMEPATH == NULL)
+    try
     {
-      error=5;
-      throw std::runtime_error(ERRORMESSAGES[error]);
+      const char *HOMEPATH = getenv("HOME");
+      if (HOMEPATH == NULL)
+      {
+        error = 5;
+        throw std::runtime_error(ERRORMESSAGES[error]);
+      }
+      std::string configPathStr = std::string(HOMEPATH);
+      configPathStr.append("/.config/UniShellect/unishellect.json");
+      args.configFile =
+          std::filesystem::path(configPathStr);
+    }
+    catch (std::runtime_error &err)
+    {
+      std::cerr << err.what() << '\n';
+      return error;
     }
   }
-  catch (std::runtime_error & err)
-  {
-    std::cerr << err.what() << '\n';
-    return error;
-  }
-  
+
   try
   {
-    std::ifstream confFileStream("/home/flux/.config/UniShellect/unishellect.json");
-    if (((int) errno) == 0)
+    std::ifstream confFileStream(args.configFile.c_str());
+    if (((int)errno) == 0)
     {
       try
       {
@@ -97,17 +74,17 @@ int main(int argc, char *argv[])
           {
             Shell tempShell;
             tempShell.Title = shellIndex["Title"];
-            tempShell.Path  = shellIndex["Path"];
-            tempShell.Args  = shellIndex["Args"];
-            if ((int) tempShell.Title.length() > 0)
+            tempShell.Path = shellIndex["Path"];
+            tempShell.Args = shellIndex["Args"];
+            if ((int)tempShell.Title.length() > 0)
             {
               shellMap[shellMap.size()] = tempShell;
             }
           }
         }
-        confFileStream.close(); 
+        confFileStream.close();
       }
-      catch (json::exception & err)
+      catch (json::exception &err)
       {
         std::cerr << err.what() << '\n';
         return err.id; // 101
@@ -118,26 +95,39 @@ int main(int argc, char *argv[])
       throw std::runtime_error(strerror(errno));
     }
   }
-  catch (std::runtime_error & fail)
+  catch (std::runtime_error &fail)
   {
-    std::cerr << fail.what() << '\n';     
-    return (int) errno;
+    std::cerr << fail.what() << ":\n[" << args.configFile << "]\n";
+    return ((int)errno);
   }
-  const int SHELLMAPSZ = (int) shellMap.size();
+  const int SHELLMAPSZ = (int)shellMap.size();
   if (SHELLMAPSZ > 0)
   {
     for (auto index = 0; index < SHELLMAPSZ; index++)
     {
-      const std::string MESSAGE =
-        "[\x1b[" + std::to_string(random_color_int(false)) + "m" +
-        std::to_string(index) + "\x1b[m] " + shellMap[index].Title + "\n";
+      std::string MESSAGE;
+      MESSAGE.append("[");
+      if (!args.ioIsMono)
+      {
+        MESSAGE.append("\x1b[");
+        MESSAGE.append(std::to_string(random_color_int(false)));
+        MESSAGE.append("m");
+      }
+      MESSAGE.append(std::to_string(index));
+      if (!args.ioIsMono)
+      {
+        MESSAGE.append("\x1b[m");
+      }
+      MESSAGE.append("] ");
+      MESSAGE.append(shellMap[index].Title);
+      MESSAGE.append("\n");
       std::cout << MESSAGE;
     }
   }
   else
   {
     std::cerr << "No entries found.\n";
-    return 127;
+    return 128;
   }
   return EXIT_SUCCESS;
 }
