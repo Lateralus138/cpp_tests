@@ -19,6 +19,27 @@ using namespace Globals::Variables::Errors;
 using namespace Globals::Variables::Values;
 using namespace Globals::Variables::Messages;
 
+std::filesystem::path defaultPathOrThrow()
+{
+  try
+  {
+    const char *HOMEPATH = getenv("HOME");
+    if (HOMEPATH == NULL)
+    {
+      error = 5;
+      throw std::runtime_error(ERRORMESSAGES[error]);
+    }
+    std::string configPathStr = std::string(HOMEPATH);
+    configPathStr.append("/.config/UniShellect/unishellect.json");
+    return std::filesystem::path(configPathStr);
+  }
+  catch (std::runtime_error &err)
+  {
+    std::cerr << err.what() << '\n';
+    std::exit(error);
+  }
+}
+
 int main(int argc, char *argv[])
 {
   // using json = nlohmann::json;
@@ -48,24 +69,25 @@ int main(int argc, char *argv[])
 
   if (args.isDefaultConfig)
   {
-    try
-    {
-      const char *HOMEPATH = getenv("HOME");
-      if (HOMEPATH == NULL)
-      {
-        error = 5;
-        throw std::runtime_error(ERRORMESSAGES[error]);
-      }
-      std::string configPathStr = std::string(HOMEPATH);
-      configPathStr.append("/.config/UniShellect/unishellect.json");
-      args.configFile =
-          std::filesystem::path(configPathStr);
-    }
-    catch (std::runtime_error &err)
-    {
-      std::cerr << err.what() << '\n';
-      return error;
-    }
+    // try
+    // {
+    //   const char *HOMEPATH = getenv("HOME");
+    //   if (HOMEPATH == NULL)
+    //   {
+    //     error = 5;
+    //     throw std::runtime_error(ERRORMESSAGES[error]);
+    //   }
+    //   std::string configPathStr = std::string(HOMEPATH);
+    //   configPathStr.append("/.config/UniShellect/unishellect.json");
+    //   args.configFile =
+    //       std::filesystem::path(configPathStr);
+    // }
+    // catch (std::runtime_error &err)
+    // {
+    //   std::cerr << err.what() << '\n';
+    //   return error;
+    // }
+    args.configFile = defaultPathOrThrow();
   }
 
   try
