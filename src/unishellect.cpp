@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
   using namespace Globals::Variables::Messages;
   std::map<int, Shell> shellMap;
 
+  // std::string mapMessage(int index, shellMap)
   // TODO : Not done parsing args
   // TODO : Deal with mono txt after complete.
 
@@ -101,27 +102,50 @@ int main(int argc, char *argv[])
     return ((int)errno);
   }
   const int SHELLMAPSZ = (int)shellMap.size();
+  // const bool isMono = args.ioIsMono;
+  // auto MESSAGE = [isMono]() {}();
   if (SHELLMAPSZ > 0)
   {
-    for (auto index = 0; index < SHELLMAPSZ; index++)
+    const bool isMono = args.ioIsMono;
+    auto MESSAGE = [isMono, &shellMap](int index)
     {
       std::string MESSAGE;
       MESSAGE.append("[");
-      if (!args.ioIsMono)
+      if (!isMono)
       {
         MESSAGE.append("\x1b[");
         MESSAGE.append(std::to_string(random_color_int(false)));
         MESSAGE.append("m");
       }
       MESSAGE.append(std::to_string(index));
-      if (!args.ioIsMono)
+      if (!isMono)
       {
         MESSAGE.append("\x1b[m");
       }
       MESSAGE.append("] ");
       MESSAGE.append(shellMap[index].Title);
       MESSAGE.append("\n");
-      std::cout << MESSAGE;
+      return MESSAGE;
+    };
+    for (auto index = 0; index < SHELLMAPSZ; index++)
+    {
+      // std::string MESSAGE;
+      // MESSAGE.append("[");
+      // if (!args.ioIsMono)
+      // {
+      //   MESSAGE.append("\x1b[");
+      //   MESSAGE.append(std::to_string(random_color_int(false)));
+      //   MESSAGE.append("m");
+      // }
+      // MESSAGE.append(std::to_string(index));
+      // if (!args.ioIsMono)
+      // {
+      //   MESSAGE.append("\x1b[m");
+      // }
+      // MESSAGE.append("] ");
+      // MESSAGE.append(shellMap[index].Title);
+      // MESSAGE.append("\n");
+      std::cout << MESSAGE(index);
     }
   }
   else
