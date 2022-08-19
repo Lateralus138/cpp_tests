@@ -12,14 +12,21 @@
 #include "json.h"
 #include <map>
 
+using json = nlohmann::json;
+using namespace Bench;
+using namespace Globals::Functions;
+using namespace Globals::Variables::Errors;
+using namespace Globals::Variables::Values;
+using namespace Globals::Variables::Messages;
+
 int main(int argc, char *argv[])
 {
-  using json = nlohmann::json;
-  using namespace Bench;
-  using namespace Globals::Functions;
-  using namespace Globals::Variables::Errors;
-  using namespace Globals::Variables::Values;
-  using namespace Globals::Variables::Messages;
+  // using json = nlohmann::json;
+  // using namespace Bench;
+  // using namespace Globals::Functions;
+  // using namespace Globals::Variables::Errors;
+  // using namespace Globals::Variables::Values;
+  // using namespace Globals::Variables::Messages;
   std::map<int, Shell> shellMap;
 
   // std::string mapMessage(int index, shellMap)
@@ -101,72 +108,35 @@ int main(int argc, char *argv[])
     std::cerr << fail.what() << ":\n[" << args.configFile << "]\n";
     return ((int)errno);
   }
+
   const int SHELLMAPSZ = (int)shellMap.size();
-  const bool isMono = args.ioIsMono;
-  auto MESSAGE = [isMono, &shellMap](int index)
-  {
-    std::string MESSAGE;
-    MESSAGE.append("[");
-    if (!isMono)
-    {
-      MESSAGE.append("\x1b[");
-      MESSAGE.append(std::to_string(random_color_int(false)));
-      MESSAGE.append("m");
-    }
-    MESSAGE.append(std::to_string(index));
-    if (!isMono)
-    {
-      MESSAGE.append("\x1b[m");
-    }
-    MESSAGE.append("] ");
-    MESSAGE.append(shellMap[index].Title);
-    MESSAGE.append("\n");
-    return MESSAGE;
-  };
-  // const bool isMono = args.ioIsMono;
-  // auto MESSAGE = [isMono]() {}();
+
   if (SHELLMAPSZ > 0)
   {
-    // const bool isMono = args.ioIsMono;
-    // auto MESSAGE = [isMono, &shellMap](int index)
-    // {
-    //   std::string MESSAGE;
-    //   MESSAGE.append("[");
-    //   if (!isMono)
-    //   {
-    //     MESSAGE.append("\x1b[");
-    //     MESSAGE.append(std::to_string(random_color_int(false)));
-    //     MESSAGE.append("m");
-    //   }
-    //   MESSAGE.append(std::to_string(index));
-    //   if (!isMono)
-    //   {
-    //     MESSAGE.append("\x1b[m");
-    //   }
-    //   MESSAGE.append("] ");
-    //   MESSAGE.append(shellMap[index].Title);
-    //   MESSAGE.append("\n");
-    //   return MESSAGE;
-    // };
+    const bool isMono = args.ioIsMono;
+    auto formattedListMESSAGE = [isMono, &shellMap](int index)
+    {
+      std::string MESSAGE;
+      MESSAGE.append("[");
+      if (!isMono)
+      {
+        MESSAGE.append("\x1b[");
+        MESSAGE.append(std::to_string(random_color_int(false)));
+        MESSAGE.append("m");
+      }
+      MESSAGE.append(std::to_string(index));
+      if (!isMono)
+      {
+        MESSAGE.append("\x1b[m");
+      }
+      MESSAGE.append("] ");
+      MESSAGE.append(shellMap[index].Title);
+      MESSAGE.append("\n");
+      return MESSAGE;
+    };
     for (auto index = 0; index < SHELLMAPSZ; index++)
     {
-      // std::string MESSAGE;
-      // MESSAGE.append("[");
-      // if (!args.ioIsMono)
-      // {
-      //   MESSAGE.append("\x1b[");
-      //   MESSAGE.append(std::to_string(random_color_int(false)));
-      //   MESSAGE.append("m");
-      // }
-      // MESSAGE.append(std::to_string(index));
-      // if (!args.ioIsMono)
-      // {
-      //   MESSAGE.append("\x1b[m");
-      // }
-      // MESSAGE.append("] ");
-      // MESSAGE.append(shellMap[index].Title);
-      // MESSAGE.append("\n");
-      std::cout << MESSAGE(index);
+      std::cout << formattedListMESSAGE(index);
     }
   }
   else
