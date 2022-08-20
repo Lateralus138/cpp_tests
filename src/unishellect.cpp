@@ -112,6 +112,7 @@ int main(int argc, char *argv[])
     return 128;
   }
   const auto tMap = shellMap[userInput];
-  std::cout << tMap.Path << ' ' << tMap.Args << '\n';
-  return EXIT_SUCCESS;
+  const std::string command = tMap.Path + " " + tMap.Args;
+  const int command_return = system(command.c_str()) / 256;
+  return ((command_return > 0)?command_return:EXIT_SUCCESS);
 }
