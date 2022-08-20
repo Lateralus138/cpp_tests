@@ -11,21 +11,22 @@
 #include <fstream>
 #include "json.h"
 #include <map>
+#include <csignal>
 
 using json = nlohmann::json;
 using namespace Bench;
 using namespace Globals::Functions;
 using namespace Globals::Variables::Errors;
-// using namespace Globals::Variables::Values;
-// using namespace Globals::Variables::Messages;
-// using namespace Globals::Variables::Regex;
 
 int main(int argc, char *argv[])
 {
+  signal(SIGINT, signal_handler);
+  std::cout << "\x1b]0;UniShellect\007" << std::flush;
   std::map<int, Shell> shellMap;
-
+  int userInput;
   // std::string mapMessage(int index, shellMap)
   // TODO : Not done parsing args
+  // TODO : Edit HELP message
   // TODO : Deal with mono txt after complete.
 
   // check_arg_max may seem redundant, but may have an impact on
@@ -86,8 +87,14 @@ int main(int argc, char *argv[])
     std::cerr << fail.what() << ":\n[" << args.configFile << "]\n";
     return ((int)errno);
   }
+  
+  Shell exitShell;
+  exitShell.Title = "Exit";
+  exitShell.Path = "echo";
+  exitShell.Args = "\"Exiting UniShellect\"";
+  shellMap[(int)shellMap.size()] = exitShell;
 
-  const int SHELLMAPSZ = (int) shellMap.size();
+  const int SHELLMAPSZ = (int)shellMap.size();
   const bool isMono = args.ioIsMono;
 
   if (SHELLMAPSZ > 0)
@@ -97,12 +104,14 @@ int main(int argc, char *argv[])
       std::cout << formattedListMESSAGE(isMono, index, shellMap);
     }
     std::cout << formattedSelectionMESSAGE(isMono, SHELLMAPSZ);
-    const int INPUT = getIntegerInput();
+    userInput = getIntegerInput();
   }
   else
   {
     std::cerr << "No entries found.\n";
     return 128;
   }
+  const auto tMap = shellMap[userInput];
+  std::cout << tMap.Path << ' ' << tMap.Args << '\n';
   return EXIT_SUCCESS;
 }

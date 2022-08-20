@@ -27,6 +27,7 @@ namespace Globals
     extern int getIntegerInput();
     extern std::string formattedSelectionMESSAGE(bool isMono, int SHELLMAPSZ);
     extern std::string formattedListMESSAGE(bool isMono, int index, std::map<int, Shell> shellMap);
+    extern  void signal_handler(int signum);
   };
   namespace Variables
   {

@@ -27,7 +27,7 @@ namespace Globals
         {
         case 0:
           break;
-        default:
+        defult:
           std::cerr << ec.message() << '\n';
           std::exit(ECV);
         }
@@ -227,6 +227,14 @@ namespace Globals
       MESSAGE.append("\n");
       return MESSAGE;
     };
+
+    void signal_handler(int signum)
+    {
+      Globals::Variables::Errors::error = ((signum == 2)?6:signum);
+      std::cerr << '\n' << Globals::Variables::Messages::ERRORMESSAGES[Globals::Variables::Errors::error] << '\n';
+      std::exit(Globals::Variables::Errors::error );
+    }
+
   };
   namespace Variables
   {
@@ -240,19 +248,22 @@ namespace Globals
     };
     namespace Messages
     {
-      const char * SUCCESS = "Success...";
-      const char * TMA = "Too many options passed to this program...";
-      const char * NOEXIST = "Does not exist...";
-      const char * NODIR = "Not a directory...";
-      const char * NOFILE = "Not a regular file...";
-      const char * NOHOME = "Could not get the value of HOME from the environment...";
-      std::map <int, const char *> ERRORMESSAGES = {
+      const char * SUCCESS  = "Success...";
+      const char * TMA      = "Too many options passed to this program...";
+      const char * NOEXIST  = "Does not exist...";
+      const char * NODIR    = "Not a directory...";
+      const char * NOFILE   = "Not a regular file...";
+      const char * NOHOME   = "Could not get the value of HOME from the environment...";
+      const char * USRCNC   = "User cancelled/interrupted...";
+      std::map<int, const char *> ERRORMESSAGES =
+      {
         {0, SUCCESS},
         {1, TMA},
         {2, NOEXIST},
         {3, NODIR},
         {4, NOFILE},
-        {5, NOHOME}
+        {5, NOHOME},
+        {6, USRCNC}
       };
     };
     namespace Values
