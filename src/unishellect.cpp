@@ -20,6 +20,22 @@ using namespace Globals::Variables::Values;
 using namespace Globals::Variables::Messages;
 using namespace Globals::Variables::Regex;
 
+int getIntegerInput()
+{
+  std::string input;
+  bool isMatch = false;
+  while (!isMatch)
+  {
+    getline(std::cin, input);
+    isMatch = std::regex_match(input, R_UINT);
+    if (!isMatch)
+    {
+      std::cerr << "\r\'" << input << "\' is not an integer, please try again (Ctrl+C to cancel): ";
+    }
+  }
+  return std::stoi(input);
+}
+
 int main(int argc, char *argv[])
 {
   std::map<int, Shell> shellMap;
@@ -141,23 +157,28 @@ int main(int argc, char *argv[])
       MESSAGE.append("]: ");
       return MESSAGE;
     };
+    // auto getInput = []()
+    // {
+
+    // };
     for (auto index = 0; index < SHELLMAPSZ; index++)
     {
       std::cout << formattedListMESSAGE(index);
     }
     // TODO : unsigned int selection;
     std::cout << formattedSelectionMESSAGE();
-    std::string input;
-    bool isMatch = false;
-    while (!isMatch)
-    {
-      getline(std::cin, input);
-      isMatch = std::regex_match(input, R_UINT);
-      if (!isMatch)
-      {
-        std::cerr << "\r\'" << input << "\' is not an integer, please try again (Ctrl+C to cancel): ";
-      }
-    }
+    const int INPUT = getIntegerInput();
+    // std::string input;
+    // bool isMatch = false;
+    // while (!isMatch)
+    // {
+    //   getline(std::cin, input);
+    //   isMatch = std::regex_match(input, R_UINT);
+    //   if (!isMatch)
+    //   {
+    //     std::cerr << "\r\'" << input << "\' is not an integer, please try again (Ctrl+C to cancel): ";
+    //   }
+    // }
   }
   else
   {
