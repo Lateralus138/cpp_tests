@@ -20,22 +20,6 @@ using namespace Globals::Variables::Values;
 using namespace Globals::Variables::Messages;
 using namespace Globals::Variables::Regex;
 
-int getIntegerInput()
-{
-  std::string input;
-  bool isMatch = false;
-  while (!isMatch)
-  {
-    getline(std::cin, input);
-    isMatch = std::regex_match(input, R_UINT);
-    if (!isMatch)
-    {
-      std::cerr << "\r\'" << input << "\' is not an integer, please try again (Ctrl+C to cancel): ";
-    }
-  }
-  return std::stoi(input);
-}
-
 int main(int argc, char *argv[])
 {
   std::map<int, Shell> shellMap;
@@ -156,78 +140,12 @@ int main(int argc, char *argv[])
   };
   if (SHELLMAPSZ > 0)
   {
-    // const bool isMono = args.ioIsMono;
-    // auto formattedListMESSAGE = [&isMono, &shellMap](int index)
-    // {
-    //   std::string MESSAGE;
-    //   MESSAGE.append("[");
-    //   if (!isMono)
-    //   {
-    //     MESSAGE.append("\x1b[");
-    //     MESSAGE.append(std::to_string(random_color_int(false)));
-    //     MESSAGE.append("m");
-    //   }
-    //   MESSAGE.append(std::to_string(index));
-    //   if (!isMono)
-    //   {
-    //     MESSAGE.append("\x1b[m");
-    //   }
-    //   MESSAGE.append("] ");
-    //   MESSAGE.append(shellMap[index].Title);
-    //   MESSAGE.append("\n");
-    //   return MESSAGE;
-    // };
-    // auto formattedSelectionMESSAGE = [&isMono, &SHELLMAPSZ]()
-    // {
-    //   std::string MESSAGE = "Make your selection [";
-    //   if (!isMono)
-    //   {
-    //     MESSAGE.append("\x1b[");
-    //     MESSAGE.append(std::to_string(random_color_int(false)));
-    //     MESSAGE.append("m");
-    //   }
-    //   MESSAGE.append("0");
-    //   if (!isMono)
-    //   {
-    //     MESSAGE.append("\x1b[m");
-    //   }
-    //   MESSAGE.append("-");
-    //   if (!isMono)
-    //   {
-    //     MESSAGE.append("\x1b[");
-    //     MESSAGE.append(std::to_string(random_color_int(false)));
-    //     MESSAGE.append("m");
-    //   }
-    //   MESSAGE.append(std::to_string(SHELLMAPSZ - 1));
-    //   if (!isMono)
-    //   {
-    //     MESSAGE.append("\x1b[m");
-    //   }
-    //   MESSAGE.append("]: ");
-    //   return MESSAGE;
-    // };
-    // auto getInput = []()
-    // {
-
-    // };
     for (auto index = 0; index < SHELLMAPSZ; index++)
     {
       std::cout << formattedListMESSAGE(index);
     }
-    // TODO : unsigned int selection;
     std::cout << formattedSelectionMESSAGE();
     const int INPUT = getIntegerInput();
-    // std::string input;
-    // bool isMatch = false;
-    // while (!isMatch)
-    // {
-    //   getline(std::cin, input);
-    //   isMatch = std::regex_match(input, R_UINT);
-    //   if (!isMatch)
-    //   {
-    //     std::cerr << "\r\'" << input << "\' is not an integer, please try again (Ctrl+C to cancel): ";
-    //   }
-    // }
   }
   else
   {

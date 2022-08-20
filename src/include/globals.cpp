@@ -163,6 +163,22 @@ namespace Globals
         std::exit(Globals::Variables::Errors::error);
       }
     }
+
+    int getIntegerInput()
+    {
+      std::string input;
+      bool isMatch = false;
+      while (!isMatch)
+      {
+        getline(std::cin, input);
+        isMatch = std::regex_match(input, Globals::Variables::Regex::R_UINT);
+        if (!isMatch)
+        {
+          std::cerr << "\r\'" << input << "\' is not an integer, please try again (Ctrl+C to cancel): ";
+        }
+      }
+      return std::stoi(input);
+    }
   };
   namespace Variables
   {

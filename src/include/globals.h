@@ -24,6 +24,7 @@ namespace Globals
     extern int random_color_int(bool fullRange);
     extern void check_arg_max(int argc, char *argv[]);
     extern std::filesystem::path defaultPathOrThrow();
+    extern int getIntegerInput();
   };
   namespace Variables
   {
