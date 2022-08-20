@@ -25,6 +25,8 @@ namespace Globals
     extern void check_arg_max(int argc, char *argv[]);
     extern std::filesystem::path defaultPathOrThrow();
     extern int getIntegerInput();
+    extern std::string formattedSelectionMESSAGE(bool isMono, int SHELLMAPSZ);
+    extern std::string formattedListMESSAGE(bool isMono, int index, std::map<int, Shell> shellMap);
   };
   namespace Variables
   {

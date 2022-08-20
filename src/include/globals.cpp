@@ -163,7 +163,6 @@ namespace Globals
         std::exit(Globals::Variables::Errors::error);
       }
     }
-
     int getIntegerInput()
     {
       std::string input;
@@ -179,6 +178,55 @@ namespace Globals
       }
       return std::stoi(input);
     }
+    std::string formattedSelectionMESSAGE(bool isMono, int SHELLMAPSZ)
+    {
+      std::string MESSAGE = "Make your selection [";
+      if (!isMono)
+      {
+        MESSAGE.append("\x1b[");
+        MESSAGE.append(std::to_string(random_color_int(false)));
+        MESSAGE.append("m");
+      }
+      MESSAGE.append("0");
+      if (!isMono)
+      {
+        MESSAGE.append("\x1b[m");
+      }
+      MESSAGE.append("-");
+      if (!isMono)
+      {
+        MESSAGE.append("\x1b[");
+        MESSAGE.append(std::to_string(random_color_int(false)));
+        MESSAGE.append("m");
+      }
+      MESSAGE.append(std::to_string(SHELLMAPSZ - 1));
+      if (!isMono)
+      {
+        MESSAGE.append("\x1b[m");
+      }
+      MESSAGE.append("]: ");
+      return MESSAGE;
+    }
+    std::string formattedListMESSAGE(bool isMono, int index, std::map<int, Shell> shellMap)
+    {
+      std::string MESSAGE;
+      MESSAGE.append("[");
+      if (!isMono)
+      {
+        MESSAGE.append("\x1b[");
+        MESSAGE.append(std::to_string(random_color_int(false)));
+        MESSAGE.append("m");
+      }
+      MESSAGE.append(std::to_string(index));
+      if (!isMono)
+      {
+        MESSAGE.append("\x1b[m");
+      }
+      MESSAGE.append("] ");
+      MESSAGE.append(shellMap[index].Title);
+      MESSAGE.append("\n");
+      return MESSAGE;
+    };
   };
   namespace Variables
   {
