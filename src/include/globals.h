@@ -23,9 +23,14 @@ namespace Globals
     extern int random_in_range(int begin, int end);
     extern int random_color_int(bool fullRange);
     extern void check_arg_max(int argc, char *argv[]);
+    extern std::filesystem::path defaultPathOrThrow();
   };
   namespace Variables
   {
+    namespace Regex
+    {
+      extern const std::regex R_UINT;
+    };
     namespace Errors
     {
       extern int error;

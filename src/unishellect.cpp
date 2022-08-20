@@ -18,36 +18,10 @@ using namespace Globals::Functions;
 using namespace Globals::Variables::Errors;
 using namespace Globals::Variables::Values;
 using namespace Globals::Variables::Messages;
-
-std::filesystem::path defaultPathOrThrow()
-{
-  try
-  {
-    const char *HOMEPATH = getenv("HOME");
-    if (HOMEPATH == NULL)
-    {
-      error = 5;
-      throw std::runtime_error(ERRORMESSAGES[error]);
-    }
-    std::string configPathStr = std::string(HOMEPATH);
-    configPathStr.append("/.config/UniShellect/unishellect.json");
-    return std::filesystem::path(configPathStr);
-  }
-  catch (std::runtime_error &err)
-  {
-    std::cerr << err.what() << '\n';
-    std::exit(error);
-  }
-}
+using namespace Globals::Variables::Regex;
 
 int main(int argc, char *argv[])
 {
-  // using json = nlohmann::json;
-  // using namespace Bench;
-  // using namespace Globals::Functions;
-  // using namespace Globals::Variables::Errors;
-  // using namespace Globals::Variables::Values;
-  // using namespace Globals::Variables::Messages;
   std::map<int, Shell> shellMap;
 
   // std::string mapMessage(int index, shellMap)
@@ -69,24 +43,6 @@ int main(int argc, char *argv[])
 
   if (args.isDefaultConfig)
   {
-    // try
-    // {
-    //   const char *HOMEPATH = getenv("HOME");
-    //   if (HOMEPATH == NULL)
-    //   {
-    //     error = 5;
-    //     throw std::runtime_error(ERRORMESSAGES[error]);
-    //   }
-    //   std::string configPathStr = std::string(HOMEPATH);
-    //   configPathStr.append("/.config/UniShellect/unishellect.json");
-    //   args.configFile =
-    //       std::filesystem::path(configPathStr);
-    // }
-    // catch (std::runtime_error &err)
-    // {
-    //   std::cerr << err.what() << '\n';
-    //   return error;
-    // }
     args.configFile = defaultPathOrThrow();
   }
 
@@ -136,7 +92,7 @@ int main(int argc, char *argv[])
   if (SHELLMAPSZ > 0)
   {
     const bool isMono = args.ioIsMono;
-    auto formattedListMESSAGE = [isMono, &shellMap](int index)
+    auto formattedListMESSAGE = [&isMono, &shellMap](int index)
     {
       std::string MESSAGE;
       MESSAGE.append("[");
@@ -156,9 +112,51 @@ int main(int argc, char *argv[])
       MESSAGE.append("\n");
       return MESSAGE;
     };
+    auto formattedSelectionMESSAGE = [&isMono, &SHELLMAPSZ]()
+    {
+      std::string MESSAGE = "Make your selection [";
+      if (!isMono)
+      {
+        MESSAGE.append("\x1b[");
+        MESSAGE.append(std::to_string(random_color_int(false)));
+        MESSAGE.append("m");
+      }
+      MESSAGE.append("0");
+      if (!isMono)
+      {
+        MESSAGE.append("\x1b[m");
+      }
+      MESSAGE.append("-");
+      if (!isMono)
+      {
+        MESSAGE.append("\x1b[");
+        MESSAGE.append(std::to_string(random_color_int(false)));
+        MESSAGE.append("m");
+      }
+      MESSAGE.append(std::to_string(SHELLMAPSZ - 1));
+      if (!isMono)
+      {
+        MESSAGE.append("\x1b[m");
+      }
+      MESSAGE.append("]: ");
+      return MESSAGE;
+    };
     for (auto index = 0; index < SHELLMAPSZ; index++)
     {
       std::cout << formattedListMESSAGE(index);
+    }
+    // TODO : unsigned int selection;
+    std::cout << formattedSelectionMESSAGE();
+    std::string input;
+    bool isMatch = false;
+    while (!isMatch)
+    {
+      getline(std::cin, input);
+      isMatch = std::regex_match(input, R_UINT);
+      if (!isMatch)
+      {
+        std::cerr << "\r\'" << input << "\' is not an integer, please try again (Ctrl+C to cancel): ";
+      }
     }
   }
   else

@@ -143,9 +143,33 @@ namespace Globals
         std::exit(Globals::Variables::Errors::error);
       }
     }
+    std::filesystem::path defaultPathOrThrow()
+    {
+      try
+      {
+        const char *HOMEPATH = getenv("HOME");
+        if (HOMEPATH == NULL)
+        {
+          Globals::Variables::Errors::error = 5;
+          throw std::runtime_error(Globals::Variables::Messages::ERRORMESSAGES[Globals::Variables::Errors::error]);
+        }
+        std::string configPathStr = std::string(HOMEPATH);
+        configPathStr.append("/.config/UniShellect/unishellect.json");
+        return std::filesystem::path(configPathStr);
+      }
+      catch (std::runtime_error &err)
+      {
+        std::cerr << err.what() << '\n';
+        std::exit(Globals::Variables::Errors::error);
+      }
+    }
   };
   namespace Variables
   {
+    namespace Regex
+    {
+      const std::regex R_UINT("^[0-9]+$");
+    };
     namespace Errors
     {
       int error = 0;
