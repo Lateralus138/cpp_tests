@@ -4,7 +4,6 @@
 // Copyright © 2022
 // Tue 12 Jul 2022 07:37:13 PM UTC
 // -----------------------------------------------
-#include "Bench.h"
 #include "globals.h"
 #include "ParseArgs.h"
 #include <iostream>
@@ -14,7 +13,6 @@
 #include <csignal>
 
 using json = nlohmann::json;
-using namespace Bench;
 using namespace Globals::Functions;
 using namespace Globals::Variables::Errors;
 
@@ -25,28 +23,22 @@ int main(int argc, char *argv[])
   std::map<int, Shell> shellMap;
   int userInput;
   // std::string mapMessage(int index, shellMap)
-  // TODO : Not done parsing args
   // TODO : Edit HELP message
-  // TODO : Deal with mono txt after complete.
 
   // check_arg_max may seem redundant, but may have an impact on
   // a future recursive feature where multiple config files
   // may be used consecutively.
   check_arg_max(argc, argv);
-
   args.isDefaultConfig = true;
-
   if (argc > 1)
   {
     ParseArgs args(argc, argv);
     args.parse(1, argc);
   }
-
   if (args.isDefaultConfig)
   {
     args.configFile = defaultPathOrThrow();
   }
-
   try
   {
     std::ifstream confFileStream(args.configFile.c_str());
@@ -87,16 +79,13 @@ int main(int argc, char *argv[])
     std::cerr << fail.what() << ":\n[" << args.configFile << "]\n";
     return ((int)errno);
   }
-  
   Shell exitShell;
   exitShell.Title = "Exit";
   exitShell.Path = "echo";
   exitShell.Args = "\"Exiting UniShellect\"";
   shellMap[(int)shellMap.size()] = exitShell;
-
   const int SHELLMAPSZ = (int)shellMap.size();
   const bool isMono = args.ioIsMono;
-
   if (SHELLMAPSZ > 0)
   {
     for (auto index = 0; index < SHELLMAPSZ; index++)
