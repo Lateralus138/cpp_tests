@@ -22,9 +22,6 @@ int main(int argc, char *argv[])
   std::cout << "\x1b]0;UniShellect\007" << std::flush;
   std::map<int, Shell> shellMap;
   int userInput;
-  // std::string mapMessage(int index, shellMap)
-  // TODO : Edit HELP message
-
   // check_arg_max may seem redundant, but may have an impact on
   // a future recursive feature where multiple config files
   // may be used consecutively.
@@ -93,7 +90,7 @@ int main(int argc, char *argv[])
       std::cout << formattedListMESSAGE(isMono, index, shellMap);
     }
     std::cout << formattedSelectionMESSAGE(isMono, SHELLMAPSZ);
-    userInput = getIntegerInput();
+    userInput = getIntegerInput(SHELLMAPSZ - 1);
   }
   else
   {

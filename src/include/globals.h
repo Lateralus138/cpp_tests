@@ -20,7 +20,7 @@ namespace Globals
     extern int random_color_int(bool fullRange);
     extern void check_arg_max(int argc, char *argv[]);
     extern std::filesystem::path defaultPathOrThrow();
-    extern int getIntegerInput();
+    extern int getIntegerInput(int maxIndex);
     extern std::string formattedSelectionMESSAGE(bool isMono, int SHELLMAPSZ);
     extern std::string formattedListMESSAGE(bool isMono, int index, std::map<int, Shell> shellMap);
     extern  void signal_handler(int signum);

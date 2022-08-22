@@ -69,17 +69,26 @@ namespace Globals
         std::exit(Globals::Variables::Errors::error);
       }
     }
-    int getIntegerInput()
+    int getIntegerInput(int maxIndex)
     {
       std::string input;
       bool isMatch = false;
-      while (!isMatch)
+      int number = -1;
+      while ((!isMatch) || ((number < 0) || (number > maxIndex)))
       {
         getline(std::cin, input);
         isMatch = std::regex_match(input, Globals::Variables::Regex::R_UINT);
+        if (isMatch)
+        {
+          number = std::stoi(input);
+        }
+        if ((number < 0) || (number > maxIndex))
+        {
+          std::cerr << "\r\'" << number << "\' is not within the range, (Ctrl+C to cancel): ";          
+        }
         if (!isMatch)
         {
-          std::cerr << "\r\'" << input << "\' is not an integer, please try again (Ctrl+C to cancel): ";
+          std::cerr << "\r\'" << input << "\' is not a choice, please try again (Ctrl+C to cancel): ";
         }
       }
       return std::stoi(input);
