@@ -57,7 +57,6 @@ void ParseArgs::parse(int min, int max)
           BOX[3] + "   3   User cancelled/interrupted.              " + BOX[3] + "\n" +
           BOX[3] + "   4   No FILE/argument provided for the        " + BOX[3] + "\n" +
           BOX[3] + "       -c,--config OPTION.                      " + BOX[3] + "\n" +
-          BOX[3] + "       reason.                                  " + BOX[3] + "\n" +
           BOX[3] + "   101 Error while parsing JSON in a config     " + BOX[3] + "\n" +
           BOX[3] + "       file.                                    " + BOX[3] + "\n" +
           BOX[3] + "   *   Any additional errors are related to     " + BOX[3] + "\n" +
