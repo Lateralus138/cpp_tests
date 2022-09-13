@@ -1,5 +1,5 @@
 SHELL = bash
-PROJNM = unishellect
+PROJNM = promptc
 AND32GXX = arm-linux-gnueabihf-g++
 AND64GXX = aarch64-linux-gnu-g++
 
