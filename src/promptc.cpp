@@ -44,10 +44,10 @@ int main(int argc, const char * argv[])
     std::cout << "\rConfirm command execution? ([Y]es, [N]o): ";
     getline(std::cin, userInput);
   }
-  return
-  (
-    std::regex_match(userInput, YES) ?
-    (system(finalString.c_str()) / 256) :
-    EXIT_SUCCESS
-  );
+  int command_result = EXIT_SUCCESS;
+  if (std::regex_match(userInput, YES))
+  {
+    command_result = system(finalString.c_str()) / 256;
+  }
+  return command_result;
 }
