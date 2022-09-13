@@ -44,6 +44,19 @@ int main(int argc, const char * argv[])
     std::cout << "\rConfirm command execution? ([Y]es, [N]o): ";
     getline(std::cin, userInput);
   }
+  try
+  {
+    if (!system(NULL))
+    {
+      errno = 255;
+      throw std::runtime_error("System is not safe to use. Exiting program.\n");
+    }
+  }
+  catch (std::runtime_error & runtime_error)
+  {
+    std::cerr << runtime_error.what();
+    return int(errno);
+  }
   int command_result = EXIT_SUCCESS;
   if (std::regex_match(userInput, YES))
   {
