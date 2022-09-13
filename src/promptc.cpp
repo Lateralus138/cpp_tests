@@ -12,22 +12,7 @@
 #include "ParseArgs.h"
 #include <vector>
 #include <regex>
-void system_safe_check()
-{
-  try
-  {
-    if (system(NULL))
-    {
-      errno = 255;
-      throw std::runtime_error("System is not safe to use. Exiting program.\n");
-    }
-  }
-  catch (std::runtime_error & runtime_error)
-  {
-    std::cerr << runtime_error.what();
-    std::exit(int(errno));
-  }
-}
+#include "Safety.h"
 int main(int argc, const char * argv[])
 {
   using namespace ParsePipe;
@@ -60,11 +45,10 @@ int main(int argc, const char * argv[])
     std::cout << "\rConfirm command execution? ([Y]es, [N]o): ";
     getline(std::cin, userInput);
   }
-  system_safe_check();
-  int command_result = EXIT_SUCCESS;
   if (std::regex_match(userInput, YES))
   {
-    command_result = system(finalString.c_str()) / 256;
+    Safety::SystemCheck(); // using system() as safely as possible ;)
+    errno = system(finalString.c_str()) / 256;
   }
-  return command_result;
+  return int(errno);
 }
