@@ -1,6 +1,6 @@
 #include "Globals.h"
 #include <map>
-namespace Globals::Functions
+namespace Globals
 {
   std::string to_lower(std::string anyCaseString)
   {
@@ -84,6 +84,11 @@ namespace Globals::Functions
     return time;
   } 
 }
-namespace Globals::Structs
+namespace Globals
 {
+  void DefaultExitCode (ExitCode & code_)
+  {
+    code_.value = 0;
+    code_.message = "Success.";
+  }
 };

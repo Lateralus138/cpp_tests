@@ -2,17 +2,18 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 #include <string>
-namespace Globals::Functions
+struct ExitCode
+{
+  int value;
+  std::string message;
+};
+namespace Globals
 {
   extern std::string to_lower(std::string anyCaseString);
   extern std::string time_utc();
 };
-namespace Globals::Structs
+namespace Globals
 {
-  struct ExitCodes
-  {
-    int value = EXIT_SUCCESS;
-    std::string message = "Success.";
-  };
+  extern void DefaultExitCode(ExitCode &code_);
 };
 #endif
