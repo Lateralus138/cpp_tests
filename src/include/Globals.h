@@ -5,6 +5,7 @@
 namespace Globals::Functions
 {
   extern std::string to_lower(std::string anyCaseString);
+  extern std::string time_utc();
 };
 namespace Globals::Structs
 {
