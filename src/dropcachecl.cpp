@@ -36,20 +36,22 @@ std::string time_utc()
     {8, "Sep"}, {9, "Oct"}, {10, "Nov"}, {11, "Dec"}
   };
   time_t time_raw;
-  struct tm *tm_ptr;
+  // struct tm *tm_ptr;
+  struct tm tm_ptr;
   time(&time_raw);
-  tm_ptr = gmtime(&time_raw);
-  const std::string weekday = days[tm_ptr->tm_wday];
-  const std::string month = months[tm_ptr->tm_mon];
-  const std::string day_of_month(std::to_string(tm_ptr->tm_mday));
+  gmtime_r(&time_raw, &tm_ptr);
+  // tm_ptr = gmtime(&time_raw);
+  const std::string weekday = days[tm_ptr.tm_wday];
+  const std::string month = months[tm_ptr.tm_mon];
+  const std::string day_of_month(std::to_string(tm_ptr.tm_mday));
   const std::string year = [tm_ptr]()
   {
-    return std::to_string((tm_ptr->tm_year) + 1900);
+    return std::to_string((tm_ptr.tm_year) + 1900);
   }();
   const std::string hour = [tm_ptr]()
   {
     std::string hour_string =
-        std::to_string(tm_ptr->tm_hour);
+        std::to_string(tm_ptr.tm_hour);
     if (hour_string.length() < 2)
     {
       hour_string.insert(0, "0");
@@ -59,7 +61,7 @@ std::string time_utc()
   const std::string minute = [tm_ptr]()
   {
     std::string hour_string =
-        std::to_string(tm_ptr->tm_min);
+        std::to_string(tm_ptr.tm_min);
     if (hour_string.length() < 2)
     {
       hour_string.insert(0, "0");
@@ -69,7 +71,7 @@ std::string time_utc()
   const std::string second = [tm_ptr]()
   {
     std::string hour_string =
-        std::to_string(tm_ptr->tm_sec);
+        std::to_string(tm_ptr.tm_sec);
     if (hour_string.length() < 2)
     {
       hour_string.insert(0, "0");
@@ -78,7 +80,7 @@ std::string time_utc()
   }();
   const std::string meridiem = [tm_ptr]()
   {
-    return ((int(tm_ptr->tm_hour) < 12)?"AM":"PM");
+    return ((int(tm_ptr.tm_hour) < 12)?"AM":"PM");
   }();
   std::string time;
   time.append(weekday);       time.push_back(' ');
