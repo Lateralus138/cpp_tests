@@ -1,5 +1,5 @@
 SHELL = bash
-PROJNM = benchcommand
+PROJNM = dropcachecl
 AND32GXX = arm-linux-gnueabihf-g++
 AND64GXX = aarch64-linux-gnu-g++
 
@@ -49,7 +49,7 @@ TSTARG = # --help # $(TSTEXE)
 
 LDFLAG = -I$(INCDIR) -O3 -std=gnu++17
 ANDFLG = $(LDFLAG) -march=armv8.5-a
-LDLIBS = -L$(LIBDIR) -l$(PROJNM)
+LDLIBS = -L$(LIBDIR) -l$(PROJNM) -lstdc++fs
 
 DBGFLG = -ggdb -Wall -Wextra -std=c++17
 
