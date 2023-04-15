@@ -24,7 +24,6 @@ int main(int argc, const char* argv[])
     std::regex("^/([\\?]|[hH][eE][lL][pP])$"),
     std::regex("^/([h]|[hH][eE][aA][lL][tT][hH])$"),
     std::regex("^/([H]|[hH][eE][aA][rR][tT][sS])$")
-
   };
   bool hasHealthOrHeartValue = false;
   bool isHealthValue = true;
