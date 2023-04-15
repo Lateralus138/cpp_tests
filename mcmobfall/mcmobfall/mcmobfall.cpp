@@ -49,6 +49,7 @@ int main(int argc, const char* argv[])
           "  /H, /hearts   <INT VALUE> provided is a heart value. (health * 2).\n"
           "\n";
         std::cout << HELPMESSAGE;
+        WaitCheck();
         return EXIT_SUCCESS;
       }
       if (std::regex_match(argv[index], regex.UINT))
@@ -72,6 +73,7 @@ int main(int argc, const char* argv[])
   if (!hasHealthOrHeartValue)
   {
     std::cerr << "A health or heart vaue was not provided.\n";
+    WaitCheck();
     return 1;
   }
   if (isHealthValue)
