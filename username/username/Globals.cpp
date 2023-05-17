@@ -1,5 +1,7 @@
 #include "Globals.h"
 #include <iostream>
+#include <Windows.h>
+
 void WaitCheck()
 {
 	const bool ISOWNWINDOW = []()

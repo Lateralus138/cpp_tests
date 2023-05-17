@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{93618a5c-a585-4a0c-ae56-9349a413ace5}</ProjectGuid>
-    <RootNamespace>mcmobfall</RootNamespace>
+    <ProjectGuid>{9e97c46b-b595-479f-83b6-81fc83eab96c}</ProjectGuid>
+    <RootNamespace>username</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -132,18 +132,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Globals.cpp" />
-    <ClCompile Include="mcmobfall.cpp" />
+    <ClCompile Include="WStringCase.cpp" />
+    <ClCompile Include="username.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
-    <ClInclude Include="Regex_.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="WStringCase.h" />
+    <ClInclude Include="UserNameRegex.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Resource.rc" />
+    <ResourceCompile Include="username.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico" />
+    <Image Include="icon2.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
