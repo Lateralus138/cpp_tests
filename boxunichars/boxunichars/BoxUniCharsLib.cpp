@@ -1,5 +1,5 @@
 ﻿#include "BoxUniCharsLib.h"
-void BoxUniCharsLib::SetModes(bool mode)
+void BoxUniCharsLib::SetModeSingle(bool mode)
 {
 	single_top_left_corner = ((mode) ? " 218" : "250C");
 	single_top_middle = ((mode) ? " 194" : "252C");
@@ -12,6 +12,9 @@ void BoxUniCharsLib::SetModes(bool mode)
 	single_bottom_left_corner = ((mode) ? " 192" : "2514");
 	single_bottom_middle = ((mode) ? " 193" : "2534");
 	single_bottom_right_corner = ((mode) ? " 217" : "2518");
+}
+void BoxUniCharsLib::SetModeDouble(bool mode)
+{
 	double_top_left_corner = ((mode) ? " 201" : "2554");
 	double_top_middle = ((mode) ? " 203" : "2566");
 	double_top_right_corner = ((mode) ? " 187" : "2557");
@@ -23,6 +26,9 @@ void BoxUniCharsLib::SetModes(bool mode)
 	double_bottom_left_corner = ((mode) ? " 200" : "255A");
 	double_bottom_middle = ((mode) ? " 202" : "2569");
 	double_bottom_right_corner = ((mode) ? " 188" : "255D");
+}
+void BoxUniCharsLib::SetModeSingleDouble(bool mode)
+{
 	single_vert_double_horz_top_left_corner = ((mode) ? " 213" : "2552");
 	single_vert_double_horz_top_middle = ((mode) ? " 209" : "2564");
 	single_vert_double_horz_top_right_corner = ((mode) ? " 184" : "2555");
@@ -32,12 +38,15 @@ void BoxUniCharsLib::SetModes(bool mode)
 	single_vert_double_horz_bottom_left_corner = ((mode) ? " 212" : "2558");
 	single_vert_double_horz_bottom_middle = ((mode) ? " 207" : "2567");
 	single_vert_double_horz_bottom_right_corner = ((mode) ? " 190" : "255B");
+}
+void BoxUniCharsLib::SetModeDoubleSingle(bool mode)
+{
 	double_vert_single_horz_top_left_corner = ((mode) ? " 214" : "2553");
 	double_vert_single_horz_top_middle = ((mode) ? " 210" : "2565");
 	double_vert_single_horz_top_right_corner = ((mode) ? " 183" : "2556");
 	double_vert_single_horz_left_middle = ((mode) ? " 199" : "255F");
 	double_vert_single_horz_middle = ((mode) ? " 215" : "256B");
-	double_vert_double_horz_right_middle = ((mode) ? " 182" : "2562");
+	double_vert_single_horz_right_middle = ((mode) ? " 182" : "2562");
 	double_vert_single_horz_bottom_left_corner = ((mode) ? " 211" : "2559");
 	double_vert_single_horz_bottom_middle = ((mode) ? " 208" : "2568");
 	double_vert_single_horz_bottom_right_corner = ((mode) ? " 189" : "255C");
@@ -46,7 +55,10 @@ void BoxUniCharsLib::Initiate(std::string mode)
 {
   const bool ALTMODE = (mode != "hexadecimal");
 	const std::string CAPTION = ((mode != "hexadecimal") ? "Alt Codes" : "Hex Codes");
-	SetModes(ALTMODE);
+	SetModeSingle(ALTMODE);
+	SetModeDouble(ALTMODE);
+	SetModeSingleDouble(ALTMODE);
+	SetModeDoubleSingle(ALTMODE);
   BOXUNICHARS_ALL_DEFAULT =
     u8"┌───────────────────────────────────────────────────────────────────────┐"
     u8"\n│                         Box Unicode Characters                        │"
@@ -194,7 +206,7 @@ void BoxUniCharsLib::Initiate(std::string mode)
 		+ u8" ╫ "
 		+ single_horizontal
 		+ u8" ─ "
-		+ double_vert_double_horz_right_middle
+		+ double_vert_single_horz_right_middle
 		+ u8" ╢│ "
 		+ single_left_middle
 		+ u8" ├ "
@@ -345,7 +357,7 @@ void BoxUniCharsLib::Initiate(std::string mode)
 		+ u8" ╫ "
 		+ single_horizontal
 		+ u8" ─ "
-		+ double_vert_double_horz_right_middle
+		+ double_vert_single_horz_right_middle
 		+ u8" ╢│ "
 		+ single_left_middle
 		+ u8" ├ "
@@ -567,7 +579,7 @@ void BoxUniCharsLib::Initiate(std::string mode)
 		+ u8" ╫ "
 		+ single_horizontal
 		+ u8" ─ "
-		+ double_vert_double_horz_right_middle
+		+ double_vert_single_horz_right_middle
 		+ u8" ╢│"
     u8"\n│ "
 		+ double_vertical
@@ -852,7 +864,7 @@ void BoxUniCharsLib::Initiate(std::string mode)
 		+ u8" ╫ "
 		+ single_horizontal
 		+ u8" ─ "
-		+ double_vert_double_horz_right_middle
+		+ double_vert_single_horz_right_middle
 		+ u8" ╢│"
     u8"\n│ "
 		+ double_vertical

@@ -48,13 +48,16 @@ private:
   std::string double_vert_single_horz_top_right_corner;
   std::string double_vert_single_horz_left_middle;
   std::string double_vert_single_horz_middle;
-  std::string double_vert_double_horz_right_middle;
+  std::string double_vert_single_horz_right_middle;
   std::string double_vert_single_horz_bottom_left_corner;
   std::string double_vert_single_horz_bottom_middle;
   std::string double_vert_single_horz_bottom_right_corner;
 public:
   void Initiate(std::string mode);
-  void SetModes(bool mode);
+  void SetModeSingle(bool mode);
+  void SetModeDouble(bool mode);
+  void SetModeSingleDouble(bool mode);
+  void SetModeDoubleSingle(bool mode);
   std::string Default();
   std::string Horizontal();
   std::string Vertical();
