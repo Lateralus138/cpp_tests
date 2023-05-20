@@ -33,12 +33,19 @@ int main()
       SendMessageW(HWND_, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
     }
   }
+
   std::string output = "";
 
-  //BoxUniCharsLib box;
-  //box.Initiate("alt");
+  BoxUniCharsLib box;
 
+  box.Initiate("alt");
+  output = box.Default();
   std::cout << output;
+
+  box.Initiate("hexadecimal");
+  output = box.Default();
+  std::cout << output;
+  
   WaitCheck();
   return EXIT_SUCCESS;
 }

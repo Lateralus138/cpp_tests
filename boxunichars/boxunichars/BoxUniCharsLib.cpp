@@ -1,48 +1,52 @@
 ﻿#include "BoxUniCharsLib.h"
+void BoxUniCharsLib::SetModes(bool mode)
+{
+	single_top_left_corner = ((mode) ? " 218" : "250C");
+	single_top_middle = ((mode) ? " 194" : "252C");
+	single_top_right_corner = ((mode) ? " 191" : "2510");
+	single_horizontal = ((mode) ? " 196" : "2500");
+	single_left_middle = ((mode) ? " 195" : "251C");
+	single_middle = ((mode) ? " 197" : "253C");
+	single_vertical = ((mode) ? " 179" : "2502");
+	single_right_middle = ((mode) ? " 180" : "2524");
+	single_bottom_left_corner = ((mode) ? " 192" : "2514");
+	single_bottom_middle = ((mode) ? " 193" : "2534");
+	single_bottom_right_corner = ((mode) ? " 217" : "2518");
+	double_top_left_corner = ((mode) ? " 201" : "2554");
+	double_top_middle = ((mode) ? " 203" : "2566");
+	double_top_right_corner = ((mode) ? " 187" : "2557");
+	double_horizontal = ((mode) ? " 205" : "2550");
+	double_left_middle = ((mode) ? " 204" : "2560");
+	double_middle = ((mode) ? " 206" : "256C");
+	double_vertical = ((mode) ? " 186" : "2551");
+	double_right_middle = ((mode) ? " 185" : "2563");
+	double_bottom_left_corner = ((mode) ? " 200" : "255A");
+	double_bottom_middle = ((mode) ? " 202" : "2569");
+	double_bottom_right_corner = ((mode) ? " 188" : "255D");
+	single_vert_double_horz_top_left_corner = ((mode) ? " 213" : "2552");
+	single_vert_double_horz_top_middle = ((mode) ? " 209" : "2564");
+	single_vert_double_horz_top_right_corner = ((mode) ? " 184" : "2555");
+	single_vert_double_horz_left_middle = ((mode) ? " 198" : "255E");
+	single_vert_double_horz_middle = ((mode) ? " 216" : "256A");
+	single_vert_double_horz_right_middle = ((mode) ? " 181" : "2561");
+	single_vert_double_horz_bottom_left_corner = ((mode) ? " 212" : "2558");
+	single_vert_double_horz_bottom_middle = ((mode) ? " 207" : "2567");
+	single_vert_double_horz_bottom_right_corner = ((mode) ? " 190" : "255B");
+	double_vert_single_horz_top_left_corner = ((mode) ? " 214" : "2553");
+	double_vert_single_horz_top_middle = ((mode) ? " 210" : "2565");
+	double_vert_single_horz_top_right_corner = ((mode) ? " 183" : "2556");
+	double_vert_single_horz_left_middle = ((mode) ? " 199" : "255F");
+	double_vert_single_horz_middle = ((mode) ? " 215" : "256B");
+	double_vert_double_horz_right_middle = ((mode) ? " 182" : "2562");
+	double_vert_single_horz_bottom_left_corner = ((mode) ? " 211" : "2559");
+	double_vert_single_horz_bottom_middle = ((mode) ? " 208" : "2568");
+	double_vert_single_horz_bottom_right_corner = ((mode) ? " 189" : "255C");
+}
 void BoxUniCharsLib::Initiate(std::string mode)
 {
   const bool ALTMODE = (mode != "hexadecimal");
 	const std::string CAPTION = ((mode != "hexadecimal") ? "Alt Codes" : "Hex Codes");
-  std::string single_top_left_corner = ((ALTMODE) ? " 218" : "250C");
-  std::string single_top_middle = ((ALTMODE) ? " 194" : "252C");
-  std::string single_top_right_corner = ((ALTMODE) ? " 191" : "2510");
-  std::string single_horizontal = ((ALTMODE) ? " 196" : "2500");
-  std::string single_left_middle = ((ALTMODE) ? " 195" : "251C");
-  std::string single_middle = ((ALTMODE) ? " 197" : "253C");
-  std::string single_vertical = ((ALTMODE) ? " 179" : "2502");
-  std::string single_right_middle = ((ALTMODE) ? " 180" : "2524");
-  std::string single_bottom_left_corner = ((ALTMODE) ? " 192" : "2514");
-  std::string single_bottom_middle = ((ALTMODE) ? " 193" : "2534");
-  std::string single_bottom_right_corner = ((ALTMODE) ? " 217" : "2518");
-  std::string double_top_left_corner = ((ALTMODE) ? " 201" : "2554");
-  std::string double_top_middle = ((ALTMODE) ? " 203" : "2566");
-  std::string double_top_right_corner = ((ALTMODE) ? " 187" : "2557");
-  std::string double_horizontal = ((ALTMODE) ? " 205" : "2550");
-  std::string double_left_middle = ((ALTMODE) ? " 204" : "2560");
-  std::string double_middle = ((ALTMODE) ? " 206" : "256C");
-  std::string double_vertical = ((ALTMODE) ? " 186" : "2551");
-  std::string double_right_middle = ((ALTMODE) ? " 185" : "2563");
-  std::string double_bottom_left_corner = ((ALTMODE) ? " 200" : "255A");
-  std::string double_bottom_middle = ((ALTMODE) ? " 202" : "2569");
-  std::string double_bottom_right_corner = ((ALTMODE) ? " 188" : "255D");
-  std::string single_vert_double_horz_top_left_corner = ((ALTMODE) ? " 213" : "2552");
-  std::string single_vert_double_horz_top_middle = ((ALTMODE) ? " 209" : "2564");
-  std::string single_vert_double_horz_top_right_corner = ((ALTMODE) ? " 184" : "2555");
-  std::string single_vert_double_horz_left_middle = ((ALTMODE) ? " 198" : "255E");
-  std::string single_vert_double_horz_middle = ((ALTMODE) ? " 216" : "256A");
-  std::string single_vert_double_horz_right_middle = ((ALTMODE) ? " 181" : "2561");
-  std::string single_vert_double_horz_bottom_left_corner = ((ALTMODE) ? " 212" : "2558");
-  std::string single_vert_double_horz_bottom_middle = ((ALTMODE) ? " 207" : "2567");
-  std::string single_vert_double_horz_bottom_right_corner = ((ALTMODE) ? " 190" : "255B");
-  std::string double_vert_single_horz_top_left_corner = ((ALTMODE) ? " 214" : "2553");
-  std::string double_vert_single_horz_top_middle = ((ALTMODE) ? " 210" : "2565");
-  std::string double_vert_single_horz_top_right_corner = ((ALTMODE) ? " 183" : "2556");
-  std::string double_vert_single_horz_left_middle = ((ALTMODE) ? " 199" : "255F");
-  std::string double_vert_single_horz_middle = ((ALTMODE) ? " 215" : "256B");
-  std::string double_vert_double_horz_right_middle = ((ALTMODE) ? " 182" : "2562");
-  std::string double_vert_single_horz_bottom_left_corner = ((ALTMODE) ? " 211" : "2559");
-  std::string double_vert_single_horz_bottom_middle = ((ALTMODE) ? " 208" : "2568");
-  std::string double_vert_single_horz_bottom_right_corner = ((ALTMODE) ? " 189" : "255C");
+	SetModes(ALTMODE);
   BOXUNICHARS_ALL_DEFAULT =
     u8"┌───────────────────────────────────────────────────────────────────────┐"
     u8"\n│                         Box Unicode Characters                        │"
