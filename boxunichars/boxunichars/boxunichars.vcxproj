@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{9e97c46b-b595-479f-83b6-81fc83eab96c}</ProjectGuid>
-    <RootNamespace>username</RootNamespace>
+    <ProjectGuid>{2c499b55-e0e6-48eb-ba55-3cb59f709900}</ProjectGuid>
+    <RootNamespace>boxunichars</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -131,18 +131,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="boxunichars.cpp" />
+    <ClCompile Include="BoxUniCharsLib.cpp" />
     <ClCompile Include="Globals.cpp" />
-    <ClCompile Include="WStringCase.cpp" />
-    <ClCompile Include="username.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoxUniCharsLib.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="WStringCase.h" />
-    <ClInclude Include="UserNameRegex.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="username.rc" />
+    <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico" />
