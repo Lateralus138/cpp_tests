@@ -38,12 +38,20 @@ int main()
 
   BoxUniCharsLib box;
 
-  box.Initiate("alt");
+  box.SetAll(false);
   output = box.Default();
   std::cout << output;
-
-  box.Initiate("hexadecimal");
-  output = box.Default();
+  output = box.Horizontal();
+  std::cout << output;
+  output = box.Vertical();
+  std::cout << output;
+  output = box.SingleVerticalDoubleHorizontal();
+  std::cout << output;
+  output = box.DoubleVerticalSingleHorizontal();
+  std::cout << output;
+  output = box.Single();
+  std::cout << output;
+  output = box.Double();
   std::cout << output;
   
   WaitCheck();
