@@ -29,6 +29,8 @@ void BoxUniCharsLib::SetModeDouble(bool mode)
 }
 void BoxUniCharsLib::SetModeSingleDouble(bool mode)
 {
+  single_vert_double_horz_vertical = ((mode) ? " 179" : "2502");
+  single_vert_double_horz_horizontal = ((mode) ? " 205" : "2550");
   single_vert_double_horz_top_left_corner = ((mode) ? " 213" : "2552");
   single_vert_double_horz_top_middle = ((mode) ? " 209" : "2564");
   single_vert_double_horz_top_right_corner = ((mode) ? " 184" : "2555");
@@ -41,6 +43,8 @@ void BoxUniCharsLib::SetModeSingleDouble(bool mode)
 }
 void BoxUniCharsLib::SetModeDoubleSingle(bool mode)
 {
+  double_vert_single_horz_vertical = ((mode) ? " 186" : "2551");
+  double_vert_single_horz_horizontal = ((mode) ? " 196" : "2500");
   double_vert_single_horz_top_left_corner = ((mode) ? " 214" : "2553");
   double_vert_single_horz_top_middle = ((mode) ? " 210" : "2565");
   double_vert_single_horz_top_right_corner = ((mode) ? " 183" : "2556");
@@ -508,7 +512,7 @@ void BoxUniCharsLib::SetAllVert(bool mode)
     + u8" ═ "
     + double_bottom_right_corner
     + u8" ╝│"
-    u8"\n├───────────────────────────────────┼"
+    u8"\n├───────────────────────────────────┤"
     u8"\n│ ╒═╤═╕                             │"
     u8"\n│ │ │ │                             │"
     u8"\n│ ╞═╪═╡          " + caption + u8"          │"
@@ -561,7 +565,7 @@ void BoxUniCharsLib::SetAllVert(bool mode)
     + u8" ═ "
     + single_vert_double_horz_bottom_right_corner
     + u8" ╛│"
-    u8"\n├───────────────────────────────────┼"
+    u8"\n├───────────────────────────────────┤"
     u8"\n│ ╓─╥─╖                             │"
     u8"\n│ ║ ║ ║                             │"
     u8"\n│ ╟─╫─╢          " + caption + u8"          │"
@@ -809,47 +813,47 @@ void BoxUniCharsLib::SetSingleDouble(bool mode)
     u8"\n│ "
     + single_vert_double_horz_top_left_corner
     + u8" ╒ "
-    + double_horizontal
+    + single_vert_double_horz_horizontal
     + u8" ═ "
     + single_vert_double_horz_top_middle
     + u8" ╤ "
-    + double_horizontal
+    + single_vert_double_horz_horizontal
     + u8" ═ "
     + single_vert_double_horz_top_right_corner
     + u8" ╕│"
     u8"\n│ "
-    + single_vertical
+    + single_vert_double_horz_vertical
     + u8" │        "
-    + single_vertical
+    + single_vert_double_horz_vertical
     + u8" │        "
-    + single_vertical
+    + single_vert_double_horz_vertical
     + u8" ││"
     u8"\n│ "
     + single_vert_double_horz_left_middle
     + u8" ╞ "
-    + double_horizontal
+    + single_vert_double_horz_horizontal
     + u8" ═ "
     + single_vert_double_horz_middle
     + u8" ╪ "
-    + double_horizontal
+    + single_vert_double_horz_horizontal
     + u8" ═ "
     + single_vert_double_horz_right_middle
     + u8" ╡│"
     u8"\n│ "
-    + single_vertical
+    + single_vert_double_horz_vertical
     + u8" │        "
-    + single_vertical
+    + single_vert_double_horz_vertical
     + u8" │        "
-    + single_vertical
+    + single_vert_double_horz_vertical
     + u8" ││"
     u8"\n│ "
     + single_vert_double_horz_bottom_left_corner
     + u8" ╘ "
-    + double_horizontal
+    + single_vert_double_horz_horizontal
     + u8" ═ "
     + single_vert_double_horz_bottom_middle
     + u8" ╧ "
-    + double_horizontal
+    + single_vert_double_horz_horizontal
     + u8" ═ "
     + single_vert_double_horz_bottom_right_corner
     + u8" ╛│"
@@ -858,6 +862,7 @@ void BoxUniCharsLib::SetSingleDouble(bool mode)
 void BoxUniCharsLib::SetDoubleSingle(bool mode)
 {
   SetCaption(mode);
+  double_vertical = ((mode) ? " 186" : "2551");
   SetModeDoubleSingle(mode);
   BOXUNICHARS_SINGLE_DOUBLE_VERT_SINGLE_HORZ =
     u8"┌───────────────────────────────────┐"
@@ -871,47 +876,47 @@ void BoxUniCharsLib::SetDoubleSingle(bool mode)
     u8"\n│ "
     + double_vert_single_horz_top_left_corner
     + u8" ╓ "
-    + single_horizontal
+    + double_vert_single_horz_horizontal
     + u8" ─ "
     + double_vert_single_horz_top_middle
     + u8" ╥ "
-    + single_horizontal
+    + double_vert_single_horz_horizontal
     + u8" ─ "
     + double_vert_single_horz_top_right_corner
     + u8" ╖│"
     u8"\n│ "
-    + double_vertical
+    + double_vert_single_horz_vertical
     + u8" ║        "
-    + double_vertical
+    + double_vert_single_horz_vertical
     + u8" ║        "
-    + double_vertical
+    + double_vert_single_horz_vertical
     + u8" ║│"
     u8"\n│ "
     + double_vert_single_horz_left_middle
     + u8" ╟ "
-    + single_horizontal
+    + double_vert_single_horz_horizontal
     + u8" ─ "
     + double_vert_single_horz_middle
     + u8" ╫ "
-    + single_horizontal
+    + double_vert_single_horz_horizontal
     + u8" ─ "
     + double_vert_single_horz_right_middle
     + u8" ╢│"
     u8"\n│ "
-    + double_vertical
+    + double_vert_single_horz_vertical
     + u8" ║        "
-    + double_vertical
+    + double_vert_single_horz_vertical
     + u8" ║        "
-    + double_vertical
+    + double_vert_single_horz_vertical
     + u8" ║│"
     u8"\n│ "
     + double_vert_single_horz_bottom_left_corner
     + u8" ╙ "
-    + single_horizontal
+    + double_vert_single_horz_horizontal
     + u8" ─ "
     + double_vert_single_horz_bottom_middle
     + u8" ╨ "
-    + single_horizontal
+    + double_vert_single_horz_horizontal
     + u8" ─ "
     + double_vert_single_horz_bottom_right_corner
     + u8" ╜│"

@@ -34,6 +34,8 @@ private:
   std::string double_bottom_left_corner;
   std::string double_bottom_middle;
   std::string double_bottom_right_corner;
+  std::string single_vert_double_horz_vertical;
+  std::string single_vert_double_horz_horizontal;
   std::string single_vert_double_horz_top_left_corner;
   std::string single_vert_double_horz_top_middle;
   std::string single_vert_double_horz_top_right_corner;
@@ -43,6 +45,8 @@ private:
   std::string single_vert_double_horz_bottom_left_corner;
   std::string single_vert_double_horz_bottom_middle;
   std::string single_vert_double_horz_bottom_right_corner;
+  std::string double_vert_single_horz_vertical;
+  std::string double_vert_single_horz_horizontal;
   std::string double_vert_single_horz_top_left_corner;
   std::string double_vert_single_horz_top_middle;
   std::string double_vert_single_horz_top_right_corner;
