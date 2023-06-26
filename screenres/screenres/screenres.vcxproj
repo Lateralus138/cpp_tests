@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{61beed22-eeff-4d57-8b4c-c162ba0ea699}</ProjectGuid>
-    <RootNamespace>beepfreq</RootNamespace>
+    <ProjectGuid>{89743a91-1171-419f-a42f-54e12236fd76}</ProjectGuid>
+    <RootNamespace>screenres</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -132,11 +132,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ArgParser.cpp" />
-    <ClCompile Include="beepfreq.cpp" />
+    <ClCompile Include="Console.cpp" />
+    <ClCompile Include="Errors.cpp" />
+    <ClCompile Include="screenres.cpp" />
+    <ClCompile Include="ScreenResolution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArgParser.h" />
+    <ClInclude Include="Console.h" />
+    <ClInclude Include="Errors.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ScreenResolution.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
