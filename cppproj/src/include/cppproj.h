@@ -3,6 +3,7 @@
 #include "SignalHandler.h"
 #include "Directories.h"
 #include "Files.h"
+#include "Functions.h"
 #include "ArgParser.h"
 #include <filesystem>
 #include <iostream>

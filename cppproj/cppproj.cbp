@@ -15,6 +15,7 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="cppl/cppproj/src/include" />
+					<Add directory="src/include" />
 				</Compiler>
 				<MakeCommands>
 					<Build command="$make -f $makefile debugdynamic" />
@@ -33,6 +34,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="cppl/cppproj/src/include" />
+					<Add directory="src/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -61,6 +63,8 @@
 		<Unit filename="src/include/Directories.h" />
 		<Unit filename="src/include/Files.cpp" />
 		<Unit filename="src/include/Files.h" />
+		<Unit filename="src/include/Functions.cpp" />
+		<Unit filename="src/include/Functions.h" />
 		<Unit filename="src/include/SignalHandler.cpp" />
 		<Unit filename="src/include/SignalHandler.h" />
 		<Unit filename="src/include/cppproj.cpp" />

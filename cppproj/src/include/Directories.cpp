@@ -1,14 +1,14 @@
 #include "Directories.h"
 void Directories::set(std::map<std::string, std::string> map)
 {
-  for (auto const &[key, value] : map)
+  for (std::pair const &[key, value] : map)
   {
     paths.insert({key, std::filesystem::path(value)});
   }
 }
 void Directories::setNewPath(std::string key, std::string value)
 {
-  paths.insert({key, value});
+  paths.insert({key, std::filesystem::path(value)});
 }
 std::filesystem::path Directories::getPath(std::string key)
 {
