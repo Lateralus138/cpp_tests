@@ -20,18 +20,51 @@ int main(int argc, const char *argv[])
   Directories directories;
   Files files;
   std::string PARENTPATH = params.path_name;
-  const std::map<std::string, std::string> CHILDDIRECTORIES =
-  {{"source", "src/include"}, {"library", "src/lib"}};
-  for (auto const &[key, value] : CHILDDIRECTORIES)
+  const std::map<std::string, std::string> DIRECTORIESMAP =
+  {{"source", "src"}, {"include", "src/include"}, {"library", "src/lib"}};
+  for (auto const &[key, value] : DIRECTORIESMAP)
   {
     directories.setNewPath(key, PARENTPATH);
     directories.append(key, value);
   }
-  std::map<std::string, std::filesystem::path> dir_paths =
-    directories.getPaths();
-  std::error_code dir_ec;
+  std::map<std::string, std::filesystem::path> dir_paths = directories.getPaths();
+  const std::string MAINFILE = [&dir_paths, params]()
+  {
+    std::string mainfile = dir_paths["source"].native().c_str();
+    mainfile.push_back('/');
+    mainfile.append(params.main_name);
+    mainfile.append(".cpp");
+    return mainfile;
+  }
+  ();
+  files.setNewPath("main", MAINFILE);
+  auto class_file = [&dir_paths](std::string class_name, std::string extension)
+  {
+    std::string classfile = dir_paths["include"].native().c_str();
+    classfile.push_back('/');
+    classfile.append(class_name);
+    classfile.push_back('.');
+    classfile.append(extension);
+    return classfile;
+  };
+  for (const std::string class_name : params.class_names)
+  {
+    std::string class_name_h    = class_name;
+    std::string class_name_cpp  = class_name_h;
+    class_name_h.append("_h");
+    class_name_cpp.append("_cpp");
+    files.setNewPath(class_name_h, class_file(class_name, "h"));
+    files.setNewPath(class_name_cpp, class_file(class_name, "cpp"));
+  }
+  if (switches.prebuild_script)
+  {
+    files.setNewPath("prebuild", PARENTPATH);
+    files.append("prebuild", "prebuild");
+  }
+  std::map<std::string, std::filesystem::path> file_paths = files.getPaths();
   for (std::pair const [key, value] : dir_paths)
   {
+    if (key == "source") continue;
     std::string temp_message = "Checking if ";
     const std::string path = value.native().c_str();
     temp_message.append(path);
@@ -60,5 +93,6 @@ int main(int argc, const char *argv[])
     std::cout << temp_message;
     temp_message.clear();
   }
+  // TODO Attempt to create files as directories were created.
   return params.error_value;
 }
