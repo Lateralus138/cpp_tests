@@ -17,8 +17,6 @@ int main(int argc, const char *argv[])
   {
     return params.error_value;
   }
-  Directories directories;
-  Files files;
   std::string PARENTPATH = params.path_name;
   const std::map<std::string, std::string> DIRECTORIESMAP =
   {{"source", "src"}, {"include", "src/include"}, {"library", "src/lib"}};
@@ -47,6 +45,7 @@ int main(int argc, const char *argv[])
     classfile.append(extension);
     return classfile;
   };
+  params.class_names.push_back("pch");
   for (const std::string class_name : params.class_names)
   {
     std::string class_name_h    = class_name;
@@ -56,12 +55,16 @@ int main(int argc, const char *argv[])
     files.setNewPath(class_name_h, class_file(class_name, "h"));
     files.setNewPath(class_name_cpp, class_file(class_name, "cpp"));
   }
+  files.setNewPath("make", PARENTPATH);
+  files.append("make", "Makefile");
   if (switches.prebuild_script)
   {
     files.setNewPath("prebuild", PARENTPATH);
     files.append("prebuild", "prebuild");
   }
   std::map<std::string, std::filesystem::path> file_paths = files.getPaths();
+  globals.pch_content_create(params);
+  globals.makefile_content_create(params);
   for (std::pair const [key, value] : dir_paths)
   {
     if (key == "source") continue;
@@ -93,6 +96,67 @@ int main(int argc, const char *argv[])
     std::cout << temp_message;
     temp_message.clear();
   }
-  // TODO Attempt to create files as directories were created.
+  for (std::pair const [key, value] : file_paths)
+  {
+    std::string temp_message = "Checking if ";
+    const std::string path = value.native().c_str();
+    temp_message.append(path);
+    temp_message.append(" exists...\n");
+    std::cout << temp_message;
+    temp_message.clear();
+    const bool file_exists = PathExists(value, params, 9);
+    if (params.error_value > 0)
+    {
+      return params.error_value;
+    }
+    temp_message.append(path);
+    StringAppendIf(file_exists, temp_message,
+                   " already exists and does not need to be created...\n",
+                   " does not exist; attempting to create file...\n");
+    std::cout << temp_message;
+    temp_message.clear();
+    if (file_exists) continue;
+    std::string content;
+    if (key == "main")
+    {
+      content = globals.main_content;
+    }
+    else if (key == "make")
+    {
+      content = globals.makefile_content;
+    }
+    else if (key == "pch_h")
+    {
+      content = globals.pch_content;
+    }
+    else if ((switches.prebuild_script) && (key == "prebuild"))
+    {
+      content = globals.prebuild_content;
+    }
+    else
+    {
+      bool delim_found = false;
+      size_t delim_pos = key.find('_');
+      delim_found = (delim_pos != std::string::npos);
+      if (!delim_found)
+      {
+        continue;
+      }
+      std::string ext_ = key.substr(delim_pos);
+      if (ext_ == "_h")
+      {
+        content = globals.class_header_content_create(key);
+      }
+      else
+      {
+        content = globals.class_source_content_create(value.stem().native().c_str());
+      }
+    }
+    CreateFile(value, content, params, 10);
+    if (params.error_value > 0)
+    {
+      return params.error_value;
+    }
+  }
   return params.error_value;
 }

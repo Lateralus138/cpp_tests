@@ -5,6 +5,7 @@
 #include "Files.h"
 #include "Functions.h"
 #include "ArgParser.h"
+#include "Globals.h"
 #include <filesystem>
 #include <iostream>
 #include <vector>

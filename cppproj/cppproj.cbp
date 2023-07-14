@@ -65,6 +65,8 @@
 		<Unit filename="src/include/Files.h" />
 		<Unit filename="src/include/Functions.cpp" />
 		<Unit filename="src/include/Functions.h" />
+		<Unit filename="src/include/Globals.cpp" />
+		<Unit filename="src/include/Globals.h" />
 		<Unit filename="src/include/SignalHandler.cpp" />
 		<Unit filename="src/include/SignalHandler.h" />
 		<Unit filename="src/include/cppproj.cpp" />

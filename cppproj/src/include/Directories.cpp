@@ -22,3 +22,4 @@ void Directories::append(std::string key, std::string append_value)
 {
   paths[key] /= append_value;
 }
+Directories directories;

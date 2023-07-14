@@ -17,4 +17,5 @@ protected:
 private:
   std::map<std::string, std::filesystem::path> paths;
 };
+extern Directories directories;
 #endif // DIRECTORIES_H
