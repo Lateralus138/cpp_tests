@@ -1,5 +1,5 @@
 SHELL = bash
-PROJNM = cppproj
+PROJNM = nomedia
 AND32GXX = arm-linux-gnueabihf-g++
 AND64GXX = aarch64-linux-gnu-g++
 
@@ -63,7 +63,7 @@ SNFLGD = $(SNFLGS) -fsanitize=address
 #STFLAG = -static -static-libgcc -static-libstdc++
 STFLAG = -static
 
-PCHFIL = $(INCDIR)/$(PROJNM).h
+PCHFIL = $(INCDIR)/pch.h
 
 all: releasedynamicall
 

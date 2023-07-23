@@ -1,13 +1,12 @@
 #include "ArgParser.h"
 #include <vector>
 #include <iostream>
+#include "Functions.h"
 bool Regex::IsOption(std::string &option)
 {
   return  std::regex_match(option, help) ||
-          std::regex_match(option, main) ||
-          std::regex_match(option, prebuild) ||
-          std::regex_match(option, class_) ||
-          std::regex_match(option, directory);
+          std::regex_match(option, force) ||
+          std::regex_match(option, recurse);
 }
 bool NextArgTest(int index, const std::vector<std::string>& args)
 {
@@ -28,21 +27,19 @@ bool NextArgTest(int index, const std::vector<std::string>& args)
   }
   return true;
 }
+Parameters params;
+Switches switches;
 bool ArgParser(int argc, const char* argv[], Parameters& params, Switches &switches)
 {
   Regex regex;
   const std::vector<std::string> args(argv + 1, argv + argc);
   argc--;
-  bool skip = false;
   for (int index = 0; index < argc; index++)
   {
-    if (skip)
-    {
-      skip = false;
-      continue;
-    }
+    if (args[index].empty()) continue;
     if (std::regex_match(args[index], regex.help))
     {
+      // TODO Change Help message
       const std::string HELPMESSAGE =
         "\n"
         "CPP Project - Create a custom Linux C++ tree and\n"
@@ -70,7 +67,7 @@ bool ArgParser(int argc, const char* argv[], Parameters& params, Switches &switc
         "                    be preceeded by the switch:\n"
         "                    e.g: -c ClassOne -c ClassTwo.\n"
         "\n"
-        "Switches:\n"
+        "SWITCHES:\n"
         "  -h, --help      This help screen.\n"
         "  -d, --directory Project path location.\n"
         "  -m, --main      Main source file name.\n"
@@ -80,83 +77,27 @@ bool ArgParser(int argc, const char* argv[], Parameters& params, Switches &switc
         "                  , and library archive file.\n"
         "\n";
       std::cout << HELPMESSAGE;
-      switches.is_help = true;
+      switches.isHelp = true;
       return true;
     }
-    if (std::regex_match(args[index], regex.main))
+    if (std::regex_match(args[index], regex.force))
     {
-      bool HASARG = NextArgTest(index, args);
-      if (!HASARG)
-      {
-        params.error_value = 1;
-        return false;
-      }
-      int next_index = index + 1;
-      std::string next_arg = args[next_index];
-      if (regex.IsOption(next_arg))
-      {
-        std::string message = "Invalid option for [";
-        message.append(args[index]);
-        message.append("]\n");
-        std::cerr << message;
-        params.error_value = 2;
-        return false;
-      }
-      params.main_name = next_arg;
-      skip = true;
+      switches.isForce = true;
       continue;
     }
-    if (std::regex_match(args[index], regex.class_))
+    if (std::regex_match(args[index], regex.recurse))
     {
-      bool HASARG = NextArgTest(index, args);
-      if (!HASARG)
-      {
-        params.error_value = 3;
-        return false;
-      }
-      int next_index = index + 1;
-      std::string next_arg = args[next_index];
-      if (regex.IsOption(next_arg))
-      {
-        std::string message = "Invalid option for [";
-        message.append(args[index]);
-        message.append("]\n");
-        std::cerr << message;
-        params.error_value = 4;
-        return false;
-      }
-      params.class_names.push_back(next_arg);
-      skip = true;
+      switches.isRecurse = true;
       continue;
     }
-    if (std::regex_match(args[index], regex.directory))
+    std::filesystem::path path(args[index]);
+    const bool exists = PathExists(path, params, 3, true);
+    if (!exists)
     {
-      bool HASARG = NextArgTest(index, args);
-      if (!HASARG)
-      {
-        params.error_value = 5;
-        return false;
-      }
-      int next_index = index + 1;
-      std::string next_arg = args[next_index];
-      if (regex.IsOption(next_arg))
-      {
-        std::string message = "Invalid option for [";
-        message.append(args[index]);
-        message.append("]\n");
-        std::cerr << message;
-        params.error_value = 6;
-        return false;
-      }
-      params.path_name = next_arg;
-      skip = true;
-      continue;
+      params.error_value = 4;
+      return false;
     }
-    if (std::regex_match(args[index], regex.prebuild))
-    {
-      switches.prebuild_script = true;
-      continue;
-    }
+    params.paths.push_back(std::filesystem::path(args[index]));
   }
   return true;
 }
