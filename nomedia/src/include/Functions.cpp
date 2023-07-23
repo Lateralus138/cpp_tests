@@ -16,7 +16,9 @@ bool PathExists(std::filesystem::path path, Parameters &params, int error_code, 
   if ((verbose) && (!path_exists))
   {
     std::string message = "Path: ";
+    message.push_back('\"');
     message.append(path);
+    message.push_back('\"');
     message.append(" was not found.\n");
     std::cerr << message;
   }
@@ -52,7 +54,9 @@ bool CreateFile(std::filesystem::path path, std::string content, Parameters &par
     if (out_file_stream.bad())
     {
       message = "Could not write to ";
+      message.push_back('\"');
       message.append(path);
+      message.push_back('\"');
       message.append(".\n");
       std::cerr << message;
       params.error_value = error_code;
@@ -70,13 +74,62 @@ bool CreateFile(std::filesystem::path path, std::string content, Parameters &par
   else
   {
     message = "Could not open ";
+    message.push_back('\"');
     message.append(path);
+    message.push_back('\"');
     message.append(".\n");
     std::cerr << message;
     params.error_value = error_code;
     file_created = false;
   }
   return file_created;
+}
+bool IsDirectory(std::filesystem::path path, Parameters &params, int error_code, bool verbose)
+{
+  bool isDirectory;
+  try
+  {
+    isDirectory = std::filesystem::is_directory(path);
+  }
+  catch (std::filesystem::filesystem_error ferr)
+  {
+    std::cout << ferr.what() << '\n';
+    params.error_value = error_code;
+  }
+  if ((verbose) && (!isDirectory))
+  {
+    std::string message = "Path: ";
+    message.push_back('\"');
+    message.append(path);
+    message.push_back('\"');
+    message.append(" is not a directory.\n");
+    std::cerr << message;
+  }
+  return isDirectory;
+}
+
+bool IsFile(std::filesystem::path path, Parameters &params, int error_code, bool verbose)
+{
+  bool isFile;
+  try
+  {
+    isFile = std::filesystem::is_regular_file(path);
+  }
+  catch (std::filesystem::filesystem_error ferr)
+  {
+    std::cout << ferr.what() << '\n';
+    params.error_value = error_code;
+  }
+  if ((verbose) && (!isFile))
+  {
+    std::string message = "Path: ";
+    message.push_back('\"');
+    message.append(path);
+    message.push_back('\"');
+    message.append(" is not a regular file.\n");
+    std::cerr << message;
+  }
+  return isFile;
 }
 //int process_directories(std::map<std::string, std::filesystem::path> &dir_paths, Parameters &params)
 //{

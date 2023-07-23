@@ -91,10 +91,16 @@ bool ArgParser(int argc, const char* argv[], Parameters& params, Switches &switc
       continue;
     }
     std::filesystem::path path(args[index]);
-    const bool exists = PathExists(path, params, 3, true);
+    const bool exists = PathExists(path, params, 5, true);
     if (!exists)
     {
-      params.error_value = 4;
+      params.error_value = 6;
+      return false;
+    }
+    const bool isDirectory = IsDirectory(path, params, 7, true);
+    if (!isDirectory)
+    {
+      params.error_value = 8;
       return false;
     }
     params.paths.push_back(std::filesystem::path(args[index]));
