@@ -4,51 +4,31 @@
 // ║ © 2023 Ian Pride - New Pride Software / Services                                 ║
 // ╚══════════════════════════════════════════════════════════════════════════════════╝
 #include "pch.h"
-int main(int argc, const char* argv[])
+struct Options
 {
-  // TODO Process arguments
-  // TODO /h, /help       - help message
-  // TODO /m, /monochrome - output has no color
-  // TODO /i, /input      - input file
-  // TODO /o, /ouput      - output file
-  // TODO /c, /count      - urls per line
-  // TODO /d, /discard    - discard everything but values
-  // BEGIN argument parsing
-  ProgramError perror;
-  const std::regex UINT("[0-9]+");
+  std::regex UINT = std::regex("[0-9]+");
   unsigned int urlsPerLine = 9;
   std::string inputFile = "";
   std::string outputFile = "";
   bool isOutputColor = true;
   bool isDiscard = false;
   bool isOutputFile = false;
-  CodePage cp;
-  Handle handle{};
-  ConsoleMode
-    inputConsoleMode,
-    outputConsoleMode;
-  auto errorTest = [isOutputColor](ProgramError& perror)
-  {
-    if (perror.getError().value > 0)
-    {
-      perror.print(isOutputColor);
-      std::exit(perror.getError().value);
-    }
-  };
-  ArgumentParser argumentParser(argc, argv, 1);
-  const std::vector<std::string> MONOCHROMEOPTIONS  { "/m", "/monochrome" };
-  const std::vector<std::string> HELPOPTIONS        { "/h", "/help"       };
-  const std::vector<std::string> INPUTFILEOPTIONS   { "/i", "/input"      };
-  const std::vector<std::string> OUTPUTFILEOPTIONS  { "/o", "/output"     };
-  const std::vector<std::string> COUNTOPTIONS       { "/c", "/count"      };
-  const std::vector<std::string> DISCARDOPTIONS     { "/d", "/discard"    };
+};
+unsigned int ParseArguments(ArgumentParser &argumentParser, Options& options, ProgramError &perror)
+{
+  const std::vector<std::string> MONOCHROMEOPTIONS{ "/m", "/monochrome" };
+  const std::vector<std::string> HELPOPTIONS{ "/h", "/help" };
+  const std::vector<std::string> INPUTFILEOPTIONS{ "/i", "/input" };
+  const std::vector<std::string> OUTPUTFILEOPTIONS{ "/o", "/output" };
+  const std::vector<std::string> COUNTOPTIONS{ "/c", "/count" };
+  const std::vector<std::string> DISCARDOPTIONS{ "/d", "/discard" };
   if (argumentParser.optionsExist(MONOCHROMEOPTIONS))
   {
-    isOutputColor = false;
+    options.isOutputColor = false;
   }
   if (argumentParser.optionsExist(DISCARDOPTIONS))
   {
-    isDiscard = true;
+    options.isDiscard = true;
   }
   if (argumentParser.optionsExist(HELPOPTIONS))
   {
@@ -58,57 +38,90 @@ int main(int argc, const char* argv[])
   }
   if (argumentParser.optionsExist(INPUTFILEOPTIONS))
   {
-    inputFile = argumentParser.getOptions(INPUTFILEOPTIONS);
-    if (inputFile.empty())
+    options.inputFile = argumentParser.getOptions(INPUTFILEOPTIONS);
+    if (options.inputFile.empty())
     {
       perror.addError(1, "Option not provided for [/i, /input]");
       perror.setError(1);
-      perror.print(isOutputColor);
+      perror.print(options.isOutputColor);
       return perror.getError().value;
     }
   }
   if (argumentParser.optionsExist(OUTPUTFILEOPTIONS))
   {
-    outputFile = argumentParser.getOptions(OUTPUTFILEOPTIONS);
-    if (outputFile.empty())
+    options.outputFile = argumentParser.getOptions(OUTPUTFILEOPTIONS);
+    if (options.outputFile.empty())
     {
       perror.addError(2, "Option not provided for [/o, /output]");
       perror.setError(2);
-      perror.print(isOutputColor);
+      perror.print(options.isOutputColor);
       return perror.getError().value;
     }
-    isOutputFile = true;
+    options.isOutputFile = true;
   }
   if (argumentParser.optionsExist(COUNTOPTIONS))
   {
     const std::string& option = argumentParser.getOptions(COUNTOPTIONS);
-    if (!std::regex_match(option, UINT))
+    if (!std::regex_match(option, options.UINT))
     {
       perror.addError(3, "Option provided for [/c, /count] is not a valid value.\nPlease provide a positive integer.");
       perror.setError(3);
-      perror.print(isOutputColor);
+      perror.print(options.isOutputColor);
       return perror.getError().value;
     }
-    urlsPerLine = std::stoi(option);
+    options.urlsPerLine = std::stoi(option);
+  }
+  return 0;
+}
+int main(int argc, const char* argv[])
+{
+  ProgramError perror;
+  Options options;
+  CodePage cp;
+  Handle handle{};
+  ConsoleMode
+    inputConsoleMode,
+    outputConsoleMode;
+  auto errorTest = [options](ProgramError& perror)
+  {
+    if (perror.getError().value > 0)
+    {
+      perror.print(options.isOutputColor);
+      std::exit(perror.getError().value);
+    }
+  };
+  // TODO Process arguments
+  // TODO /h, /help       - help message
+  // TODO /m, /monochrome - output has no color
+  // TODO /i, /input      - input file
+  // TODO /o, /ouput      - output file
+  // TODO /c, /count      - urls per line
+  // TODO /d, /discard    - discard everything but values
+  // BEGIN argument parsing
+  ArgumentParser argumentParser(argc, argv, 1);
+  const unsigned int PARSEARGUMENTSRESULT = ParseArguments(argumentParser, options, perror);
+  if (PARSEARGUMENTSRESULT > 0)
+  {
+    return PARSEARGUMENTSRESULT;
   }
   // END argument parsing
 
   const std::string WINDIR = GetWindowsDirectoryAsString(perror, 4, "Could not retrieve the Windows Directory");
   errorTest(perror);
-  if (inputFile.empty())
+  if (options.inputFile.empty())
   {
-    inputFile.append(WINDIR);
-    inputFile.append("\\System32\\drivers\\etc\\hosts");
+    options.inputFile.append(WINDIR);
+    options.inputFile.append("\\System32\\drivers\\etc\\hosts");
   }
-  std::filesystem::path inputPath(inputFile);
-  std::filesystem::path outputPath(outputFile);
+  std::filesystem::path inputPath(options.inputFile);
+  std::filesystem::path outputPath(options.outputFile);
   std::error_code ec;
   const bool INPUTPATHEXISTS = std::filesystem::exists(inputPath, ec);
   if (ec.value() > 0)
   {
     perror.addError(5, ec.message());
     perror.setError(5);
-    perror.print(isOutputColor);
+    perror.print(options.isOutputColor);
     return perror.getError().value;
   }
   if (!INPUTPATHEXISTS)
@@ -117,7 +130,7 @@ int main(int argc, const char* argv[])
     message.append(" does not exist");
     perror.addError(6, message);
     perror.setError(6);
-    perror.print(isOutputColor);
+    perror.print(options.isOutputColor);
     return perror.getError().value;
   }
   // BEGIN CodePage Init
