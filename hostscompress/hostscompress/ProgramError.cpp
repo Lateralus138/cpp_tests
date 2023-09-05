@@ -1,5 +1,34 @@
 #include "pch.h"
 #include "ProgramError.h"
+std::string GetLastErrorAsString()
+{
+  DWORD errorId = ::GetLastError();
+  if (errorId == 0)
+  {
+    return std::string();
+  }
+  LPSTR buffer = nullptr;
+  size_t messageSize =
+    FormatMessageA
+    (
+      FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL, errorId,
+      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+      (LPSTR)&buffer, 0, NULL
+    );
+  std::string message(buffer, messageSize);
+  LocalFree(buffer);
+  return message;
+}
+void SetCustomError(ProgramError& perror, int errorValue, std::string errorMessage)
+{
+  std::string workingMessage = GetLastErrorAsString();
+  workingMessage.append(errorMessage);
+  perror.addError(errorValue, workingMessage);
+  perror.setError(errorValue);
+}
 void ProgramError::addError(int value, std::string message)
 {
   errors[value] = message;
@@ -42,4 +71,3 @@ void ProgramError::print(bool color)
   if (currentError.value > 0) std::cerr << errorMessage << '\n';
   else std::cout << errorMessage << '\n';
 }
-//ProgramError perror;

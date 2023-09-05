@@ -1,4 +1,5 @@
 #pragma once
+std::string GetLastErrorAsString();
 struct ErrorStruct
 {
   int value;
@@ -30,3 +31,4 @@ public:
   ErrorStruct getError();
   void print(bool color);
 };
+void SetCustomError(ProgramError& perror, int errorValue, std::string errorMessage);
