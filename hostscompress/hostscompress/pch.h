@@ -6,9 +6,11 @@
 #include <map>
 #include <vector>
 #include <regex>
+#include <filesystem>
 #include "ProgramError.h"
 #include "Console.h"
 #include "ArgumentParser.h"
+#include "Functions.h"
 #endif // !PCH_H
 
 

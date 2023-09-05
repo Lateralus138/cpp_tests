@@ -12,13 +12,16 @@ int main(int argc, const char* argv[])
   // TODO /i, /input      - input file
   // TODO /o, /ouput      - output file
   // TODO /c, /count      - urls per line
+  // TODO /d, /discard    - discard everything but values
   // BEGIN argument parsing
   ProgramError perror;
   const std::regex UINT("[0-9]+");
   unsigned int urlsPerLine = 9;
-  std::string inputFile = "C:\\";
+  std::string inputFile = "";
   std::string outputFile = "";
   bool isOutputColor = true;
+  bool isDiscard = false;
+  bool isOutputFile = false;
   CodePage cp;
   Handle handle{};
   ConsoleMode
@@ -33,11 +36,20 @@ int main(int argc, const char* argv[])
     }
   };
   ArgumentParser argumentParser(argc, argv, 1);
-  const std::vector<std::string> HELPOPTIONS        { "/h", "/help" };
   const std::vector<std::string> MONOCHROMEOPTIONS  { "/m", "/monochrome" };
-  const std::vector<std::string> INPUTFILEOPTIONS   { "/i", "/input" };
-  const std::vector<std::string> OUTPUTFILEOPTIONS  { "/o", "/output" };
-  const std::vector<std::string> COUNTOPTIONS       { "/c", "/count" };
+  const std::vector<std::string> HELPOPTIONS        { "/h", "/help"       };
+  const std::vector<std::string> INPUTFILEOPTIONS   { "/i", "/input"      };
+  const std::vector<std::string> OUTPUTFILEOPTIONS  { "/o", "/output"     };
+  const std::vector<std::string> COUNTOPTIONS       { "/c", "/count"      };
+  const std::vector<std::string> DISCARDOPTIONS     { "/d", "/discard"    };
+  if (argumentParser.optionsExist(MONOCHROMEOPTIONS))
+  {
+    isOutputColor = false;
+  }
+  if (argumentParser.optionsExist(DISCARDOPTIONS))
+  {
+    isDiscard = true;
+  }
   if (argumentParser.optionsExist(HELPOPTIONS))
   {
     // TODO Finish help message
@@ -49,32 +61,65 @@ int main(int argc, const char* argv[])
     inputFile = argumentParser.getOptions(INPUTFILEOPTIONS);
     if (inputFile.empty())
     {
-      std::cerr << "Option not provided for [/i, /input].\n";
+      perror.addError(1, "Option not provided for [/i, /input]");
+      perror.setError(1);
+      perror.print(isOutputColor);
+      return perror.getError().value;
     }
   }
   if (argumentParser.optionsExist(OUTPUTFILEOPTIONS))
   {
     outputFile = argumentParser.getOptions(OUTPUTFILEOPTIONS);
+    if (outputFile.empty())
+    {
+      perror.addError(2, "Option not provided for [/o, /output]");
+      perror.setError(2);
+      perror.print(isOutputColor);
+      return perror.getError().value;
+    }
+    isOutputFile = true;
   }
   if (argumentParser.optionsExist(COUNTOPTIONS))
   {
     const std::string& option = argumentParser.getOptions(COUNTOPTIONS);
-    if (std::regex_match(option, UINT))
+    if (!std::regex_match(option, UINT))
     {
-      urlsPerLine = std::stoi(option);
+      perror.addError(3, "Option provided for [/c, /count] is not a valid value.\nPlease provide a positive integer.");
+      perror.setError(3);
+      perror.print(isOutputColor);
+      return perror.getError().value;
     }
-    else
-    {
-      std::string message = "\"";
-      message.append(option);
-      message.append("\" is not a valid value for [/c, /count].\nPlease provide a positive integer.\n");
-      std::cerr << message;
-      return 255;
-    }
+    urlsPerLine = std::stoi(option);
   }
-  std::cout << urlsPerLine << '\n';
   // END argument parsing
 
+  const std::string WINDIR = GetWindowsDirectoryAsString(perror, 4, "Could not retrieve the Windows Directory");
+  errorTest(perror);
+  if (inputFile.empty())
+  {
+    inputFile.append(WINDIR);
+    inputFile.append("\\System32\\drivers\\etc\\hosts");
+  }
+  std::filesystem::path inputPath(inputFile);
+  std::filesystem::path outputPath(outputFile);
+  std::error_code ec;
+  const bool INPUTPATHEXISTS = std::filesystem::exists(inputPath, ec);
+  if (ec.value() > 0)
+  {
+    perror.addError(5, ec.message());
+    perror.setError(5);
+    perror.print(isOutputColor);
+    return perror.getError().value;
+  }
+  if (!INPUTPATHEXISTS)
+  {
+    std::string message(inputPath.string());
+    message.append(" does not exist");
+    perror.addError(6, message);
+    perror.setError(6);
+    perror.print(isOutputColor);
+    return perror.getError().value;
+  }
   // BEGIN CodePage Init
   cp.setInitCodePage(perror, 1, "Could not get the initial code page.");
   errorTest(perror);
@@ -114,6 +159,7 @@ int main(int argc, const char* argv[])
   SetConsoleTitle(L"Hosts Compress");
  
   // TODO Continue program
+
   std::cin.get();
   // BEGIN CodePage Exit
   if (cp.getCurrentCodePage() != cp.getInitCodePage())
