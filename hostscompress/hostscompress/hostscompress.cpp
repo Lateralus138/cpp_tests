@@ -6,20 +6,74 @@
 #include "pch.h"
 int main(int argc, const char* argv[])
 {
+  // TODO Process arguments
+  // TODO /h, /help       - help message
+  // TODO /m, /monochrome - output has no color
+  // TODO /i, /input      - input file
+  // TODO /o, /ouput      - output file
+  // TODO /c, /count      - urls per line
+  // BEGIN argument parsing
   ProgramError perror;
+  const std::regex UINT("[0-9]+");
+  unsigned int urlsPerLine = 9;
+  std::string inputFile = "C:\\";
+  std::string outputFile = "";
+  bool isOutputColor = true;
   CodePage cp;
   Handle handle{};
   ConsoleMode
     inputConsoleMode,
     outputConsoleMode;
-  auto errorTest = [](ProgramError &perror)
+  auto errorTest = [isOutputColor](ProgramError& perror)
   {
     if (perror.getError().value > 0)
     {
-      perror.print(true);
+      perror.print(isOutputColor);
       std::exit(perror.getError().value);
     }
   };
+  ArgumentParser argumentParser(argc, argv, 1);
+  const std::vector<std::string> HELPOPTIONS        { "/h", "/help" };
+  const std::vector<std::string> MONOCHROMEOPTIONS  { "/m", "/monochrome" };
+  const std::vector<std::string> INPUTFILEOPTIONS   { "/i", "/input" };
+  const std::vector<std::string> OUTPUTFILEOPTIONS  { "/o", "/output" };
+  const std::vector<std::string> COUNTOPTIONS       { "/c", "/count" };
+  if (argumentParser.optionsExist(HELPOPTIONS))
+  {
+    // TODO Finish help message
+    std::cout << "HELP\n";
+    return EXIT_SUCCESS;
+  }
+  if (argumentParser.optionsExist(INPUTFILEOPTIONS))
+  {
+    inputFile = argumentParser.getOptions(INPUTFILEOPTIONS);
+    if (inputFile.empty())
+    {
+      std::cerr << "Option not provided for [/i, /input].\n";
+    }
+  }
+  if (argumentParser.optionsExist(OUTPUTFILEOPTIONS))
+  {
+    outputFile = argumentParser.getOptions(OUTPUTFILEOPTIONS);
+  }
+  if (argumentParser.optionsExist(COUNTOPTIONS))
+  {
+    const std::string& option = argumentParser.getOptions(COUNTOPTIONS);
+    if (std::regex_match(option, UINT))
+    {
+      urlsPerLine = std::stoi(option);
+    }
+    else
+    {
+      std::string message = "\"";
+      message.append(option);
+      message.append("\" is not a valid value for [/c, /count].\nPlease provide a positive integer.\n");
+      std::cerr << message;
+      return 255;
+    }
+  }
+  std::cout << urlsPerLine << '\n';
+  // END argument parsing
 
   // BEGIN CodePage Init
   cp.setInitCodePage(perror, 1, "Could not get the initial code page.");
@@ -57,11 +111,10 @@ int main(int argc, const char* argv[])
     perror, 5, ""
   );
   // END InputHandle Init
-  SetConsoleTitle(L"Hosts Compressor");
-
-  // TODO Process arguments
+  SetConsoleTitle(L"Hosts Compress");
+ 
   // TODO Continue program
-
+  std::cin.get();
   // BEGIN CodePage Exit
   if (cp.getCurrentCodePage() != cp.getInitCodePage())
   {

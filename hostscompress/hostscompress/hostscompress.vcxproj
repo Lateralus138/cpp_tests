@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ArgumentParser.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="hostscompress.cpp" />
     <ClCompile Include="pch.cpp">
@@ -150,6 +151,7 @@
     <ClCompile Include="ProgramError.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArgumentParser.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ProgramError.h" />
