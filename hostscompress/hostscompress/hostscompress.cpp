@@ -107,6 +107,29 @@ void CompressUrls(Options& options, std::vector<std::string> &urls, std::vector 
     output.push_back(ss.str());
   }
 }
+std::vector<std::string> ReadHostsToVector(std::ifstream& inputFileStream, std::filesystem::path &inputPath, ProgramError &perror, Options &options)
+{
+  /*std::ifstream inputFileStream(inputPath);*/
+  std::vector<std::string> inputFileData{};
+  if (inputFileStream.is_open())
+  {
+    for (std::string line; std::getline(inputFileStream, line);)
+    {
+      inputFileData.push_back(line);
+    }
+  }
+  else
+  {
+    std::string message = "Could not open file: ";
+    message.append(inputPath.string());
+    message.append(" for reading");
+    perror.addError(15, message);
+    perror.setError(15);
+    perror.print(options.isOutputColor);
+    return inputFileData;
+    //return perror.getError().value;
+  }
+}
 
 int main(int argc, const char* argv[])
 {
@@ -211,24 +234,28 @@ int main(int argc, const char* argv[])
   //std::cout << "\nBegin benchmark for reading the hosts file:\n";
   //b._Begin();
   std::ifstream inputFileStream(inputPath);
-  std::vector<std::string> inputFileData;
-  if (inputFileStream.is_open())
-  {
-    for (std::string line; std::getline(inputFileStream, line);)
-    {
-      inputFileData.push_back(line);
-    }
-  }
-  else
-  {
-    std::string message = "Could not open file: ";
-    message.append(inputPath.string());
-    message.append(" for reading");
-    perror.addError(15, message);
-    perror.setError(15);
-    perror.print(options.isOutputColor);
-    return perror.getError().value;
-  }
+  std::vector<std::string> inputFileData = ReadHostsToVector(inputFileStream, inputPath, perror, options);
+  errorTest(perror);
+  //std::ifstream inputFileStream(inputPath);
+  //std::vector<std::string> inputFileData;
+  //if (inputFileStream.is_open())
+  //{
+  //  for (std::string line; std::getline(inputFileStream, line);)
+  //  {
+  //    inputFileData.push_back(line);
+  //  }
+  //}
+  //else
+  //{
+  //  std::string message = "Could not open file: ";
+  //  message.append(inputPath.string());
+  //  message.append(" for reading");
+  //  perror.addError(15, message);
+  //  perror.setError(15);
+  //  perror.print(options.isOutputColor);
+  //  return perror.getError().value;
+  //}
+
   //b._End();
   //b._PrintElapseMessage();
   //std::cout << "\nBegin benchmark for parsing the urls:\n";
@@ -250,7 +277,7 @@ int main(int argc, const char* argv[])
   //b._Begin();
   if ((int)urls0.size() > 0) CompressUrls(options, urls0, compressed);
   if ((int)urls127.size() > 0) CompressUrls(options, urls127, compressed);
-  std::cout << compressed.size() << '\n';
+  //std::cout << compressed.size() << '\n';
   //b._End();
   //b._PrintElapseMessage();
 
