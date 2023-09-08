@@ -96,6 +96,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,6 +131,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ArgumentParser.cpp" />
+    <ClCompile Include="Bench.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="hostscompress.cpp" />
@@ -153,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArgumentParser.h" />
+    <ClInclude Include="Bench.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="pch.h" />

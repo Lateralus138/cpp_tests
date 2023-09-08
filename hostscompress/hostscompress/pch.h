@@ -7,10 +7,13 @@
 #include <vector>
 #include <regex>
 #include <filesystem>
+#include <fstream>
+#include <sstream>
 #include "ProgramError.h"
 #include "Console.h"
 #include "ArgumentParser.h"
 #include "Functions.h"
+#include "Bench.h"
 #endif // !PCH_H
 
 
