@@ -204,12 +204,12 @@ int main(int argc, const char* argv[])
   SetConsoleTitle(L"Hosts Compress");
  
   // TODO Continue program
-  Bench b;
-  std::cout << "Press [Enter] to continue... > ";
-  std::cin.get();
-  std::cout << '\n';
-  std::cout << "\nBegin benchmark for reading the hosts file:\n";
-  b._Begin();
+  //Bench b;
+  //std::cout << "Press [Enter] to continue... > ";
+  //std::cin.get();
+  //std::cout << '\n';
+  //std::cout << "\nBegin benchmark for reading the hosts file:\n";
+  //b._Begin();
   std::ifstream inputFileStream(inputPath);
   std::vector<std::string> inputFileData;
   if (inputFileStream.is_open())
@@ -229,10 +229,10 @@ int main(int argc, const char* argv[])
     perror.print(options.isOutputColor);
     return perror.getError().value;
   }
-  b._End();
-  b._PrintElapseMessage();
-  std::cout << "\nBegin benchmark for parsing the urls:\n";
-  b._Begin();
+  //b._End();
+  //b._PrintElapseMessage();
+  //std::cout << "\nBegin benchmark for parsing the urls:\n";
+  //b._Begin();
   std::vector<std::string> urls0;
   std::vector<std::string> urls127;
   for (std::vector<std::string>::iterator iterator = inputFileData.begin(); iterator != inputFileData.end(); iterator++)
@@ -243,16 +243,16 @@ int main(int argc, const char* argv[])
       urls0.push_back(*iterator);
     }
   }
-  b._End();
-  b._PrintElapseMessage();
+  //b._End();
+  //b._PrintElapseMessage();
   std::vector<std::string> compressed;
-  std::cout << "\nBegin benchmark for compressing the urls:\n";
-  b._Begin();
+  //std::cout << "\nBegin benchmark for compressing the urls:\n";
+  //b._Begin();
   if ((int)urls0.size() > 0) CompressUrls(options, urls0, compressed);
   if ((int)urls127.size() > 0) CompressUrls(options, urls127, compressed);
   std::cout << compressed.size() << '\n';
-  b._End();
-  b._PrintElapseMessage();
+  //b._End();
+  //b._PrintElapseMessage();
 
   // BEGIN CodePage Exit
   if (cp.getCurrentCodePage() != cp.getInitCodePage())
