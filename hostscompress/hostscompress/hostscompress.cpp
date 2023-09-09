@@ -14,11 +14,23 @@ struct Options
   bool isOutputColor = true;
   bool isDiscard = false;
   bool isOutputFile = false;
+  int urlStartingLineIndex = 0;
+  int url000StartingLineIndex = 0;
+  int url127StartingLineIndex = 0;
+  bool hasUrl000StartingLineIndex = false;
+  bool hasUrl127StartingLineIndex = false;
+  bool hasFooterAndHeader = false;
+  std::vector<std::string> urls000;
+  std::vector<std::string> urls127;
+  std::vector<std::string> headerContent;
+  std::vector<std::string> footerContent;
 };
 struct Regex
 {
-  std::regex RGX_ISURL_0 = std::regex("^0.0.0.0[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
+  std::regex RGX_ISURL_000 = std::regex("^0.0.0.0[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
+  std::regex RGX_URLS000_REPLACE = std::regex("^(0.0.0.0)[\\s]+");
   std::regex RGX_ISURL_127 = std::regex("^127.0.0.1[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
+  std::regex RGX_URLS127_REPLACE = std::regex("^(127.0.0.1)[\\s]+");
 };
 unsigned int ParseArguments(ArgumentParser &argumentParser, Options& options, ProgramError &perror)
 {
@@ -79,11 +91,47 @@ unsigned int ParseArguments(ArgumentParser &argumentParser, Options& options, Pr
   }
   return 0;
 }
-void CompressUrls(Options& options, std::vector<std::string> &urls, std::vector < std::string> &output)
+void ParseContent(std::vector<std::string>& inputFileData, Options& options, std::string variableName, std::vector<std::string>& urls, std::regex &match, std::regex& regexReplace)
+{
+  int parseDataIndex = 0;
+  const bool isUrls000 = (variableName == "urls000");
+  const bool isUrls127 = (variableName == "urls127");
+  for (std::vector<std::string>::iterator iterator = inputFileData.begin(); iterator != inputFileData.end(); iterator++)
+  {
+    if (std::regex_match(*iterator, match))
+    {
+      if ((isUrls000) && (!options.hasUrl000StartingLineIndex))
+      {
+        options.hasUrl000StartingLineIndex = true;
+        options.url000StartingLineIndex = parseDataIndex;
+      }
+      if ((isUrls127) && (!options.hasUrl127StartingLineIndex))
+      {
+        options.hasUrl127StartingLineIndex = true;
+        options.url127StartingLineIndex = parseDataIndex;
+      }
+      *iterator = std::regex_replace(*iterator, regexReplace, "");
+      urls.push_back(*iterator);
+    }
+    else
+    {
+      if (!options.hasFooterAndHeader)
+      {
+        const bool hasUrlsIndex = (options.hasUrl000StartingLineIndex || options.hasUrl127StartingLineIndex);
+        if (!hasUrlsIndex) options.headerContent.push_back(*iterator);
+        else options.footerContent.push_back(*iterator);
+      }
+    }
+    parseDataIndex++;
+  }
+  options.hasFooterAndHeader = true;
+}
+void CompressUrls(Options& options, std::vector<std::string> &urls, std::vector < std::string> &output, std::string pre)
 {
   for (int index = 0; index <= (int)(urls.size() - options.urlsPerLine); index += options.urlsPerLine)
   {
     std::stringstream ss;
+    ss << pre << ' ';
     for (int index2 = 0; index2 < options.urlsPerLine; index2++)
     {
       const int nIndex = (index + index2);
@@ -107,16 +155,16 @@ void CompressUrls(Options& options, std::vector<std::string> &urls, std::vector 
     output.push_back(ss.str());
   }
 }
-std::vector<std::string> ReadHostsToVector(std::ifstream& inputFileStream, std::filesystem::path &inputPath, ProgramError &perror, Options &options)
+std::vector<std::string> ReadHostsToVector(std::ifstream& inputFileStream, std::filesystem::path &inputPath, ProgramError &perror)
 {
-  /*std::ifstream inputFileStream(inputPath);*/
-  std::vector<std::string> inputFileData{};
+  std::vector<std::string> inputFileData = {};
   if (inputFileStream.is_open())
   {
     for (std::string line; std::getline(inputFileStream, line);)
     {
       inputFileData.push_back(line);
     }
+    inputFileStream.close();
   }
   else
   {
@@ -125,10 +173,8 @@ std::vector<std::string> ReadHostsToVector(std::ifstream& inputFileStream, std::
     message.append(" for reading");
     perror.addError(15, message);
     perror.setError(15);
-    perror.print(options.isOutputColor);
-    return inputFileData;
-    //return perror.getError().value;
   }
+  return inputFileData;
 }
 
 int main(int argc, const char* argv[])
@@ -234,50 +280,47 @@ int main(int argc, const char* argv[])
   //std::cout << "\nBegin benchmark for reading the hosts file:\n";
   //b._Begin();
   std::ifstream inputFileStream(inputPath);
-  std::vector<std::string> inputFileData = ReadHostsToVector(inputFileStream, inputPath, perror, options);
+  std::vector<std::string> inputFileData =
+    ReadHostsToVector(inputFileStream, inputPath, perror);
   errorTest(perror);
-  //std::ifstream inputFileStream(inputPath);
-  //std::vector<std::string> inputFileData;
-  //if (inputFileStream.is_open())
-  //{
-  //  for (std::string line; std::getline(inputFileStream, line);)
-  //  {
-  //    inputFileData.push_back(line);
-  //  }
-  //}
-  //else
-  //{
-  //  std::string message = "Could not open file: ";
-  //  message.append(inputPath.string());
-  //  message.append(" for reading");
-  //  perror.addError(15, message);
-  //  perror.setError(15);
-  //  perror.print(options.isOutputColor);
-  //  return perror.getError().value;
-  //}
-
   //b._End();
   //b._PrintElapseMessage();
   //std::cout << "\nBegin benchmark for parsing the urls:\n";
   //b._Begin();
-  std::vector<std::string> urls0;
+  std::vector<std::string> urls000;
   std::vector<std::string> urls127;
-  for (std::vector<std::string>::iterator iterator = inputFileData.begin(); iterator != inputFileData.end(); iterator++)
-  {
-    if (std::regex_match(*iterator, regex.RGX_ISURL_0))
-    {
-      *iterator = std::regex_replace(*iterator, std::regex("^(0.0.0.0)[\\s]+"), "");
-      urls0.push_back(*iterator);
-    }
-  }
+
+  ParseContent(inputFileData, options, "urls000", urls000, regex.RGX_ISURL_000, regex.RGX_URLS000_REPLACE);
+  ParseContent(inputFileData, options, "urls127", urls127, regex.RGX_ISURL_127, regex.RGX_URLS127_REPLACE);
+  //int urls000sz = (int)options.urls000.size();
+  //int urls127sz = (int)options.urls000.size();
+
   //b._End();
   //b._PrintElapseMessage();
   std::vector<std::string> compressed;
   //std::cout << "\nBegin benchmark for compressing the urls:\n";
   //b._Begin();
-  if ((int)urls0.size() > 0) CompressUrls(options, urls0, compressed);
-  if ((int)urls127.size() > 0) CompressUrls(options, urls127, compressed);
-  //std::cout << compressed.size() << '\n';
+  if ((int)urls000.size() > 0) CompressUrls(options, urls000, compressed, "0.0.0.0");
+  if ((int)urls127.size() > 0) CompressUrls(options, urls127, compressed, "127.0.0.1");
+  
+  if ((int)options.headerContent.size())
+  {
+    for (std::vector<std::string>::const_iterator iterator = options.headerContent.begin(); iterator != options.headerContent.end(); iterator++)
+    {
+      std::cout << *iterator << '\n' << std::flush;
+    }
+  }
+  for (std::vector<std::string>::const_iterator iterator = compressed.begin(); iterator != compressed.end(); iterator++)
+  {
+    std::cout << *iterator << '\n' << std::flush;
+  }
+  if ((int)options.footerContent.size())
+  {
+    for (std::vector<std::string>::const_iterator iterator = options.footerContent.begin(); iterator != options.footerContent.end(); iterator++)
+    {
+      std::cout << *iterator << '\n' << std::flush;
+    }
+  }
   //b._End();
   //b._PrintElapseMessage();
 
