@@ -4,7 +4,12 @@
 // ║ © 2023 Ian Pride - New Pride Software / Services                                 ║
 // ╚══════════════════════════════════════════════════════════════════════════════════╝
 #include "pch.h"
-Bench bench;
+//Bench bench;
+const std::regex RGX_ISURL_000("^0.0.0.0[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
+const std::regex RGX_URLS000_REPLACE("^(0.0.0.0)[\\s]+");
+const std::regex RGX_ISURL_127("^127.0.0.1[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
+const std::regex RGX_URLS127_REPLACE("^(127.0.0.1)[\\s]+");
+const std::regex RGX_UINT("[0-9]+");
 struct Options
 {
   std::regex RGX_UINT = std::regex("[0-9]+");
@@ -24,13 +29,6 @@ struct Options
   std::vector<std::string> urls127;
   std::vector<std::string> headerContent;
   std::vector<std::string> footerContent;
-};
-struct Regex
-{
-  std::regex RGX_ISURL_000 = std::regex("^0.0.0.0[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
-  std::regex RGX_URLS000_REPLACE = std::regex("^(0.0.0.0)[\\s]+");
-  std::regex RGX_ISURL_127 = std::regex("^127.0.0.1[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
-  std::regex RGX_URLS127_REPLACE = std::regex("^(127.0.0.1)[\\s]+");
 };
 unsigned int ParseArguments(ArgumentParser &argumentParser, Options& options, ProgramError &perror)
 {
@@ -91,7 +89,7 @@ unsigned int ParseArguments(ArgumentParser &argumentParser, Options& options, Pr
   }
   return 0;
 }
-void ParseContent(std::vector<std::string>& inputFileData, Options& options, std::string variableName, std::vector<std::string>& urls, std::regex &match, std::regex& regexReplace)
+void ParseContent(std::vector<std::string>& inputFileData, Options& options, std::string variableName, std::vector<std::string>& urls, std::regex match, std::regex regexReplace)
 {
   int parseDataIndex = 0;
   const bool isUrls000 = (variableName == "urls000");
@@ -125,6 +123,32 @@ void ParseContent(std::vector<std::string>& inputFileData, Options& options, std
     parseDataIndex++;
   }
   options.hasFooterAndHeader = true;
+}
+std::string GetHostsOutput(std::vector<std::string> &compressed, Options &options)
+{
+  std::string output = std::string("");
+  if ((!options.isDiscard) && ((int)options.headerContent.size()))
+  {
+    for (std::vector<std::string>::const_iterator iterator = options.headerContent.begin(); iterator != options.headerContent.end(); iterator++)
+    {
+      if (!output.empty()) output.push_back('\n');
+      output.append(*iterator);
+    }
+  }
+  for (std::vector<std::string>::const_iterator iterator = compressed.begin(); iterator != compressed.end(); iterator++)
+  {
+    if (!output.empty()) output.push_back('\n');
+    output.append(*iterator);
+  }
+  if ((!options.isDiscard) && ((int)options.footerContent.size()))
+  {
+    for (std::vector<std::string>::const_iterator iterator = options.footerContent.begin(); iterator != options.footerContent.end(); iterator++)
+    {
+      if (!output.empty()) output.push_back('\n');
+      output.append(*iterator);
+    }
+  }
+  return output;
 }
 void CompressUrls(Options& options, std::vector<std::string> &urls, std::vector < std::string> &output, std::string pre)
 {
@@ -181,7 +205,7 @@ int main(int argc, const char* argv[])
 {
   ProgramError perror;
   Options options;
-  Regex regex;
+  //Regex regex;
   CodePage cp;
   Handle handle{};
   ConsoleMode
@@ -290,10 +314,8 @@ int main(int argc, const char* argv[])
   std::vector<std::string> urls000;
   std::vector<std::string> urls127;
 
-  ParseContent(inputFileData, options, "urls000", urls000, regex.RGX_ISURL_000, regex.RGX_URLS000_REPLACE);
-  ParseContent(inputFileData, options, "urls127", urls127, regex.RGX_ISURL_127, regex.RGX_URLS127_REPLACE);
-  //int urls000sz = (int)options.urls000.size();
-  //int urls127sz = (int)options.urls000.size();
+  ParseContent(inputFileData, options, "urls000", urls000, RGX_ISURL_000, RGX_URLS000_REPLACE);
+  ParseContent(inputFileData, options, "urls127", urls127, RGX_ISURL_127, RGX_URLS127_REPLACE);
 
   //b._End();
   //b._PrintElapseMessage();
@@ -302,25 +324,9 @@ int main(int argc, const char* argv[])
   //b._Begin();
   if ((int)urls000.size() > 0) CompressUrls(options, urls000, compressed, "0.0.0.0");
   if ((int)urls127.size() > 0) CompressUrls(options, urls127, compressed, "127.0.0.1");
+
+  std::cout << GetHostsOutput(compressed, options);
   
-  if ((int)options.headerContent.size())
-  {
-    for (std::vector<std::string>::const_iterator iterator = options.headerContent.begin(); iterator != options.headerContent.end(); iterator++)
-    {
-      std::cout << *iterator << '\n' << std::flush;
-    }
-  }
-  for (std::vector<std::string>::const_iterator iterator = compressed.begin(); iterator != compressed.end(); iterator++)
-  {
-    std::cout << *iterator << '\n' << std::flush;
-  }
-  if ((int)options.footerContent.size())
-  {
-    for (std::vector<std::string>::const_iterator iterator = options.footerContent.begin(); iterator != options.footerContent.end(); iterator++)
-    {
-      std::cout << *iterator << '\n' << std::flush;
-    }
-  }
   //b._End();
   //b._PrintElapseMessage();
 
