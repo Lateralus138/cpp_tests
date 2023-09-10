@@ -4,7 +4,7 @@
 // ║ © 2023 Ian Pride - New Pride Software / Services                                 ║
 // ╚══════════════════════════════════════════════════════════════════════════════════╝
 #include "pch.h"
-//Bench bench;
+// TODO Create program/progess verbosity based on options.isQuiet
 const std::regex RGX_ISURL_000("^0.0.0.0[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
 const std::regex RGX_URLS000_REPLACE("^(0.0.0.0)[\\s]+");
 const std::regex RGX_ISURL_127("^127.0.0.1[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
@@ -25,6 +25,7 @@ struct Options
   bool hasUrl000StartingLineIndex = false;
   bool hasUrl127StartingLineIndex = false;
   bool hasFooterAndHeader = false;
+  bool isQuiet = false;
   std::vector<std::string> urls000;
   std::vector<std::string> urls127;
   std::vector<std::string> headerContent;
@@ -38,6 +39,7 @@ unsigned int ParseArguments(ArgumentParser &argumentParser, Options& options, Pr
   const std::vector<std::string> OUTPUTFILEOPTIONS{ "/o", "/output" };
   const std::vector<std::string> COUNTOPTIONS{ "/c", "/count" };
   const std::vector<std::string> DISCARDOPTIONS{ "/d", "/discard" };
+  const std::vector<std::string> QUIETOPTIONS{ "/q", "/quiet" };
   if (argumentParser.optionsExist(MONOCHROMEOPTIONS))
   {
     options.isOutputColor = false;
@@ -45,6 +47,10 @@ unsigned int ParseArguments(ArgumentParser &argumentParser, Options& options, Pr
   if (argumentParser.optionsExist(DISCARDOPTIONS))
   {
     options.isDiscard = true;
+  }
+  if (argumentParser.optionsExist(QUIETOPTIONS))
+  {
+    options.isQuiet = true;
   }
   if (argumentParser.optionsExist(HELPOPTIONS))
   {
@@ -85,7 +91,15 @@ unsigned int ParseArguments(ArgumentParser &argumentParser, Options& options, Pr
       perror.print(options.isOutputColor);
       return perror.getError().value;
     }
-    options.urlsPerLine = std::stoi(option);
+    const int UPL = std::stoi(option);
+    if ((UPL < 2) || (UPL > 9))
+    {
+      perror.addError(4, "Option provided for [/c, /count] exceeds url limit per line.\nPlease provide a positive integer from 2 - 9.");
+      perror.setError(4);
+      perror.print(options.isOutputColor);
+      return perror.getError().value;
+    }
+    options.urlsPerLine = UPL;
   }
   return 0;
 }
@@ -179,8 +193,9 @@ void CompressUrls(Options& options, std::vector<std::string> &urls, std::vector 
     output.push_back(ss.str());
   }
 }
-std::vector<std::string> ReadHostsToVector(std::ifstream& inputFileStream, std::filesystem::path &inputPath, ProgramError &perror)
+std::vector<std::string> ReadHostsToVector(std::filesystem::path &inputPath, ProgramError &perror)
 {
+  std::ifstream inputFileStream(inputPath);
   std::vector<std::string> inputFileData = {};
   if (inputFileStream.is_open())
   {
@@ -195,17 +210,32 @@ std::vector<std::string> ReadHostsToVector(std::ifstream& inputFileStream, std::
     std::string message = "Could not open file: ";
     message.append(inputPath.string());
     message.append(" for reading");
-    perror.addError(15, message);
-    perror.setError(15);
+    perror.addError(13, message);
+    perror.setError(13);
   }
   return inputFileData;
 }
-
+void CreateHostsFile(const std::string &OUTPUTDATA, Options& options, ProgramError &perror)
+{
+  std::ofstream ofs(options.outputFile, std::fstream::trunc);
+  if (ofs.is_open())
+  {
+    ofs << OUTPUTDATA;
+    ofs.close();
+  }
+  else
+  {
+    std::string message = "Could not open file: ";
+    message.append(options.outputFile);
+    message.append(" for writing");
+    perror.addError(14, message);
+    perror.setError(14);
+  }
+}
 int main(int argc, const char* argv[])
 {
   ProgramError perror;
   Options options;
-  //Regex regex;
   CodePage cp;
   Handle handle{};
   ConsoleMode
@@ -219,18 +249,14 @@ int main(int argc, const char* argv[])
       std::exit(perror.getError().value);
     }
   };
-  // TODO Process arguments
-  // TODO /h, /help       - help message
-  // BEGIN argument parsing
   ArgumentParser argumentParser(argc, argv, 1);
   const unsigned int PARSEARGUMENTSRESULT = ParseArguments(argumentParser, options, perror);
   if (PARSEARGUMENTSRESULT > 0)
   {
     return PARSEARGUMENTSRESULT;
   }
-  // END argument parsing
 
-  const std::string WINDIR = GetWindowsDirectoryAsString(perror, 4, "Could not retrieve the Windows Directory");
+  const std::string WINDIR = GetWindowsDirectoryAsString(perror, 5, "Could not retrieve the Windows Directory");
   errorTest(perror);
   if (options.inputFile.empty())
   {
@@ -243,8 +269,8 @@ int main(int argc, const char* argv[])
   const bool INPUTPATHEXISTS = std::filesystem::exists(inputPath, ec);
   if (ec.value() > 0)
   {
-    perror.addError(5, ec.message());
-    perror.setError(5);
+    perror.addError(6, ec.message());
+    perror.setError(6);
     perror.print(options.isOutputColor);
     return perror.getError().value;
   }
@@ -252,102 +278,58 @@ int main(int argc, const char* argv[])
   {
     std::string message(inputPath.string());
     message.append(" does not exist");
-    perror.addError(6, message);
-    perror.setError(6);
+    perror.addError(7, message);
+    perror.setError(7);
     perror.print(options.isOutputColor);
     return perror.getError().value;
   }
-  // BEGIN CodePage Init
-  cp.setInitCodePage(perror, 7, "Could not get the initial code page.");
+  cp.setInitCodePage(perror, 8, "Could not get the initial code page.");
   errorTest(perror);
   if (cp.getCurrentCodePage() != CP_UTF8)
   {
-    cp.setCodePage(CP_UTF8, perror, 8, "Could not set the current code page.");
+    cp.setCodePage(CP_UTF8, perror, 9, "Could not set the current code page.");
     errorTest(perror);
   }
-  // END CodePage Init
-  // BEGIN InputHandle Init
-  handle.setInputHandle(perror, 9, "Could not retrieve console input handle.");
+  handle.setInputHandle(perror, 10, "Could not retrieve console input handle.");
   errorTest(perror);
-  // END InputHandle Init
-  // BEGIN InitConsoleMode Init
-  inputConsoleMode.setInitConsoleMode(handle.getInputHandle(), perror, 10, "");
+  inputConsoleMode.setInitConsoleMode(handle.getInputHandle(), perror, 11, "");
   errorTest(perror);
   inputConsoleMode.setConsoleMode
   (
     handle.getInputHandle(),
     ENABLE_VIRTUAL_TERMINAL_INPUT | ENABLE_PROCESSED_INPUT,
-    perror, 11, ""
+    perror, 12, ""
   );
   errorTest(perror);
-  // END InitConsoleMode Init
-  // BEGIN InputHandle Init
- /* handle.setOutputHandle(perror, 12, "Could not retrieve console output handle.");
-  errorTest(perror);
-  outputConsoleMode.setInitConsoleMode(handle.getOutputHandle(), perror, 13, "");
-  perror.setError(0);
-  errorTest(perror);
-  outputConsoleMode.setConsoleMode
-  (
-    handle.getOutputHandle(),
-    ENABLE_PROCESSED_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING,
-    perror, 14, ""
-  );*/
-  // END InputHandle Init
   SetConsoleTitle(L"Hosts Compress");
- 
-  // TODO Continue program
-  //Bench b;
-  //std::cout << "Press [Enter] to continue... > ";
-  //std::cin.get();
-  //std::cout << '\n';
-  //std::cout << "\nBegin benchmark for reading the hosts file:\n";
-  //b._Begin();
-  std::ifstream inputFileStream(inputPath);
   std::vector<std::string> inputFileData =
-    ReadHostsToVector(inputFileStream, inputPath, perror);
+    ReadHostsToVector(inputPath, perror);
   errorTest(perror);
-  //b._End();
-  //b._PrintElapseMessage();
-  //std::cout << "\nBegin benchmark for parsing the urls:\n";
-  //b._Begin();
   std::vector<std::string> urls000;
   std::vector<std::string> urls127;
-
   ParseContent(inputFileData, options, "urls000", urls000, RGX_ISURL_000, RGX_URLS000_REPLACE);
   ParseContent(inputFileData, options, "urls127", urls127, RGX_ISURL_127, RGX_URLS127_REPLACE);
-
-  //b._End();
-  //b._PrintElapseMessage();
   std::vector<std::string> compressed;
-  //std::cout << "\nBegin benchmark for compressing the urls:\n";
-  //b._Begin();
   if ((int)urls000.size() > 0) CompressUrls(options, urls000, compressed, "0.0.0.0");
   if ((int)urls127.size() > 0) CompressUrls(options, urls127, compressed, "127.0.0.1");
-
-  std::cout << GetHostsOutput(compressed, options);
-  
-  //b._End();
-  //b._PrintElapseMessage();
-
-  // BEGIN CodePage Exit
+  const std::string OUTPUTDATA = GetHostsOutput(compressed, options);
+  if (!options.isOutputFile)
+  {
+    std::cout << GetHostsOutput(compressed, options);
+  }
+  else
+  {
+    CreateHostsFile(OUTPUTDATA, options, perror);
+    errorTest(perror);
+  }
   if (cp.getCurrentCodePage() != cp.getInitCodePage())
   {
     cp.setCodePage(cp.getInitCodePage(), perror, 15, "Could not set the code page to the initial value.");
     errorTest(perror);
   }
-  // END CodePage Exit
-  // BEGIN InputConsoleMode Exit
   if (inputConsoleMode.getCurrentConsoleMode() != inputConsoleMode.getInitConsoleMode())
   {
     inputConsoleMode.setConsoleMode(handle.getInputHandle(), inputConsoleMode.getInitConsoleMode(), perror, 16, "");
   }
-  // END InputConsoleMode Exit
-  //// BEGIN OutputConsoleMode Exit
-  //if (outputConsoleMode.getCurrentConsoleMode() != outputConsoleMode.getInitConsoleMode())
-  //{
-  //  outputConsoleMode.setConsoleMode(handle.getInputHandle(), outputConsoleMode.getInitConsoleMode(), perror, 17, "");
-  //}
-  //// END OutputConsoleMode Exit
   return EXIT_SUCCESS;
 }
