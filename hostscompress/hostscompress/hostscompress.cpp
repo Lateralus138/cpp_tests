@@ -4,7 +4,6 @@
 // ║ © 2023 Ian Pride - New Pride Software / Services                                 ║
 // ╚══════════════════════════════════════════════════════════════════════════════════╝
 #include "pch.h"
-// TODO Create program/progess verbosity based on options.isQuiet
 const std::regex RGX_ISURL_000("^0.0.0.0[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
 const std::regex RGX_URLS000_REPLACE("^(0.0.0.0)[\\s]+");
 const std::regex RGX_ISURL_127("^127.0.0.1[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
@@ -164,10 +163,40 @@ std::string GetHostsOutput(std::vector<std::string> &compressed, Options &option
   }
   return output;
 }
+std::string IncrementString(std::string string, int increment)
+{
+  std::string incremented = std::string("");
+  for (int index = 0; index < increment; index++)
+    incremented.append(string);
+  return incremented;
+}
+std::u8string IncrementString(std::u8string string, int increment)
+{
+  std::u8string incremented = std::u8string(u8"");
+  for (int index = 0; index < increment; index++)
+    incremented.append(string);
+  return incremented;
+}
 void CompressUrls(Options& options, std::vector<std::string> &urls, std::vector < std::string> &output, std::string pre)
 {
+  const std::u8string BLOCK = u8"█";
+  const std::u8string LBRACKET = u8"〘";
+  const std::u8string RBRACKET = u8"〙";
+  std::string spaces;
+  std::u8string nextCharacter;
+  int stepIndex{};
+  int progressIndex{};
+  if (!options.isQuiet)
+  {
+    stepIndex = 0;
+    progressIndex = 0;
+    spaces = IncrementString(" ", 100);
+    nextCharacter = IncrementString(BLOCK, 0);
+    std::cout << "\x1b[s" << (const char*)LBRACKET.c_str() << (const char*)nextCharacter.c_str() << spaces << (const char*)RBRACKET.c_str() << "0%";
+  }
   for (int index = 0; index <= (int)(urls.size() - options.urlsPerLine); index += options.urlsPerLine)
   {
+    if (!options.isQuiet) progressIndex = ((index * 100) / (int)(urls.size()));
     std::stringstream ss;
     ss << pre << ' ';
     for (int index2 = 0; index2 < options.urlsPerLine; index2++)
@@ -177,6 +206,13 @@ void CompressUrls(Options& options, std::vector<std::string> &urls, std::vector 
       if (index2 < (options.urlsPerLine - 1)) ss << ' ';
     }
     output.push_back(ss.str());
+    if ((!options.isQuiet) && (progressIndex > stepIndex))
+    {
+      stepIndex++;
+      nextCharacter = IncrementString(u8"█", stepIndex);
+      spaces = IncrementString(" ", (100 - stepIndex));
+      std::cout << "\x1b[u" << (const char*)LBRACKET.c_str() << (const char*)nextCharacter.c_str() << spaces << (const char*)RBRACKET.c_str() << stepIndex << '%';
+    }
   }
   int leftOver = (int)(urls.size() - (output.size() * options.urlsPerLine));
   if (leftOver > 0)
@@ -191,6 +227,13 @@ void CompressUrls(Options& options, std::vector<std::string> &urls, std::vector 
       }
     }
     output.push_back(ss.str());
+    if (!options.isQuiet)
+    {
+      stepIndex++;
+      nextCharacter = IncrementString(u8"█", stepIndex);
+      spaces = IncrementString(" ", (100 - stepIndex));
+      std::cout << "\x1b[u" << (const char*)LBRACKET.c_str() << (const char*)nextCharacter.c_str() << spaces << (const char*)RBRACKET.c_str() << stepIndex << "%\n";
+    }
   }
 }
 std::vector<std::string> ReadHostsToVector(std::filesystem::path &inputPath, ProgramError &perror)
@@ -232,6 +275,10 @@ void CreateHostsFile(const std::string &OUTPUTDATA, Options& options, ProgramErr
     perror.setError(14);
   }
 }
+void PrintMessage(std::string message, Options& options)
+{
+  if (!options.isQuiet) std::cout << message;
+}
 int main(int argc, const char* argv[])
 {
   ProgramError perror;
@@ -255,7 +302,6 @@ int main(int argc, const char* argv[])
   {
     return PARSEARGUMENTSRESULT;
   }
-
   const std::string WINDIR = GetWindowsDirectoryAsString(perror, 5, "Could not retrieve the Windows Directory");
   errorTest(perror);
   if (options.inputFile.empty())
@@ -302,20 +348,78 @@ int main(int argc, const char* argv[])
   );
   errorTest(perror);
   SetConsoleTitle(L"Hosts Compress");
+  std::string currentMessage = "Reading \"" +
+    std::string(options.isOutputColor ? "\x1b[93m" : "") +
+    inputPath.string() +
+    std::string(options.isOutputColor ? "\x1b[m" : "") +
+    "\" content...\n";
+  PrintMessage(currentMessage, options);
   std::vector<std::string> inputFileData =
     ReadHostsToVector(inputPath, perror);
   errorTest(perror);
   std::vector<std::string> urls000;
   std::vector<std::string> urls127;
-  ParseContent(inputFileData, options, "urls000", urls000, RGX_ISURL_000, RGX_URLS000_REPLACE);
-  ParseContent(inputFileData, options, "urls127", urls127, RGX_ISURL_127, RGX_URLS127_REPLACE);
   std::vector<std::string> compressed;
-  if ((int)urls000.size() > 0) CompressUrls(options, urls000, compressed, "0.0.0.0");
-  if ((int)urls127.size() > 0) CompressUrls(options, urls127, compressed, "127.0.0.1");
+  currentMessage = "Compiling urls for [" +
+    std::string(options.isOutputColor ? "\x1b[93m" : "") +
+    "0.0.0.0" +
+    std::string(options.isOutputColor ? "\x1b[m" : "") +
+    "]...\n";
+  PrintMessage(currentMessage, options);
+  ParseContent(inputFileData, options, "urls000", urls000, RGX_ISURL_000, RGX_URLS000_REPLACE);
+  if ((int)urls000.size() > 0) 
+  {
+    currentMessage =
+      "Found urls for [" +
+      std::string(options.isOutputColor ? "\x1b[92m" : "") +
+      "0.0.0.0" +
+      std::string(options.isOutputColor ? "\x1b[m" : "") +
+      "]; Compressing...\n";
+    PrintMessage(currentMessage, options);
+    CompressUrls(options, urls000, compressed, "0.0.0.0");
+  }
+  else
+  {
+    currentMessage =
+      "No urls found for [" +
+      std::string(options.isOutputColor ? "\x1b[91m" : "") +
+      "0.0.0.0" +
+      std::string(options.isOutputColor ? "\x1b[m" : "") +
+      "]...\n";
+    PrintMessage(currentMessage, options);
+  }
+  currentMessage = "Compiling urls for [" +
+    std::string(options.isOutputColor ? "\x1b[93m" : "") +
+    "127.0.0.1" +
+    std::string(options.isOutputColor ? "\x1b[m" : "") +
+    "]...\n";
+  PrintMessage(currentMessage, options);
+  ParseContent(inputFileData, options, "urls127", urls127, RGX_ISURL_127, RGX_URLS127_REPLACE);
+  if ((int)urls127.size() > 0)
+  {
+    currentMessage =
+      "Found urls for [" +
+      std::string(options.isOutputColor ? "\x1b[92m" : "") +
+      "127.0.0.1" +
+      std::string(options.isOutputColor ? "\x1b[m" : "") +
+      "]; Compressing...\n";
+    PrintMessage(currentMessage, options);
+    CompressUrls(options, urls127, compressed, "127.0.0.1");
+  }
+  else
+  {
+    currentMessage =
+      "No urls found for [" +
+      std::string(options.isOutputColor ? "\x1b[91m" : "") +
+      "127.0.0.1" +
+      std::string(options.isOutputColor ? "\x1b[m" : "") +
+      "]...\n";
+    PrintMessage(currentMessage, options);
+  }
   const std::string OUTPUTDATA = GetHostsOutput(compressed, options);
   if (!options.isOutputFile)
   {
-    std::cout << GetHostsOutput(compressed, options);
+    std::cout << OUTPUTDATA;
   }
   else
   {
