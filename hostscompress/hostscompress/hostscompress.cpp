@@ -425,6 +425,13 @@ int main(int argc, const char* argv[])
   {
     CreateHostsFile(OUTPUTDATA, options, perror);
     errorTest(perror);
+    currentMessage =
+      "Compressed data has been successfully written to:\n\"" +
+      std::string(options.isOutputColor ? "\x1b[92m" : "") +
+      std::filesystem::absolute(outputPath).string() +
+      std::string(options.isOutputColor ? "\x1b[m" : "") +
+      "\"...\n";
+    PrintMessage(currentMessage, options);
   }
   if (cp.getCurrentCodePage() != cp.getInitCodePage())
   {
