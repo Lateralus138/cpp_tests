@@ -25,6 +25,7 @@ struct Options
   bool hasUrl127StartingLineIndex = false;
   bool hasFooterAndHeader = false;
   bool isQuiet = false;
+  bool isHelp = false;
   std::vector<std::string> urls000;
   std::vector<std::string> urls127;
   std::vector<std::string> headerContent;
@@ -55,7 +56,7 @@ unsigned int ParseArguments(ArgumentParser &argumentParser, Options& options, Pr
   {
     // TODO Finish help message
     std::cout << "HELP\n";
-    return EXIT_SUCCESS;
+    options.isHelp = true;
   }
   if (argumentParser.optionsExist(INPUTFILEOPTIONS))
   {
@@ -227,13 +228,23 @@ void CompressUrls(Options& options, std::vector<std::string> &urls, std::vector 
       }
     }
     output.push_back(ss.str());
-    if (!options.isQuiet)
-    {
-      stepIndex++;
-      nextCharacter = IncrementString(u8"█", stepIndex);
-      spaces = IncrementString(" ", (100 - stepIndex));
-      std::cout << "\x1b[u" << (const char*)LBRACKET.c_str() << (const char*)nextCharacter.c_str() << spaces << (const char*)RBRACKET.c_str() << stepIndex << "%\n";
-    }
+  }
+  if (!options.isQuiet)
+  {
+    stepIndex = 100;
+    nextCharacter = IncrementString(u8"█", stepIndex);
+    spaces = IncrementString(" ", (100 - stepIndex));
+    std::cout << "\x1b[u" << (const char*)LBRACKET.c_str() << (const char*)nextCharacter.c_str() << spaces << (const char*)RBRACKET.c_str() << stepIndex << "%\n";
+    std::string message = "Compressed [";
+    if (options.isOutputColor) message.append("\x1b[93m");
+    message.append(std::to_string((int)urls.size()));
+    if (options.isOutputColor) message.append("\x1b[m");
+    message.append("] urls to [");
+    if (options.isOutputColor) message.append("\x1b[92m");
+    message.append(std::to_string((int)urls.size() / options.urlsPerLine));
+    if (options.isOutputColor) message.append("\x1b[m");
+    message.append("] lines...\n");
+    std::cout << message;
   }
 }
 std::vector<std::string> ReadHostsToVector(std::filesystem::path &inputPath, ProgramError &perror)
@@ -302,6 +313,7 @@ int main(int argc, const char* argv[])
   {
     return PARSEARGUMENTSRESULT;
   }
+  if (options.isHelp) return EXIT_SUCCESS;
   const std::string WINDIR = GetWindowsDirectoryAsString(perror, 5, "Could not retrieve the Windows Directory");
   errorTest(perror);
   if (options.inputFile.empty())
