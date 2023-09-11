@@ -235,16 +235,26 @@ void CompressUrls(Options& options, std::vector<std::string> &urls, std::vector 
     nextCharacter = IncrementString(u8"█", stepIndex);
     spaces = IncrementString(" ", (100 - stepIndex));
     std::cout << "\x1b[u" << (const char*)LBRACKET.c_str() << (const char*)nextCharacter.c_str() << spaces << (const char*)RBRACKET.c_str() << stepIndex << "%\n";
-    std::string message = "Compressed [";
-    if (options.isOutputColor) message.append("\x1b[93m");
-    message.append(std::to_string((int)urls.size()));
-    if (options.isOutputColor) message.append("\x1b[m");
-    message.append("] urls to [");
-    if (options.isOutputColor) message.append("\x1b[92m");
-    message.append(std::to_string((int)urls.size() / options.urlsPerLine));
-    if (options.isOutputColor) message.append("\x1b[m");
-    message.append("] lines...\n");
-    std::cout << message;
+    //std::string message = "Compressed [";
+    //if (options.isOutputColor) message.append("\x1b[93m");
+    //message.append(std::to_string((int)urls.size()));
+    //if (options.isOutputColor) message.append("\x1b[m");
+    //message.append("] urls to [");
+    //if (options.isOutputColor) message.append("\x1b[92m");
+    //message.append(std::to_string((int)urls.size() / options.urlsPerLine));
+    //if (options.isOutputColor) message.append("\x1b[m");
+    //message.append("] lines...\n");
+    //std::cout << message;
+    std::cout
+      <<"Compressed ["
+      << (options.isOutputColor ? "\x1b[93m" : "")
+      << std::to_string((int)urls.size())
+      << (options.isOutputColor ? "\x1b[m" : "")
+      << "] urls to ["
+      << (options.isOutputColor ? "\x1b[92m" : "")
+      << std::to_string((int)urls.size() / options.urlsPerLine)
+      << (options.isOutputColor ? "\x1b[m" : "")
+      << "] lines...\n";
   }
 }
 std::vector<std::string> ReadHostsToVector(std::filesystem::path &inputPath, ProgramError &perror)
