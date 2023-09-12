@@ -72,8 +72,6 @@ unsigned int ParseArguments(ArgumentParser &argumentParser, Options& options, Pr
   }
   if (argumentParser.optionsExist(HELPOPTIONS))
   {
-    // TODO Finish help message
-    //std::cout << "HELP\n";
     std::cout <<
       "\n  Hosts Compress - Consolidate multiple blocked URLs to single IP lines in a"
       "\n  systems's hosts file with various options."
@@ -316,8 +314,8 @@ std::vector<std::string> ReadHostsToVector(std::filesystem::path &inputPath, Pro
     std::string message = "Could not open file: ";
     message.append(inputPath.string());
     message.append(" for reading");
-    perror.addError(13, message);
-    perror.setError(13);
+    perror.addError(15, message);
+    perror.setError(15);
   }
   return inputFileData;
 }
@@ -334,8 +332,8 @@ void CreateHostsFile(const std::string &OUTPUTDATA, Options& options, ProgramErr
     std::string message = "Could not open file: ";
     message.append(options.outputFile);
     message.append(" for writing");
-    perror.addError(14, message);
-    perror.setError(14);
+    perror.addError(16, message);
+    perror.setError(16);
   }
 }
 void PrintMessage(std::string message, Options& options)
@@ -414,6 +412,7 @@ int main(int argc, const char* argv[])
   }
   handle.setInputHandle(perror, 10, "Could not retrieve console input handle.");
   errorTest(perror);
+
   inputConsoleMode.setInitConsoleMode(handle.getInputHandle(), perror, 11, "");
   errorTest(perror);
   inputConsoleMode.setConsoleMode
@@ -421,6 +420,17 @@ int main(int argc, const char* argv[])
     handle.getInputHandle(),
     ENABLE_VIRTUAL_TERMINAL_INPUT | ENABLE_PROCESSED_INPUT,
     perror, 12, ""
+  );
+  errorTest(perror);
+  handle.setOutputHandle(perror, 12, "Could not retrieve console input handle.");
+  errorTest(perror);
+  outputConsoleMode.setInitConsoleMode(handle.getOutputHandle(), perror, 13, "");
+  errorTest(perror);
+  outputConsoleMode.setConsoleMode
+  (
+    handle.getOutputHandle(),
+    ENABLE_VIRTUAL_TERMINAL_PROCESSING | ENABLE_PROCESSED_OUTPUT,
+    perror, 14, ""
   );
   errorTest(perror);
   SetConsoleTitle(L"Hosts Compress");
@@ -554,12 +564,17 @@ int main(int argc, const char* argv[])
   }
   if (cp.getCurrentCodePage() != cp.getInitCodePage())
   {
-    cp.setCodePage(cp.getInitCodePage(), perror, 15, "Could not set the code page to the initial value.");
+    cp.setCodePage(cp.getInitCodePage(), perror, 17, "Could not set the code page to the initial value.");
     errorTest(perror);
   }
   if (inputConsoleMode.getCurrentConsoleMode() != inputConsoleMode.getInitConsoleMode())
   {
-    inputConsoleMode.setConsoleMode(handle.getInputHandle(), inputConsoleMode.getInitConsoleMode(), perror, 16, "Could not set the console mode to the initial value.");
+    inputConsoleMode.setConsoleMode(handle.getInputHandle(), inputConsoleMode.getInitConsoleMode(), perror, 18, "Could not set the console mode to the initial value.");
+    errorTest(perror);
+  }
+  if (outputConsoleMode.getCurrentConsoleMode() != outputConsoleMode.getInitConsoleMode())
+  {
+    outputConsoleMode.setConsoleMode(handle.getOutputHandle(), outputConsoleMode.getInitConsoleMode(), perror, 19, "Could not set the console mode to the initial value.");
     errorTest(perror);
   }
   return EXIT_SUCCESS;
