@@ -4,7 +4,6 @@
 // ║ © 2023 Ian Pride - New Pride Software / Services                                 ║
 // ╚══════════════════════════════════════════════════════════════════════════════════╝
 #include "pch.h"
-// TODO Negate complexity in main
 const std::regex RGX_ISURL_000("^0.0.0.0[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
 const std::regex RGX_URLS000_REPLACE("^(0.0.0.0)[\\s]+");
 const std::regex RGX_ISURL_127("^127.0.0.1[\\s]+(?!(0.0.0.0|127.0.0.1|local$|localhost$|localhost.localdomain$)).*");
@@ -32,6 +31,24 @@ struct Options
   std::vector<std::string> headerContent;
   std::vector<std::string> footerContent;
 };
+std::string ColorString(std::string string, int color, Options& options)
+{
+  std::string result = std::string("");
+  if (options.isOutputColor)
+  {
+    result.append("\x1b[");
+    result.append(std::to_string(color));
+    result.push_back('m');
+    result.append(string);
+    result.append("\x1b[");
+    result.push_back('m');
+  }
+  else
+  {
+    result = string;
+  }
+  return result;
+}
 unsigned int ParseArguments(ArgumentParser &argumentParser, Options& options, ProgramError &perror)
 {
   const std::vector<std::string> MONOCHROMEOPTIONS{ "/m", "/monochrome" };
@@ -56,7 +73,41 @@ unsigned int ParseArguments(ArgumentParser &argumentParser, Options& options, Pr
   if (argumentParser.optionsExist(HELPOPTIONS))
   {
     // TODO Finish help message
-    std::cout << "HELP\n";
+    //std::cout << "HELP\n";
+    std::cout <<
+      "\n  Hosts Compress - Consolidate multiple blocked URLs to single IP lines in a"
+      "\n  systems's hosts file with various options."
+      "\n"
+      "\n  @" << ColorString("USAGE", 95, options) <<
+      "\n    hostscompress [" << ColorString("SWITCHES", 92, options) <<
+      "] [[" << ColorString("OPTIONS", 94, options) <<
+      "] <" << ColorString("PARAMS", 93, options) <<
+      ">]"
+      "\n"
+      "\n  @" << ColorString("SWITCHES", 92, options) << ":"
+      "\n    /h, /help       This help message."
+      "\n    /m, /monochrome Verbose output is void of color."
+      "\n    /q, /quiet      No verbosity; silences all errors and output with the errors"
+      "\n                    and output with the exception of the resulting compression"
+      "\n                    results if no output file is provided."
+      "\n    /d, discard     Discard everything except the compressed lines from the"
+      "\n                    resulting output. This is only recommended if the HOSTS file"
+      "\n                    is only used for blocking URLs."
+      "\n"
+      "\n  @" << ColorString("OPTIONS", 94, options) << ":"
+      "\n    /i, /input      Path to an optional " <<
+      ColorString("INPUT FILE", 93, options) <<
+      " to parse. Defaults to the"
+      "\n                    default system hosts file location."
+      "\n    /o, /output     Path to an optional " <<
+      ColorString("OUTPUT FILE", 93, options) <<
+      ". The default is to output"
+      "\n                    to the console."
+      "\n    /c, count       " <<
+      ColorString("NUMBER", 93, options) <<
+      " of URLs to compress to a single line. The default is"
+      "\n                    9 (2-9)."
+      "\n";
     options.isHelp = true;
   }
   if (argumentParser.optionsExist(INPUTFILEOPTIONS))
@@ -316,7 +367,7 @@ int main(int argc, const char* argv[])
   {
     if (perror.getError().value > 0)
     {
-      perror.print(options.isOutputColor);
+      if (!options.isQuiet) perror.print(options.isOutputColor);
       std::exit(perror.getError().value);
     }
   };
@@ -373,13 +424,6 @@ int main(int argc, const char* argv[])
   );
   errorTest(perror);
   SetConsoleTitle(L"Hosts Compress");
-  //std::string currentMessage; // TODO Remove
-  //std::string currentMessage = "Reading \"" +
-  //  std::string(options.isOutputColor ? "\x1b[93m" : "") +
-  //  std::filesystem::absolute(inputPath).string() +
-  //  std::string(options.isOutputColor ? "\x1b[m" : "") +
-  //  "\" content...\n";
-  //PrintMessage(currentMessage, options);
   PrintMessage
   (
     std::vector<std::string>
@@ -398,12 +442,6 @@ int main(int argc, const char* argv[])
   std::vector<std::string> urls000;
   std::vector<std::string> urls127;
   std::vector<std::string> compressed;
-  //currentMessage = "Compiling urls for [" +
-  //  std::string(options.isOutputColor ? "\x1b[93m" : "") +
-  //  "0.0.0.0" +
-  //  std::string(options.isOutputColor ? "\x1b[m" : "") +
-  //  "]...\n";
-  //PrintMessage(currentMessage, options);
   PrintMessage
   (
     std::vector<std::string>
@@ -419,13 +457,6 @@ int main(int argc, const char* argv[])
   ParseContent(inputFileData, options, "urls000", urls000, RGX_ISURL_000, RGX_URLS000_REPLACE);
   if ((int)urls000.size() > 0) 
   {
-    //currentMessage =
-    //  "Found urls for [" +
-    //  std::string(options.isOutputColor ? "\x1b[92m" : "") +
-    //  "0.0.0.0" +
-    //  std::string(options.isOutputColor ? "\x1b[m" : "") +
-    //  "]; Compressing...\n";
-    //PrintMessage(currentMessage, options);
     PrintMessage
     (
       std::vector<std::string>
@@ -442,13 +473,6 @@ int main(int argc, const char* argv[])
   }
   else
   {
-    //currentMessage =
-    //  "No urls found for [" +
-    //  std::string(options.isOutputColor ? "\x1b[91m" : "") +
-    //  "0.0.0.0" +
-    //  std::string(options.isOutputColor ? "\x1b[m" : "") +
-    //  "]...\n";
-    //PrintMessage(currentMessage, options);
     PrintMessage
     (
       std::vector<std::string>
@@ -462,17 +486,11 @@ int main(int argc, const char* argv[])
       options
     );
   }
-  //currentmessage = "compiling urls for [" +
-  //  std::string(options.isoutputcolor ? "\x1b[93m" : "") +
-  //  "127.0.0.1" +
-  //  std::string(options.isoutputcolor ? "\x1b[m" : "") +
-  //  "]...\n";
-  //printmessage(currentmessage, options);
   PrintMessage
   (
     std::vector<std::string>
     {
-      "compiling urls for [",
+      "Compiling urls for [",
         std::string(options.isOutputColor ? "\x1b[93m" : ""),
         "127.0.0.1",
         std::string(options.isOutputColor ? "\x1b[m" : ""),
@@ -483,13 +501,6 @@ int main(int argc, const char* argv[])
   ParseContent(inputFileData, options, "urls127", urls127, RGX_ISURL_127, RGX_URLS127_REPLACE);
   if ((int)urls127.size() > 0)
   {
-    //currentMessage =
-    //  "Found urls for [" +
-    //  std::string(options.isOutputColor ? "\x1b[92m" : "") +
-    //  "127.0.0.1" +
-    //  std::string(options.isOutputColor ? "\x1b[m" : "") +
-    //  "]; Compressing...\n";
-    //PrintMessage(currentMessage, options);
     PrintMessage
     (
       std::vector<std::string>
@@ -506,13 +517,6 @@ int main(int argc, const char* argv[])
   }
   else
   {
-    //currentMessage =
-    //  "No urls found for [" +
-    //  std::string(options.isOutputColor ? "\x1b[91m" : "") +
-    //  "127.0.0.1" +
-    //  std::string(options.isOutputColor ? "\x1b[m" : "") +
-    //  "]...\n";
-    //PrintMessage(currentMessage, options);
     PrintMessage
     (
       std::vector<std::string>
@@ -535,13 +539,6 @@ int main(int argc, const char* argv[])
   {
     CreateHostsFile(OUTPUTDATA, options, perror);
     errorTest(perror);
-    //currentMessage =
-    //  "Compressed data has been successfully written to:\n\"" +
-    //  std::string(options.isOutputColor ? "\x1b[92m" : "") +
-    //  std::filesystem::absolute(outputPath).string() +
-    //  std::string(options.isOutputColor ? "\x1b[m" : "") +
-    //  "\"...\n";
-    //PrintMessage(currentMessage, options);
     PrintMessage
     (
       std::vector<std::string>
