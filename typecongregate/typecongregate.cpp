@@ -129,9 +129,10 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
     options.extnTypes = SplitStringToVector(options.extnTypeStr, ",");
     for (std::vector<std::string>::const_iterator iterator = options.ALLOPTIONS.begin(); iterator != options.ALLOPTIONS.end(); iterator++)
     {
-      const int result =
-        IsInVectorErrorCheck(options.extnTypes, *iterator, perror, options, 2, "Argument provided for [/x, /extension] is invalid");
-      if (result > 0) return perror.getError().value;
+      if (IsInVectorErrorCheck(options.extnTypes, *iterator, perror, options, 2, "Argument provided for [/x, /extension] is invalid") > 0) return perror.getError().value;
+      //const int result =
+      //  IsInVectorErrorCheck(options.extnTypes, *iterator, perror, options, 2, "Argument provided for [/x, /extension] is invalid");
+      //if (result > 0) return perror.getError().value;
       //if (IsInVector(options.extnTypes, *iterator))
       //{
       //  perror.addError(2, "Argument provided for [/x, /extension] is invalid");
@@ -151,9 +152,10 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
       if (!options.isQuiet) perror.print(options.isColorOutput);
       return perror.getError().value;
     }
-    const int result =
-      IsInVectorErrorCheck(options.ALLOPTIONS, options.rootPathStr, perror, options, 4, "Argument provided for [/s, /source] is invalid");
-    if (result > 0) return perror.getError().value;
+    if (IsInVectorErrorCheck(options.ALLOPTIONS, options.rootPathStr, perror, options, 4, "Argument provided for [/s, /source] is invalid") > 0) return perror.getError().value;
+    //const int result =
+    //  IsInVectorErrorCheck(options.ALLOPTIONS, options.rootPathStr, perror, options, 4, "Argument provided for [/s, /source] is invalid");
+    //if (result > 0) return perror.getError().value;
     //if (IsInVector(ALLOPTIONS, options.rootPathStr))
     //{
     //  perror.addError(4, "Argument provided for [/s, /source] is invalid");
@@ -172,9 +174,10 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
       if (!options.isQuiet) perror.print(options.isColorOutput);
       return perror.getError().value;
     }
-    const int result =
-      IsInVectorErrorCheck(options.ALLOPTIONS, options.destPathStr, perror, options, 6, "Argument provided for [/d, /destination] is invalid");
-    if (result > 0) return perror.getError().value;
+    if (IsInVectorErrorCheck(options.ALLOPTIONS, options.destPathStr, perror, options, 6, "Argument provided for [/d, /destination] is invalid") > 0) return perror.getError().value;
+    //const int result =
+    //  IsInVectorErrorCheck(options.ALLOPTIONS, options.destPathStr, perror, options, 6, "Argument provided for [/d, /destination] is invalid");
+    //if (result > 0) return perror.getError().value;
     //if (IsInVector(ALLOPTIONS, options.destPathStr))
     //{
     //  perror.addError(6, "Argument provided for [/d, /destination] is invalid");
