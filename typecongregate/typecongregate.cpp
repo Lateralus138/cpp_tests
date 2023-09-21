@@ -67,6 +67,17 @@ void ConcatenateVectors(std::vector<T> &toVector, std::vector<T2> ...extraVector
     toVector.insert(toVector.end(), item.begin(), item.end());
   }
 }
+template <typename T>
+int IsInVectorErrorCheck(std::vector<T> &vector, T value, ProgramError &perror, Options& options, int errorValue, std::string errorMessage)
+{
+  if (IsInVector(vector, value))
+  {
+    perror.addError(errorValue, errorMessage);
+    perror.setError(errorValue);
+    if (!options.isQuiet) perror.print(options.isColorOutput);
+  }
+  return perror.getError().value;
+}
 unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramError &perror)
 {
   const std::vector<std::string> MONOCHROMEOPTIONS{ "/m", "/monochrome", "/M", "/MONOCHROME" };
@@ -77,14 +88,7 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
   const std::vector<std::string> RPATHOPTIONS{ "/s", "/source", "/S", "/SOURCE" };
   const std::vector<std::string> DPATHOPTIONS{ "/d", "/destination", "/D", "/DESTINATION" };
   std::vector<std::string> ALLOPTIONS{};
-  ConcatenateVectors (ALLOPTIONS, MONOCHROMEOPTIONS, QUIETOPTIONS, RECUROPTIONS, HELPOPTIONS, EXTNOPTIONS, RPATHOPTIONS, DPATHOPTIONS);
-  //ALLOPTIONS.insert(ALLOPTIONS.end(), MONOCHROMEOPTIONS.begin(), MONOCHROMEOPTIONS.end());
-  //ALLOPTIONS.insert(ALLOPTIONS.end(), QUIETOPTIONS.begin(), QUIETOPTIONS.end());
-  //ALLOPTIONS.insert(ALLOPTIONS.end(), RECUROPTIONS.begin(), RECUROPTIONS.end());
-  //ALLOPTIONS.insert(ALLOPTIONS.end(), HELPOPTIONS.begin(), HELPOPTIONS.end());
-  //ALLOPTIONS.insert(ALLOPTIONS.end(), EXTNOPTIONS.begin(), EXTNOPTIONS.end());
-  //ALLOPTIONS.insert(ALLOPTIONS.end(), RPATHOPTIONS.begin(), RPATHOPTIONS.end());
-  //ALLOPTIONS.insert(ALLOPTIONS.end(), DPATHOPTIONS.begin(), DPATHOPTIONS.end());
+  ConcatenateVectors(ALLOPTIONS, MONOCHROMEOPTIONS, QUIETOPTIONS, RECUROPTIONS, HELPOPTIONS, EXTNOPTIONS, RPATHOPTIONS, DPATHOPTIONS);
   if (args.optionsExist(MONOCHROMEOPTIONS))
   {
     options.isColorOutput = false;
@@ -117,13 +121,16 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
     options.extnTypes = SplitStringToVector(options.extnTypeStr, ",");
     for (std::vector<std::string>::const_iterator iterator = ALLOPTIONS.begin(); iterator != ALLOPTIONS.end(); iterator++)
     {
-      if (IsInVector(options.extnTypes, *iterator))
-      {
-        perror.addError(2, "Argument provided for [/x, /extension] is invalid");
-        perror.setError(2);
-        if (!options.isQuiet) perror.print(options.isColorOutput);
-        return perror.getError().value;
-      }
+      const int result =
+        IsInVectorErrorCheck(options.extnTypes, *iterator, perror, options, 2, "Argument provided for [/x, /extension] is invalid");
+      if (result > 0) return perror.getError().value;
+      //if (IsInVector(options.extnTypes, *iterator))
+      //{
+      //  perror.addError(2, "Argument provided for [/x, /extension] is invalid");
+      //  perror.setError(2);
+      //  if (!options.isQuiet) perror.print(options.isColorOutput);
+      //  return perror.getError().value;
+      //}
     }
   }
   if (args.optionsExist(RPATHOPTIONS))
@@ -136,13 +143,16 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
       if (!options.isQuiet) perror.print(options.isColorOutput);
       return perror.getError().value;
     }
-    if (IsInVector(ALLOPTIONS, options.rootPathStr))
-    {
-      perror.addError(4, "Argument provided for [/s, /source] is invalid");
-      perror.setError(4);
-      if (!options.isQuiet) perror.print(options.isColorOutput);
-      return perror.getError().value;
-    }
+    const int result =
+      IsInVectorErrorCheck(ALLOPTIONS, options.rootPathStr, perror, options, 4, "Argument provided for [/s, /source] is invalid");
+    if (result > 0) return perror.getError().value;
+    //if (IsInVector(ALLOPTIONS, options.rootPathStr))
+    //{
+    //  perror.addError(4, "Argument provided for [/s, /source] is invalid");
+    //  perror.setError(4);
+    //  if (!options.isQuiet) perror.print(options.isColorOutput);
+    //  return perror.getError().value;
+    //}
   }
   if (args.optionsExist(DPATHOPTIONS))
   {
@@ -154,13 +164,16 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
       if (!options.isQuiet) perror.print(options.isColorOutput);
       return perror.getError().value;
     }
-    if (IsInVector(ALLOPTIONS, options.destPathStr))
-    {
-      perror.addError(6, "Argument provided for [/d, /destination] is invalid");
-      perror.setError(6);
-      if (!options.isQuiet) perror.print(options.isColorOutput);
-      return perror.getError().value;
-    }
+    const int result =
+      IsInVectorErrorCheck(ALLOPTIONS, options.destPathStr, perror, options, 6, "Argument provided for [/d, /destination] is invalid");
+    if (result > 0) return perror.getError().value;
+    //if (IsInVector(ALLOPTIONS, options.destPathStr))
+    //{
+    //  perror.addError(6, "Argument provided for [/d, /destination] is invalid");
+    //  perror.setError(6);
+    //  if (!options.isQuiet) perror.print(options.isColorOutput);
+    //  return perror.getError().value;
+    //}
   }
   return 0;
 }
