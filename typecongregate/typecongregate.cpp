@@ -75,16 +75,29 @@ void ConcatenateVectors(std::vector<T> &toVector, std::vector<T2> ...extraVector
     toVector.insert(toVector.end(), item.begin(), item.end());
   }
 }
-template <typename T>
-int IsInVectorErrorCheck(std::vector<T> &vector, T value, ProgramError &perror, Options& options, int errorValue, std::string errorMessage)
+int IfConditionAddError(ProgramError& perror, Options& options, bool condition, int errorValue, std::string errorMessage)
 {
-  if (IsInVector(vector, value))
+  int status = 0;
+  if (condition)
   {
     perror.addError(errorValue, errorMessage);
     perror.setError(errorValue);
     if (!options.isQuiet) perror.print(options.isColorOutput);
+    status = perror.getError().value;
   }
-  return perror.getError().value;
+  return status;
+}
+template <typename T>
+int IsInVectorErrorCheck(std::vector<T> &vector, T value, ProgramError &perror, Options& options, int errorValue, std::string errorMessage)
+{
+  //if (IsInVector(vector, value))
+  //{
+  //  perror.addError(errorValue, errorMessage);
+  //  perror.setError(errorValue);
+  //  if (!options.isQuiet) perror.print(options.isColorOutput);
+  //}
+  //return perror.getError().value;
+  return IfConditionAddError(perror, options, IsInVector(vector, value), errorValue, errorMessage);
 }
 unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramError &perror)
 {
@@ -145,14 +158,16 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
   if (args.optionsExist(options.RPATHOPTIONS))
   {
     options.rootPathStr = args.getOptions(options.RPATHOPTIONS);
-    if (options.rootPathStr.empty())
-    {
-      perror.addError(3, "Argument not provided for [/s, /source]");
-      perror.setError(3);
-      if (!options.isQuiet) perror.print(options.isColorOutput);
+    //if (options.rootPathStr.empty())
+    //{
+    //  perror.addError(3, "Argument not provided for [/s, /source]");
+    //  perror.setError(3);
+    //  if (!options.isQuiet) perror.print(options.isColorOutput);
+    //  return perror.getError().value;
+    //}
+    if (IfConditionAddError(perror, options, options.rootPathStr.empty(), 4, "Argument not provided for [/s, /source] is invalid") > 0)
       return perror.getError().value;
-    }
-    if (IsInVectorErrorCheck(options.ALLOPTIONS, options.rootPathStr, perror, options, 4, "Argument provided for [/s, /source] is invalid") > 0) return perror.getError().value;
+    if (IsInVectorErrorCheck(options.ALLOPTIONS, options.rootPathStr, perror, options, 5, "Argument provided for [/s, /source] is invalid") > 0) return perror.getError().value;
     //const int result =
     //  IsInVectorErrorCheck(options.ALLOPTIONS, options.rootPathStr, perror, options, 4, "Argument provided for [/s, /source] is invalid");
     //if (result > 0) return perror.getError().value;
@@ -167,14 +182,16 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
   if (args.optionsExist(options.DPATHOPTIONS))
   {
     options.destPathStr = args.getOptions(options.DPATHOPTIONS);
-    if (options.destPathStr.empty())
-    {
-      perror.addError(5, "Argument not provided for [/d, /destination]");
-      perror.setError(5);
-      if (!options.isQuiet) perror.print(options.isColorOutput);
+    //if (options.destPathStr.empty())
+    //{
+    //  perror.addError(5, "Argument not provided for [/d, /destination]");
+    //  perror.setError(5);
+    //  if (!options.isQuiet) perror.print(options.isColorOutput);
+    //  return perror.getError().value;
+    //}
+    if (IfConditionAddError(perror, options, options.destPathStr.empty(), 6, "Argument not provided for [/d, /destination]") > 0)
       return perror.getError().value;
-    }
-    if (IsInVectorErrorCheck(options.ALLOPTIONS, options.destPathStr, perror, options, 6, "Argument provided for [/d, /destination] is invalid") > 0) return perror.getError().value;
+    if (IsInVectorErrorCheck(options.ALLOPTIONS, options.destPathStr, perror, options, 7, "Argument provided for [/d, /destination] is invalid") > 0) return perror.getError().value;
     //const int result =
     //  IsInVectorErrorCheck(options.ALLOPTIONS, options.destPathStr, perror, options, 6, "Argument provided for [/d, /destination] is invalid");
     //if (result > 0) return perror.getError().value;
