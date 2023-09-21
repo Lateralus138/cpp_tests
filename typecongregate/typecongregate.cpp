@@ -132,13 +132,15 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
   if (args.optionsExist(options.EXTNOPTIONS))
   {
     options.extnTypeStr = args.getOptions(options.EXTNOPTIONS);
-    if (options.extnTypeStr.empty())
-    {
-      perror.addError(1, "Argument not provided for [/x, /extension]");
-      perror.setError(1);
-      if (!options.isQuiet) perror.print(options.isColorOutput);
+    //if (options.extnTypeStr.empty())
+    //{
+    //  perror.addError(1, "Argument not provided for [/x, /extension]");
+    //  perror.setError(1);
+    //  if (!options.isQuiet) perror.print(options.isColorOutput);
+    //  return perror.getError().value;
+    //}
+    if (IfConditionAddError(perror, options, options.extnTypeStr.empty(), 1, "Argument not provided for [/x, /extension]") > 0)
       return perror.getError().value;
-    }
     options.extnTypes = SplitStringToVector(options.extnTypeStr, ",");
     for (std::vector<std::string>::const_iterator iterator = options.ALLOPTIONS.begin(); iterator != options.ALLOPTIONS.end(); iterator++)
     {
