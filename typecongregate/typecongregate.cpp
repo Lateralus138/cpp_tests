@@ -59,6 +59,14 @@ std::string ColorString(std::string string, int color, Options& options)
   }
   return result;
 }
+template <typename T, typename ...T2>
+void ConcatenateVectors(std::vector<T> &toVector, std::vector<T2> ...extraVectors)
+{
+  for (auto const item : { extraVectors... })
+  {
+    toVector.insert(toVector.end(), item.begin(), item.end());
+  }
+}
 unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramError &perror)
 {
   const std::vector<std::string> MONOCHROMEOPTIONS{ "/m", "/monochrome", "/M", "/MONOCHROME" };
@@ -69,13 +77,14 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
   const std::vector<std::string> RPATHOPTIONS{ "/s", "/source", "/S", "/SOURCE" };
   const std::vector<std::string> DPATHOPTIONS{ "/d", "/destination", "/D", "/DESTINATION" };
   std::vector<std::string> ALLOPTIONS{};
-  ALLOPTIONS.insert(ALLOPTIONS.end(), MONOCHROMEOPTIONS.begin(), MONOCHROMEOPTIONS.end());
-  ALLOPTIONS.insert(ALLOPTIONS.end(), QUIETOPTIONS.begin(), QUIETOPTIONS.end());
-  ALLOPTIONS.insert(ALLOPTIONS.end(), RECUROPTIONS.begin(), RECUROPTIONS.end());
-  ALLOPTIONS.insert(ALLOPTIONS.end(), HELPOPTIONS.begin(), HELPOPTIONS.end());
-  ALLOPTIONS.insert(ALLOPTIONS.end(), EXTNOPTIONS.begin(), EXTNOPTIONS.end());
-  ALLOPTIONS.insert(ALLOPTIONS.end(), RPATHOPTIONS.begin(), RPATHOPTIONS.end());
-  ALLOPTIONS.insert(ALLOPTIONS.end(), DPATHOPTIONS.begin(), DPATHOPTIONS.end());
+  ConcatenateVectors (ALLOPTIONS, MONOCHROMEOPTIONS, QUIETOPTIONS, RECUROPTIONS, HELPOPTIONS, EXTNOPTIONS, RPATHOPTIONS, DPATHOPTIONS);
+  //ALLOPTIONS.insert(ALLOPTIONS.end(), MONOCHROMEOPTIONS.begin(), MONOCHROMEOPTIONS.end());
+  //ALLOPTIONS.insert(ALLOPTIONS.end(), QUIETOPTIONS.begin(), QUIETOPTIONS.end());
+  //ALLOPTIONS.insert(ALLOPTIONS.end(), RECUROPTIONS.begin(), RECUROPTIONS.end());
+  //ALLOPTIONS.insert(ALLOPTIONS.end(), HELPOPTIONS.begin(), HELPOPTIONS.end());
+  //ALLOPTIONS.insert(ALLOPTIONS.end(), EXTNOPTIONS.begin(), EXTNOPTIONS.end());
+  //ALLOPTIONS.insert(ALLOPTIONS.end(), RPATHOPTIONS.begin(), RPATHOPTIONS.end());
+  //ALLOPTIONS.insert(ALLOPTIONS.end(), DPATHOPTIONS.begin(), DPATHOPTIONS.end());
   if (args.optionsExist(MONOCHROMEOPTIONS))
   {
     options.isColorOutput = false;
@@ -134,16 +143,6 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
       if (!options.isQuiet) perror.print(options.isColorOutput);
       return perror.getError().value;
     }
-    //for (std::vector<std::string>::const_iterator iterator = ALLOPTIONS.begin(); iterator != ALLOPTIONS.end(); iterator++)
-    //{
-    //  if (*iterator == options.rootPathStr)
-    //  {
-    //    perror.addError(4, "Argument provided for [/s, /source] is invalid");
-    //    perror.setError(4);
-    //    if (!options.isQuiet) perror.print(options.isColorOutput);
-    //    return perror.getError().value;
-    //  }
-    //}
   }
   if (args.optionsExist(DPATHOPTIONS))
   {
@@ -162,16 +161,6 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
       if (!options.isQuiet) perror.print(options.isColorOutput);
       return perror.getError().value;
     }
-    //for (std::vector<std::string>::const_iterator iterator = ALLOPTIONS.begin(); iterator != ALLOPTIONS.end(); iterator++)
-    //{
-    //  if (*iterator == options.destPathStr)
-    //  {
-    //    perror.addError(6, "Argument provided for [/d, /destination] is invalid");
-    //    perror.setError(6);
-    //    if (!options.isQuiet) perror.print(options.isColorOutput);
-    //    return perror.getError().value;
-    //  }
-    //}
   }
   return 0;
 }
