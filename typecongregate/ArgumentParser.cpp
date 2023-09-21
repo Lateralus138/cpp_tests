@@ -1,8 +1,12 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "ArgumentParser.h"
 ArgumentParser::ArgumentParser(int& argc, const char** argv, int start)
 {
   this->tokens = std::vector<std::string>(argv + start, argv + argc);
+}
+std::vector<std::string> ArgumentParser::getArgs()
+{
+  return this->tokens;
 }
 bool ArgumentParser::optionExists(const std::string& option) const
 {

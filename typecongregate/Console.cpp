@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "Console.h"
 // CodePage
 void CodePage::setInitCodePage(ProgramError& perror, int errorValue, std::string errorMessage)
