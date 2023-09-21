@@ -15,6 +15,14 @@ struct Options
   std::string extnTypeStr = "";
   std::string rootPathStr = ".\\";
   std::string destPathStr = "";
+  const std::vector<std::string> MONOCHROMEOPTIONS{ "/m", "/monochrome", "/M", "/MONOCHROME" };
+  const std::vector<std::string> QUIETOPTIONS{ "/q", "/quiet", "/Q", "/QUIET" };
+  const std::vector<std::string> RECUROPTIONS{ "/r", "/recurse", "/R", "/RECURSE" };
+  const std::vector<std::string> HELPOPTIONS{ "/h", "/help", "/H", "/HELP" };
+  const std::vector<std::string> EXTNOPTIONS{ "/x", "/extension", "/X", "/EXTENSION" };
+  const std::vector<std::string> RPATHOPTIONS{ "/s", "/source", "/S", "/SOURCE" };
+  const std::vector<std::string> DPATHOPTIONS{ "/d", "/destination", "/D", "/DESTINATION" };
+  std::vector<std::string> ALLOPTIONS{};
 };
 template <typename T>
 bool IsInVector(std::vector<T> &vector, T item)
@@ -80,37 +88,37 @@ int IsInVectorErrorCheck(std::vector<T> &vector, T value, ProgramError &perror, 
 }
 unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramError &perror)
 {
-  const std::vector<std::string> MONOCHROMEOPTIONS{ "/m", "/monochrome", "/M", "/MONOCHROME" };
-  const std::vector<std::string> QUIETOPTIONS{ "/q", "/quiet", "/Q", "/QUIET" };
-  const std::vector<std::string> RECUROPTIONS{ "/r", "/recurse", "/R", "/RECURSE" };
-  const std::vector<std::string> HELPOPTIONS{ "/h", "/help", "/H", "/HELP" };
-  const std::vector<std::string> EXTNOPTIONS{ "/x", "/extension", "/X", "/EXTENSION" };
-  const std::vector<std::string> RPATHOPTIONS{ "/s", "/source", "/S", "/SOURCE" };
-  const std::vector<std::string> DPATHOPTIONS{ "/d", "/destination", "/D", "/DESTINATION" };
-  std::vector<std::string> ALLOPTIONS{};
-  ConcatenateVectors(ALLOPTIONS, MONOCHROMEOPTIONS, QUIETOPTIONS, RECUROPTIONS, HELPOPTIONS, EXTNOPTIONS, RPATHOPTIONS, DPATHOPTIONS);
-  if (args.optionsExist(MONOCHROMEOPTIONS))
+  //const std::vector<std::string> MONOCHROMEOPTIONS{ "/m", "/monochrome", "/M", "/MONOCHROME" };
+  //const std::vector<std::string> QUIETOPTIONS{ "/q", "/quiet", "/Q", "/QUIET" };
+  //const std::vector<std::string> RECUROPTIONS{ "/r", "/recurse", "/R", "/RECURSE" };
+  //const std::vector<std::string> HELPOPTIONS{ "/h", "/help", "/H", "/HELP" };
+  //const std::vector<std::string> EXTNOPTIONS{ "/x", "/extension", "/X", "/EXTENSION" };
+  //const std::vector<std::string> RPATHOPTIONS{ "/s", "/source", "/S", "/SOURCE" };
+  //const std::vector<std::string> DPATHOPTIONS{ "/d", "/destination", "/D", "/DESTINATION" };
+  //std::vector<std::string> ALLOPTIONS{};
+  ConcatenateVectors(options.ALLOPTIONS, options.MONOCHROMEOPTIONS, options.QUIETOPTIONS, options.RECUROPTIONS, options.HELPOPTIONS, options.EXTNOPTIONS, options.RPATHOPTIONS, options.DPATHOPTIONS);
+  if (args.optionsExist(options.MONOCHROMEOPTIONS))
   {
     options.isColorOutput = false;
   }
-  if (args.optionsExist(QUIETOPTIONS))
+  if (args.optionsExist(options.QUIETOPTIONS))
   {
     options.isQuiet = true;
   }
-  if (args.optionsExist(RECUROPTIONS))
+  if (args.optionsExist(options.RECUROPTIONS))
   {
     options.isRecursive = true;
   }
-  if (args.optionsExist(HELPOPTIONS))
+  if (args.optionsExist(options.HELPOPTIONS))
   {
     options.isHelp = true;
     // TODO finish help section
     std::cout << "HELP\n";
     return 0;
   }
-  if (args.optionsExist(EXTNOPTIONS))
+  if (args.optionsExist(options.EXTNOPTIONS))
   {
-    options.extnTypeStr = args.getOptions(EXTNOPTIONS);
+    options.extnTypeStr = args.getOptions(options.EXTNOPTIONS);
     if (options.extnTypeStr.empty())
     {
       perror.addError(1, "Argument not provided for [/x, /extension]");
@@ -119,7 +127,7 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
       return perror.getError().value;
     }
     options.extnTypes = SplitStringToVector(options.extnTypeStr, ",");
-    for (std::vector<std::string>::const_iterator iterator = ALLOPTIONS.begin(); iterator != ALLOPTIONS.end(); iterator++)
+    for (std::vector<std::string>::const_iterator iterator = options.ALLOPTIONS.begin(); iterator != options.ALLOPTIONS.end(); iterator++)
     {
       const int result =
         IsInVectorErrorCheck(options.extnTypes, *iterator, perror, options, 2, "Argument provided for [/x, /extension] is invalid");
@@ -133,9 +141,9 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
       //}
     }
   }
-  if (args.optionsExist(RPATHOPTIONS))
+  if (args.optionsExist(options.RPATHOPTIONS))
   {
-    options.rootPathStr = args.getOptions(RPATHOPTIONS);
+    options.rootPathStr = args.getOptions(options.RPATHOPTIONS);
     if (options.rootPathStr.empty())
     {
       perror.addError(3, "Argument not provided for [/s, /source]");
@@ -144,7 +152,7 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
       return perror.getError().value;
     }
     const int result =
-      IsInVectorErrorCheck(ALLOPTIONS, options.rootPathStr, perror, options, 4, "Argument provided for [/s, /source] is invalid");
+      IsInVectorErrorCheck(options.ALLOPTIONS, options.rootPathStr, perror, options, 4, "Argument provided for [/s, /source] is invalid");
     if (result > 0) return perror.getError().value;
     //if (IsInVector(ALLOPTIONS, options.rootPathStr))
     //{
@@ -154,9 +162,9 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
     //  return perror.getError().value;
     //}
   }
-  if (args.optionsExist(DPATHOPTIONS))
+  if (args.optionsExist(options.DPATHOPTIONS))
   {
-    options.destPathStr = args.getOptions(DPATHOPTIONS);
+    options.destPathStr = args.getOptions(options.DPATHOPTIONS);
     if (options.destPathStr.empty())
     {
       perror.addError(5, "Argument not provided for [/d, /destination]");
@@ -165,7 +173,7 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
       return perror.getError().value;
     }
     const int result =
-      IsInVectorErrorCheck(ALLOPTIONS, options.destPathStr, perror, options, 6, "Argument provided for [/d, /destination] is invalid");
+      IsInVectorErrorCheck(options.ALLOPTIONS, options.destPathStr, perror, options, 6, "Argument provided for [/d, /destination] is invalid");
     if (result > 0) return perror.getError().value;
     //if (IsInVector(ALLOPTIONS, options.destPathStr))
     //{
