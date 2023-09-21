@@ -127,16 +127,23 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
       if (!options.isQuiet) perror.print(options.isColorOutput);
       return perror.getError().value;
     }
-    for (std::vector<std::string>::const_iterator iterator = ALLOPTIONS.begin(); iterator != ALLOPTIONS.end(); iterator++)
+    if (IsInVector(ALLOPTIONS, options.rootPathStr))
     {
-      if (*iterator == options.rootPathStr)
-      {
-        perror.addError(4, "Argument provided for [/s, /source] is invalid");
-        perror.setError(4);
-        if (!options.isQuiet) perror.print(options.isColorOutput);
-        return perror.getError().value;
-      }
+      perror.addError(4, "Argument provided for [/s, /source] is invalid");
+      perror.setError(4);
+      if (!options.isQuiet) perror.print(options.isColorOutput);
+      return perror.getError().value;
     }
+    //for (std::vector<std::string>::const_iterator iterator = ALLOPTIONS.begin(); iterator != ALLOPTIONS.end(); iterator++)
+    //{
+    //  if (*iterator == options.rootPathStr)
+    //  {
+    //    perror.addError(4, "Argument provided for [/s, /source] is invalid");
+    //    perror.setError(4);
+    //    if (!options.isQuiet) perror.print(options.isColorOutput);
+    //    return perror.getError().value;
+    //  }
+    //}
   }
   if (args.optionsExist(DPATHOPTIONS))
   {
@@ -148,16 +155,23 @@ unsigned int ParseArguments(ArgumentParser & args, Options &options, ProgramErro
       if (!options.isQuiet) perror.print(options.isColorOutput);
       return perror.getError().value;
     }
-    for (std::vector<std::string>::const_iterator iterator = ALLOPTIONS.begin(); iterator != ALLOPTIONS.end(); iterator++)
+    if (IsInVector(ALLOPTIONS, options.destPathStr))
     {
-      if (*iterator == options.destPathStr)
-      {
-        perror.addError(6, "Argument provided for [/d, /destination] is invalid");
-        perror.setError(6);
-        if (!options.isQuiet) perror.print(options.isColorOutput);
-        return perror.getError().value;
-      }
+      perror.addError(6, "Argument provided for [/d, /destination] is invalid");
+      perror.setError(6);
+      if (!options.isQuiet) perror.print(options.isColorOutput);
+      return perror.getError().value;
     }
+    //for (std::vector<std::string>::const_iterator iterator = ALLOPTIONS.begin(); iterator != ALLOPTIONS.end(); iterator++)
+    //{
+    //  if (*iterator == options.destPathStr)
+    //  {
+    //    perror.addError(6, "Argument provided for [/d, /destination] is invalid");
+    //    perror.setError(6);
+    //    if (!options.isQuiet) perror.print(options.isColorOutput);
+    //    return perror.getError().value;
+    //  }
+    //}
   }
   return 0;
 }
