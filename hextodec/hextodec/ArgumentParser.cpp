@@ -4,7 +4,7 @@ ArgumentParser::ArgumentParser(int& argc, const char** argv, int start)
 {
   this->tokens = std::vector<std::string>(argv + start, argv + argc);
 }
-std::vector<std::string> ArgumentParser::getArgs()
+const std::vector<std::string> &ArgumentParser::getArgs() const
 {
   return this->tokens;
 }

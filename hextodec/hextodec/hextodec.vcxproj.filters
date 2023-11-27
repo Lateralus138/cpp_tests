@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="typecongregate.cpp">
+    <ClCompile Include="hextodec.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
@@ -24,10 +24,7 @@
     <ClCompile Include="ArgumentParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Console.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ProgramError.cpp">
+    <ClCompile Include="Globals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,14 +32,24 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ArgumentParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Console.h">
+    <ClInclude Include="Globals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProgramError.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

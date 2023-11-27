@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{a0c9fbbe-8122-4970-a8ef-c013720b0305}</ProjectGuid>
-    <RootNamespace>typecongregate</RootNamespace>
+    <ProjectGuid>{83e2b410-337a-4dd9-8982-87050824ad39}</ProjectGuid>
+    <RootNamespace>hextodec</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -77,7 +77,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -93,7 +93,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,7 +109,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,7 +125,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,21 +136,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ArgumentParser.cpp" />
-    <ClCompile Include="Console.cpp" />
-    <ClCompile Include="ProgramError.cpp" />
+    <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="hextodec.cpp" />
     <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="typecongregate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArgumentParser.h" />
-    <ClInclude Include="Console.h" />
-    <ClInclude Include="ProgramError.h" />
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
