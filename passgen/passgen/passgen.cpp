@@ -14,6 +14,13 @@ void SetOptionIsFullTrue(Options& options, int value)
   options.passwordIsFull = true;
   options.passwordIndex = value;
 }
+void SetIsSpecialFull(Options& options, bool is)
+{
+  options.passwordIsSpecialFull = is;
+  if (is) options.passwordIndex += 32;
+  else options.passwordIndex -= 32;
+
+}
 int ParseArguments(ArgumentParser& args, Options& options)
 {
   std::vector<std::string> HELPOPTS = { "/?", "/h", "/help", "/H", "/HELP" };
@@ -135,8 +142,9 @@ int ParseArguments(ArgumentParser& args, Options& options)
     }
     if (options.passwordIsSpecialFull)
     {
-      options.passwordIsSpecialFull = false;
-      options.passwordIndex -= 32;
+      SetIsSpecialFull(options, false);
+      //options.passwordIsSpecialFull = false;
+      //options.passwordIndex -= 32;
     }
   }
   if (args.optionsExist(SPCEOPTS))
@@ -150,14 +158,16 @@ int ParseArguments(ArgumentParser& args, Options& options)
     }
     if (options.passwordIsSpecialFull)
     {
-      options.passwordIsSpecialFull = false;
-      options.passwordIndex -= 32;
+      SetIsSpecialFull(options, false);
+      //options.passwordIsSpecialFull = false;
+      //options.passwordIndex -= 32;
     }
   }
   if (args.optionsExist(SPCFOPTS))
   {
-    options.passwordIsSpecialFull = true;
-    options.passwordIndex += 32;
+    SetIsSpecialFull(options, true);
+    //options.passwordIsSpecialFull = true;
+    //options.passwordIndex += 32;
     if (options.passwordIsSpecialCompatible)
     {
       options.passwordIsSpecialCompatible = false;
