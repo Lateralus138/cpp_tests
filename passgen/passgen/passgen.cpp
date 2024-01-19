@@ -9,6 +9,11 @@ void CheckOptionsAndSetOption(ArgumentParser& args, Options& options, std::vecto
   if (args.optionsExist(option_vector))
     options.passwordIndex += set;
 }
+void SetOptionIsFullTrue(Options& options, int value)
+{
+  options.passwordIsFull = true;
+  options.passwordIndex = value;
+}
 int ParseArguments(ArgumentParser& args, Options& options)
 {
   std::vector<std::string> HELPOPTS = { "/?", "/h", "/help", "/H", "/HELP" };
@@ -166,20 +171,23 @@ int ParseArguments(ArgumentParser& args, Options& options)
   }
   if (args.optionsExist(FULLOPTS))
   {
-    options.passwordIsFull = true;
-    options.passwordIndex = 39;
+    SetOptionIsFullTrue(options, 39);
+    //options.passwordIsFull = true;
+    //options.passwordIndex = 39;
     return EXIT_SUCCESS;
   }
   if (args.optionsExist(EXTDOPTS))
   {
-    options.passwordIsFull = true;
-    options.passwordIndex = 23;
+    SetOptionIsFullTrue(options, 23);
+    //options.passwordIsFull = true;
+    //options.passwordIndex = 23;
     return EXIT_SUCCESS;
   }
   if (args.optionsExist(COMPOPTS))
   {
-    options.passwordIsFull = true;
-    options.passwordIndex = 15;
+    SetOptionIsFullTrue(options, 15);
+    //options.passwordIsFull = true;
+    //options.passwordIndex = 15;
     return EXIT_SUCCESS;
   }
   return EXIT_SUCCESS;
