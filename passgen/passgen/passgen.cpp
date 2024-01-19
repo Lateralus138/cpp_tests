@@ -198,9 +198,13 @@ int main(int argc, const char* argv[])
   const int PARSED = ParseArguments(args, options);
   if (PARSED == -1) return EXIT_SUCCESS;
   if (PARSED > 0) return Globals::PrintError(PARSED, errors);
+  errno_t errt = {};
   for (int index = 0; index < options.passwordLength; index++)
   {
-    const int randCharIndex = rand() % (Globals::CHARSMAP[options.passwordIndex].length()) + 0;
+    unsigned int number = {};
+    errt = rand_s(&number);
+    const int randCharIndex = number % (Globals::CHARSMAP[options.passwordIndex].length()) + 0;
+    //const int randCharIndex = rand_s(&number) % (Globals::CHARSMAP[options.passwordIndex].length()) + 0;
     Globals::PASSWORD.push_back(Globals::CHARSMAP[options.passwordIndex][randCharIndex]);
   }
   std::cout << Globals::PASSWORD << '\n';
