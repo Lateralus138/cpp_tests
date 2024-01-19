@@ -17,20 +17,23 @@ void SetOptionIsFull(Options& options, bool is, int value)
 void SetIsSpecialCompatible(Options& options, bool is)
 {
   options.passwordIsSpecialCompatible = is;
+  int inc = ((options.passwordIndex & 8) ? 8 : 0);
   if (is) options.passwordIndex += 8;
-  else options.passwordIndex -= 8;
+  else options.passwordIndex -= inc;
 }
 void SetIsSpecialExtended(Options& options, bool is)
 {
   options.passwordIsSpecialExtended = is;
+  int inc = ((options.passwordIndex & 16) ? 16 : 0);
   if (is) options.passwordIndex += 16;
-  else options.passwordIndex -= 16;
+  else options.passwordIndex -= inc;
 }
 void SetIsSpecialFull(Options& options, bool is)
 {
   options.passwordIsSpecialFull = is;
+  int inc = ((options.passwordIndex & 32) ? 32 : 0);
   if (is) options.passwordIndex += 32;
-  else options.passwordIndex -= 32;
+  else options.passwordIndex -= inc;
 }
 auto IsASwitch = [](std::string& option)
 {
@@ -83,38 +86,20 @@ int ParseArguments(ArgumentParser& args, Options& options)
   if (args.optionsExist(Globals::SPCCOPTS))
   {
     SetIsSpecialCompatible(options, true);
-    if (options.passwordIsSpecialExtended)
-    {
-      SetIsSpecialExtended(options, false);
-    }
-    if (options.passwordIsSpecialFull)
-    {
-      SetIsSpecialFull(options, false);
-    }
+    SetIsSpecialExtended(options, false);
+    SetIsSpecialFull(options, false);
   }
   if (args.optionsExist(Globals::SPCEOPTS))
   {
     SetIsSpecialExtended(options, true);
-    if (options.passwordIsSpecialCompatible)
-    {
-      SetIsSpecialCompatible(options, false);
-    }
-    if (options.passwordIsSpecialFull)
-    {
-      SetIsSpecialFull(options, false);
-    }
+    SetIsSpecialCompatible(options, false);
+    SetIsSpecialFull(options, false);
   }
   if (args.optionsExist(Globals::SPCFOPTS))
   {
     SetIsSpecialFull(options, true);
-    if (options.passwordIsSpecialCompatible)
-    {
-      SetIsSpecialCompatible(options, false);
-    }
-    if (options.passwordIsSpecialExtended)
-    {
-      SetIsSpecialExtended(options, false);
-    }
+    SetIsSpecialCompatible(options, false);
+    SetIsSpecialExtended(options, false);
   }
   if (args.optionsExist(Globals::FULLOPTS))
   {
