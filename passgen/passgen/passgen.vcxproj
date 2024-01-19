@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{83e2b410-337a-4dd9-8982-87050824ad39}</ProjectGuid>
-    <RootNamespace>hextodec</RootNamespace>
+    <ProjectGuid>{55b923f6-7351-431a-928b-a5255fa3c779}</ProjectGuid>
+    <RootNamespace>passgen</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -137,7 +137,7 @@
   <ItemGroup>
     <ClCompile Include="ArgumentParser.cpp" />
     <ClCompile Include="Globals.cpp" />
-    <ClCompile Include="hextodec.cpp" />
+    <ClCompile Include="passgen.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
