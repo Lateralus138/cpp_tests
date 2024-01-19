@@ -9,9 +9,14 @@ void CheckOptionsAndSetOption(ArgumentParser& args, Options& options, std::vecto
   if (args.optionsExist(option_vector))
     options.passwordIndex += set;
 }
-void SetOptionIsFullTrue(Options& options, int value)
+//void SetOptionIsFullTrue(Options& options, int value)
+//{
+//  options.passwordIsFull = true;
+//  options.passwordIndex = value;
+//}
+void SetOptionIsFull(Options& options, bool is, int value)
 {
-  options.passwordIsFull = true;
+  options.passwordIsFull = is;
   options.passwordIndex = value;
 }
 void SetIsSpecialFull(Options& options, bool is)
@@ -20,18 +25,6 @@ void SetIsSpecialFull(Options& options, bool is)
   if (is) options.passwordIndex += 32;
   else options.passwordIndex -= 32;
 }
-//std::vector<std::string> HELPOPTS = { "/?", "/h", "/help", "/H", "/HELP" };
-//std::vector<std::string> LENGOPTS = { "/l", "/length", "/L", "/LENGTH" };
-//std::vector<std::string> COMPOPTS = { "/c", "/compatible", "/C", "/COMPATIBLE" };
-//std::vector<std::string> EXTDOPTS = { "/e", "/extended", "/E", "/EXTENDED" };
-//std::vector<std::string> FULLOPTS = { "/f", "/full", "/F", "/FULL" };
-//std::vector<std::string> UPPCOPTS = { "/uc", "/uppercase", "/UC", "/UPPERCASE" };
-//std::vector<std::string> LOWCOPTS = { "/lc", "/lowercase", "/LC", "/LOWERCASE" };
-//std::vector<std::string> DIGIOPTS = { "/d", "/digits", "/D", "/DIGITS" };
-//std::vector<std::string> SPCCOPTS = { "/sc", "/specialcompatible", "/SC", "/SPECIALCOMPATIBLE" };
-//std::vector<std::string> SPCEOPTS = { "/se", "/specialextended", "/SE", "/SPECIALEXTENDED" };
-//std::vector<std::string> SPCFOPTS = { "/sf", "/specialfull", "/SF", "/SPECIALFULL" };
-////auto IsASwitch = [HELPOPTS, LENGOPTS, UPPCOPTS, LOWCOPTS, DIGIOPTS, SPCCOPTS, SPCEOPTS, SPCFOPTS](std::string& option)
 auto IsASwitch = [](std::string& option)
 {
   return
@@ -44,39 +37,17 @@ auto IsASwitch = [](std::string& option)
     Globals::ValueInVector(Globals::SPCEOPTS, option) ||
     Globals::ValueInVector(Globals::SPCFOPTS, option)
   );
- };
-int ParseArguments(ArgumentParser& args, Options& options)
+};
+bool ArgOptionsExist(ArgumentParser& args)
 {
-  //std::vector<std::string> HELPOPTS = { "/?", "/h", "/help", "/H", "/HELP" };
-  //std::vector<std::string> LENGOPTS = { "/l", "/length", "/L", "/LENGTH" };
-  //std::vector<std::string> COMPOPTS = { "/c", "/compatible", "/C", "/COMPATIBLE" };
-  //std::vector<std::string> EXTDOPTS = { "/e", "/extended", "/E", "/EXTENDED" };
-  //std::vector<std::string> FULLOPTS = { "/f", "/full", "/F", "/FULL" };
-  //std::vector<std::string> UPPCOPTS = { "/uc", "/uppercase", "/UC", "/UPPERCASE" };
-  //std::vector<std::string> LOWCOPTS = { "/lc", "/lowercase", "/LC", "/LOWERCASE" };
-  //std::vector<std::string> DIGIOPTS = { "/d", "/digits", "/D", "/DIGITS" };
-  //std::vector<std::string> SPCCOPTS = { "/sc", "/specialcompatible", "/SC", "/SPECIALCOMPATIBLE" };
-  //std::vector<std::string> SPCEOPTS = { "/se", "/specialextended", "/SE", "/SPECIALEXTENDED" };
-  //std::vector<std::string> SPCFOPTS = { "/sf", "/specialfull", "/SF", "/SPECIALFULL" };
-  //auto IsASwitch = [HELPOPTS, LENGOPTS, UPPCOPTS, LOWCOPTS, DIGIOPTS, SPCCOPTS, SPCEOPTS, SPCFOPTS](std::string& option)
-  //{
-  //  return
-  //  (
-  //    Globals::ValueInVector(LENGOPTS, option) ||
-  //    Globals::ValueInVector(UPPCOPTS, option) ||
-  //    Globals::ValueInVector(LOWCOPTS, option) ||
-  //    Globals::ValueInVector(DIGIOPTS, option) ||
-  //    Globals::ValueInVector(SPCCOPTS, option) ||
-  //    Globals::ValueInVector(SPCEOPTS, option) ||
-  //    Globals::ValueInVector(SPCFOPTS, option)
-  //  );
-  //};
-  if
-  (
+  return
     args.optionsExist(Globals::UPPCOPTS) || args.optionsExist(Globals::LOWCOPTS) ||
     args.optionsExist(Globals::DIGIOPTS) || args.optionsExist(Globals::SPCCOPTS) ||
-    args.optionsExist(Globals::SPCEOPTS) || args.optionsExist(Globals::SPCFOPTS)
-  )
+    args.optionsExist(Globals::SPCEOPTS) || args.optionsExist(Globals::SPCFOPTS);
+}
+int ParseArguments(ArgumentParser& args, Options& options)
+{
+  if (ArgOptionsExist(args))
   {
     options.passwordIsFull = false;
     options.passwordIndex = 0;
@@ -103,18 +74,6 @@ int ParseArguments(ArgumentParser& args, Options& options)
   CheckOptionsAndSetOption(args, options, Globals::UPPCOPTS, 1);
   CheckOptionsAndSetOption(args, options, Globals::LOWCOPTS, 2);
   CheckOptionsAndSetOption(args, options, Globals::DIGIOPTS, 4);
-  //if (args.optionsExist(UPPCOPTS))
-  //{
-  //  options.passwordIndex += 1;
-  //}
-  //if (args.optionsExist(LOWCOPTS))
-  //{
-  //  options.passwordIndex += 2;
-  //}
-  //if (args.optionsExist(DIGIOPTS))
-  //{
-  //  options.passwordIndex += 4;
-  //}
   if (args.optionsExist(Globals::SPCCOPTS))
   {
     options.passwordIsSpecialCompatible = true;
@@ -127,8 +86,6 @@ int ParseArguments(ArgumentParser& args, Options& options)
     if (options.passwordIsSpecialFull)
     {
       SetIsSpecialFull(options, false);
-      //options.passwordIsSpecialFull = false;
-      //options.passwordIndex -= 32;
     }
   }
   if (args.optionsExist(Globals::SPCEOPTS))
@@ -143,15 +100,11 @@ int ParseArguments(ArgumentParser& args, Options& options)
     if (options.passwordIsSpecialFull)
     {
       SetIsSpecialFull(options, false);
-      //options.passwordIsSpecialFull = false;
-      //options.passwordIndex -= 32;
     }
   }
   if (args.optionsExist(Globals::SPCFOPTS))
   {
     SetIsSpecialFull(options, true);
-    //options.passwordIsSpecialFull = true;
-    //options.passwordIndex += 32;
     if (options.passwordIsSpecialCompatible)
     {
       options.passwordIsSpecialCompatible = false;
@@ -165,23 +118,17 @@ int ParseArguments(ArgumentParser& args, Options& options)
   }
   if (args.optionsExist(Globals::FULLOPTS))
   {
-    SetOptionIsFullTrue(options, 39);
-    //options.passwordIsFull = true;
-    //options.passwordIndex = 39;
+    SetOptionIsFull(options, true, 39);
     return EXIT_SUCCESS;
   }
   if (args.optionsExist(Globals::EXTDOPTS))
   {
-    SetOptionIsFullTrue(options, 23);
-    //options.passwordIsFull = true;
-    //options.passwordIndex = 23;
+    SetOptionIsFull(options, true, 23);
     return EXIT_SUCCESS;
   }
   if (args.optionsExist(Globals::COMPOPTS))
   {
-    SetOptionIsFullTrue(options, 15);
-    //options.passwordIsFull = true;
-    //options.passwordIndex = 15;
+    SetOptionIsFull(options, true, 15);
     return EXIT_SUCCESS;
   }
   return EXIT_SUCCESS;
