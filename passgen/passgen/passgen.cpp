@@ -4,6 +4,11 @@
 // ║ © 2024 Ian Pride - New Pride Software / Services                              ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
 #include "stdafx.h"
+void CheckOptionsAndSetOption(ArgumentParser& args, Options& options, std::vector<std::string>& option_vector, int set)
+{
+  if (args.optionsExist(option_vector))
+    options.passwordIndex += set;
+}
 int ParseArguments(ArgumentParser& args, Options& options)
 {
   std::vector<std::string> HELPOPTS = { "/?", "/h", "/help", "/H", "/HELP" };
@@ -99,18 +104,21 @@ int ParseArguments(ArgumentParser& args, Options& options)
       return 2;
     }
   }
-  if (args.optionsExist(UPPCOPTS))
-  {
-    options.passwordIndex += 1;
-  }
-  if (args.optionsExist(LOWCOPTS))
-  {
-    options.passwordIndex += 2;
-  }
-  if (args.optionsExist(DIGIOPTS))
-  {
-    options.passwordIndex += 4;
-  }
+  CheckOptionsAndSetOption(args, options, UPPCOPTS, 1);
+  CheckOptionsAndSetOption(args, options, LOWCOPTS, 2);
+  CheckOptionsAndSetOption(args, options, DIGIOPTS, 4);
+  //if (args.optionsExist(UPPCOPTS))
+  //{
+  //  options.passwordIndex += 1;
+  //}
+  //if (args.optionsExist(LOWCOPTS))
+  //{
+  //  options.passwordIndex += 2;
+  //}
+  //if (args.optionsExist(DIGIOPTS))
+  //{
+  //  options.passwordIndex += 4;
+  //}
   if (args.optionsExist(SPCCOPTS))
   {
     options.passwordIsSpecialCompatible = true;
