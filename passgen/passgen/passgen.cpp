@@ -20,29 +20,29 @@ void SetIsSpecialFull(Options& options, bool is)
   if (is) options.passwordIndex += 32;
   else options.passwordIndex -= 32;
 }
-std::vector<std::string> HELPOPTS = { "/?", "/h", "/help", "/H", "/HELP" };
-std::vector<std::string> LENGOPTS = { "/l", "/length", "/L", "/LENGTH" };
-std::vector<std::string> COMPOPTS = { "/c", "/compatible", "/C", "/COMPATIBLE" };
-std::vector<std::string> EXTDOPTS = { "/e", "/extended", "/E", "/EXTENDED" };
-std::vector<std::string> FULLOPTS = { "/f", "/full", "/F", "/FULL" };
-std::vector<std::string> UPPCOPTS = { "/uc", "/uppercase", "/UC", "/UPPERCASE" };
-std::vector<std::string> LOWCOPTS = { "/lc", "/lowercase", "/LC", "/LOWERCASE" };
-std::vector<std::string> DIGIOPTS = { "/d", "/digits", "/D", "/DIGITS" };
-std::vector<std::string> SPCCOPTS = { "/sc", "/specialcompatible", "/SC", "/SPECIALCOMPATIBLE" };
-std::vector<std::string> SPCEOPTS = { "/se", "/specialextended", "/SE", "/SPECIALEXTENDED" };
-std::vector<std::string> SPCFOPTS = { "/sf", "/specialfull", "/SF", "/SPECIALFULL" };
-//auto IsASwitch = [HELPOPTS, LENGOPTS, UPPCOPTS, LOWCOPTS, DIGIOPTS, SPCCOPTS, SPCEOPTS, SPCFOPTS](std::string& option)
+//std::vector<std::string> HELPOPTS = { "/?", "/h", "/help", "/H", "/HELP" };
+//std::vector<std::string> LENGOPTS = { "/l", "/length", "/L", "/LENGTH" };
+//std::vector<std::string> COMPOPTS = { "/c", "/compatible", "/C", "/COMPATIBLE" };
+//std::vector<std::string> EXTDOPTS = { "/e", "/extended", "/E", "/EXTENDED" };
+//std::vector<std::string> FULLOPTS = { "/f", "/full", "/F", "/FULL" };
+//std::vector<std::string> UPPCOPTS = { "/uc", "/uppercase", "/UC", "/UPPERCASE" };
+//std::vector<std::string> LOWCOPTS = { "/lc", "/lowercase", "/LC", "/LOWERCASE" };
+//std::vector<std::string> DIGIOPTS = { "/d", "/digits", "/D", "/DIGITS" };
+//std::vector<std::string> SPCCOPTS = { "/sc", "/specialcompatible", "/SC", "/SPECIALCOMPATIBLE" };
+//std::vector<std::string> SPCEOPTS = { "/se", "/specialextended", "/SE", "/SPECIALEXTENDED" };
+//std::vector<std::string> SPCFOPTS = { "/sf", "/specialfull", "/SF", "/SPECIALFULL" };
+////auto IsASwitch = [HELPOPTS, LENGOPTS, UPPCOPTS, LOWCOPTS, DIGIOPTS, SPCCOPTS, SPCEOPTS, SPCFOPTS](std::string& option)
 auto IsASwitch = [](std::string& option)
 {
   return
   (
-    Globals::ValueInVector(LENGOPTS, option) ||
-    Globals::ValueInVector(UPPCOPTS, option) ||
-    Globals::ValueInVector(LOWCOPTS, option) ||
-    Globals::ValueInVector(DIGIOPTS, option) ||
-    Globals::ValueInVector(SPCCOPTS, option) ||
-    Globals::ValueInVector(SPCEOPTS, option) ||
-    Globals::ValueInVector(SPCFOPTS, option)
+    Globals::ValueInVector(Globals::LENGOPTS, option) ||
+    Globals::ValueInVector(Globals::UPPCOPTS, option) ||
+    Globals::ValueInVector(Globals::LOWCOPTS, option) ||
+    Globals::ValueInVector(Globals::DIGIOPTS, option) ||
+    Globals::ValueInVector(Globals::SPCCOPTS, option) ||
+    Globals::ValueInVector(Globals::SPCEOPTS, option) ||
+    Globals::ValueInVector(Globals::SPCFOPTS, option)
   );
  };
 int ParseArguments(ArgumentParser& args, Options& options)
@@ -73,62 +73,22 @@ int ParseArguments(ArgumentParser& args, Options& options)
   //};
   if
   (
-    args.optionsExist(UPPCOPTS) || args.optionsExist(LOWCOPTS) ||
-    args.optionsExist(DIGIOPTS) || args.optionsExist(SPCCOPTS) ||
-    args.optionsExist(SPCEOPTS) || args.optionsExist(SPCFOPTS)
+    args.optionsExist(Globals::UPPCOPTS) || args.optionsExist(Globals::LOWCOPTS) ||
+    args.optionsExist(Globals::DIGIOPTS) || args.optionsExist(Globals::SPCCOPTS) ||
+    args.optionsExist(Globals::SPCEOPTS) || args.optionsExist(Globals::SPCFOPTS)
   )
   {
     options.passwordIsFull = false;
     options.passwordIndex = 0;
   }
-  if (args.optionsExist(HELPOPTS))
+  if (args.optionsExist(Globals::HELPOPTS))
   {
-    std::string message =
-      "\n  Password Generator - Generate strong random passwords with various options."
-      "\n  The default password style consists of uppercase, lowercase, digits, and"
-      "\n  a few basic compatible special characters that work in most cases. This"
-      "\n  program provides additional switches to allow an extended or full list of"
-      "\n  special characters. You can also specify the use of only one type of"
-      "\n  character and/or digit and mix and match."
-      "\n\n  passgen [SWITCHES] [OPTIONS <ARGUMENT>]"
-      "\n\n  @OPTIONS"
-      "\n    /l, /length             The length of the password. Defaults to 12."
-      "\n\n  @SWITCHES"
-      "\n    /?, /h, /help           This help message."
-      "\n    /c, /compatible         Full password with compatible special characters."
-      "\n                            This is the default style and this switch is only"
-      "\n                            necessary to override any previous options."
-      "\n                            Compatible characters: " + Globals::CHARSSPECIALCOM +
-      "\n    /e, /extended           Full password with extended characters."
-      "\n                            If this switch is provided it overrides everthing"
-      "\n                            except the /c, /compatible switch."
-      "\n                            Extended characters: " + Globals::CHARSSPECIALEXT +
-      "\n    /f, /full               Full password with all characters."
-      "\n                            If this switch is provided it overrides everthing"
-      "\n                            except the /c, /compatible and /e, /extended"
-      "\n                            switches."
-      "\n                            Full characters: " + Globals::CHARSSPECIALFUL +
-      "\n    /uc, /uppercase         Use uppercase characters. This switch can be used"
-      "\n                            with other singular types."
-      "\n    /lc, /lowercase         Use lowercase characters. This switch can be used"
-      "\n                            with other singular types."
-      "\n    /d, /digits             Use digits/integers. This switch can be used"
-      "\n                            with other singular types."
-      "\n    /sc, /specialcompatible Use special compatible characters. This switch can"
-      "\n                            be used with other singular types. Only one type of"
-      "\n                            special character set can be used and the last"
-      "\n                            /s* switch provided overrides other /s* switches."
-      "\n    /se, /specialextended   Use special extended characters. This switch can"
-      "\n                            be used with other singular types."
-      "\n    /sf, /specialfull       Use special full characters. This switch can be"
-      "\n                            used with other singular types."
-      "\n\n";
-    std::cout << message;
+    std::cout << Globals::HELPMESSAGE;
     return -1;
   }
-  if (args.optionsExist(LENGOPTS))
+  if (args.optionsExist(Globals::LENGOPTS))
   {
-    std::string option = args.getOptions(LENGOPTS);
+    std::string option = args.getOptions(Globals::LENGOPTS);
     if (option.empty() || IsASwitch(option)) return 1;
     try
     {
@@ -140,9 +100,9 @@ int ParseArguments(ArgumentParser& args, Options& options)
       return 2;
     }
   }
-  CheckOptionsAndSetOption(args, options, UPPCOPTS, 1);
-  CheckOptionsAndSetOption(args, options, LOWCOPTS, 2);
-  CheckOptionsAndSetOption(args, options, DIGIOPTS, 4);
+  CheckOptionsAndSetOption(args, options, Globals::UPPCOPTS, 1);
+  CheckOptionsAndSetOption(args, options, Globals::LOWCOPTS, 2);
+  CheckOptionsAndSetOption(args, options, Globals::DIGIOPTS, 4);
   //if (args.optionsExist(UPPCOPTS))
   //{
   //  options.passwordIndex += 1;
@@ -155,7 +115,7 @@ int ParseArguments(ArgumentParser& args, Options& options)
   //{
   //  options.passwordIndex += 4;
   //}
-  if (args.optionsExist(SPCCOPTS))
+  if (args.optionsExist(Globals::SPCCOPTS))
   {
     options.passwordIsSpecialCompatible = true;
     options.passwordIndex += 8;
@@ -171,7 +131,7 @@ int ParseArguments(ArgumentParser& args, Options& options)
       //options.passwordIndex -= 32;
     }
   }
-  if (args.optionsExist(SPCEOPTS))
+  if (args.optionsExist(Globals::SPCEOPTS))
   {
     options.passwordIsSpecialExtended = true;
     options.passwordIndex += 16;
@@ -187,7 +147,7 @@ int ParseArguments(ArgumentParser& args, Options& options)
       //options.passwordIndex -= 32;
     }
   }
-  if (args.optionsExist(SPCFOPTS))
+  if (args.optionsExist(Globals::SPCFOPTS))
   {
     SetIsSpecialFull(options, true);
     //options.passwordIsSpecialFull = true;
@@ -203,21 +163,21 @@ int ParseArguments(ArgumentParser& args, Options& options)
       options.passwordIndex -= 16;
     }
   }
-  if (args.optionsExist(FULLOPTS))
+  if (args.optionsExist(Globals::FULLOPTS))
   {
     SetOptionIsFullTrue(options, 39);
     //options.passwordIsFull = true;
     //options.passwordIndex = 39;
     return EXIT_SUCCESS;
   }
-  if (args.optionsExist(EXTDOPTS))
+  if (args.optionsExist(Globals::EXTDOPTS))
   {
     SetOptionIsFullTrue(options, 23);
     //options.passwordIsFull = true;
     //options.passwordIndex = 23;
     return EXIT_SUCCESS;
   }
-  if (args.optionsExist(COMPOPTS))
+  if (args.optionsExist(Globals::COMPOPTS))
   {
     SetOptionIsFullTrue(options, 15);
     //options.passwordIsFull = true;

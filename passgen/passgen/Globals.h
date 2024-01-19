@@ -30,5 +30,17 @@ namespace Globals
   extern const std::string CHARSSPECIALFUL; // full
   extern std::map<int, std::string> CHARSMAP;
   extern std::string PASSWORD;
+  extern std::vector<std::string> HELPOPTS;
+  extern std::vector<std::string> LENGOPTS;
+  extern std::vector<std::string> COMPOPTS;
+  extern std::vector<std::string> EXTDOPTS;
+  extern std::vector<std::string> FULLOPTS;
+  extern std::vector<std::string> UPPCOPTS;
+  extern std::vector<std::string> LOWCOPTS;
+  extern std::vector<std::string> DIGIOPTS;
+  extern std::vector<std::string> SPCCOPTS;
+  extern std::vector<std::string> SPCEOPTS;
+  extern std::vector<std::string> SPCFOPTS;
+  extern const std::string HELPMESSAGE;
 }
 #endif // ! GLOBALS_H
