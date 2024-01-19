@@ -9,15 +9,22 @@ void CheckOptionsAndSetOption(ArgumentParser& args, Options& options, std::vecto
   if (args.optionsExist(option_vector))
     options.passwordIndex += set;
 }
-//void SetOptionIsFullTrue(Options& options, int value)
-//{
-//  options.passwordIsFull = true;
-//  options.passwordIndex = value;
-//}
 void SetOptionIsFull(Options& options, bool is, int value)
 {
   options.passwordIsFull = is;
   options.passwordIndex = value;
+}
+void SetIsSpecialCompatible(Options& options, bool is)
+{
+  options.passwordIsSpecialCompatible = is;
+  if (is) options.passwordIndex += 8;
+  else options.passwordIndex -= 8;
+}
+void SetIsSpecialExtended(Options& options, bool is)
+{
+  options.passwordIsSpecialExtended = is;
+  if (is) options.passwordIndex += 16;
+  else options.passwordIndex -= 16;
 }
 void SetIsSpecialFull(Options& options, bool is)
 {
@@ -38,7 +45,7 @@ auto IsASwitch = [](std::string& option)
     Globals::ValueInVector(Globals::SPCFOPTS, option)
   );
 };
-bool ArgOptionsExist(ArgumentParser& args)
+bool NonDefaultArgOptionsExist(ArgumentParser& args)
 {
   return
     args.optionsExist(Globals::UPPCOPTS) || args.optionsExist(Globals::LOWCOPTS) ||
@@ -47,10 +54,9 @@ bool ArgOptionsExist(ArgumentParser& args)
 }
 int ParseArguments(ArgumentParser& args, Options& options)
 {
-  if (ArgOptionsExist(args))
+  if (NonDefaultArgOptionsExist(args))
   {
-    options.passwordIsFull = false;
-    options.passwordIndex = 0;
+    SetOptionIsFull(options, false, 0);
   }
   if (args.optionsExist(Globals::HELPOPTS))
   {
@@ -76,12 +82,10 @@ int ParseArguments(ArgumentParser& args, Options& options)
   CheckOptionsAndSetOption(args, options, Globals::DIGIOPTS, 4);
   if (args.optionsExist(Globals::SPCCOPTS))
   {
-    options.passwordIsSpecialCompatible = true;
-    options.passwordIndex += 8;
+    SetIsSpecialCompatible(options, true);
     if (options.passwordIsSpecialExtended)
     {
-      options.passwordIsSpecialExtended = false;
-      options.passwordIndex -= 16;
+      SetIsSpecialExtended(options, false);
     }
     if (options.passwordIsSpecialFull)
     {
@@ -90,12 +94,10 @@ int ParseArguments(ArgumentParser& args, Options& options)
   }
   if (args.optionsExist(Globals::SPCEOPTS))
   {
-    options.passwordIsSpecialExtended = true;
-    options.passwordIndex += 16;
+    SetIsSpecialExtended(options, true);
     if (options.passwordIsSpecialCompatible)
     {
-      options.passwordIsSpecialCompatible = false;
-      options.passwordIndex -= 8;
+      SetIsSpecialCompatible(options, false);
     }
     if (options.passwordIsSpecialFull)
     {
@@ -107,13 +109,11 @@ int ParseArguments(ArgumentParser& args, Options& options)
     SetIsSpecialFull(options, true);
     if (options.passwordIsSpecialCompatible)
     {
-      options.passwordIsSpecialCompatible = false;
-      options.passwordIndex -= 8;
+      SetIsSpecialCompatible(options, false);
     }
     if (options.passwordIsSpecialExtended)
     {
-      options.passwordIsSpecialExtended = false;
-      options.passwordIndex -= 16;
+      SetIsSpecialExtended(options, false);
     }
   }
   if (args.optionsExist(Globals::FULLOPTS))
