@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{55b923f6-7351-431a-928b-a5255fa3c779}</ProjectGuid>
-    <RootNamespace>passgen</RootNamespace>
+    <ProjectGuid>{4e1bd3f1-273e-4839-8939-6e250eb3bd60}</ProjectGuid>
+    <RootNamespace>colordiff</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -136,8 +136,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ArgumentParser.cpp" />
+    <ClCompile Include="colordiff.cpp" />
     <ClCompile Include="Globals.cpp" />
-    <ClCompile Include="passgen.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

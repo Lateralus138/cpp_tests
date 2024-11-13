@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="passgen.cpp">
+    <ClCompile Include="colordiff.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ArgumentParser.cpp">
