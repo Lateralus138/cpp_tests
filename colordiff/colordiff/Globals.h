@@ -16,7 +16,7 @@ struct Errors
 namespace Globals
 {
   extern unsigned int UINT_MAX_ENSURE;
-  bool IsHexadecimalString(const std::string& string);
+  bool IsHexadecimalString(std::string_view string);
   std::map<std::string, int> HexToRGB(int hex);
   void StripHexadecimalPrefix(std::string& string);
   void StringReplace(std::string& haystack, const std::string& needle, const std::string& replace);

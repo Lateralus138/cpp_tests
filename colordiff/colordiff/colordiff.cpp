@@ -4,7 +4,6 @@
 // ╚═════════════════════════════════════════════════════════════════════════════╝
 
 #include "stdafx.h"
-#include <typeinfo>
 
 // Regular expression switch/argument compilations and their unary predicate function
 // counterparts (std::find_if) for use in querying arguments in my argument parser class.
@@ -19,15 +18,17 @@ static bool MiniRegex(const std::string& str) { return std::regex_match(str, MIN
 std::regex MAXIREGEX("^/([xX]|[mM][iI][nN][uU][eE][nN][dD])$");
 static bool MaxiRegex(const std::string& str) { return std::regex_match(str, MAXIREGEX); }
 
-static long long CheckIfStringIsHexAndConvertToLongThenCheckIfIs24BitValue(std::string& value)
+//static long long CheckIfStringIsHexAndConvertToLongThenCheckIfIs24BitValue(std::string& value)
+static long long CheckIfStringIsHexAndConvertToLongThenCheckIfIs24BitValue(std::string_view value)
 {
-  if (!Globals::IsHexadecimalString(value)) return static_cast<long long>(-1);
-  long long iValue = static_cast<long long>(std::stoll(value, NULL, 16));
+  if (!Globals::IsHexadecimalString(value)) return static_cast<long long>(-2);
+  long long iValue = static_cast<long long>(std::stoll(std::string(value), NULL, 16));
   if ((iValue < 0x000000) || (iValue > 0xffffff)) return static_cast<long long>(-3);
   return iValue;
 }
 
-static int minuendCheckAndAdd(std::string& value, Options& options)
+//static int minuendCheckAndAdd(std::string& value, Options& options)
+static int minuendCheckAndAdd(std::string_view value, Options& options)
 {
   long long check = CheckIfStringIsHexAndConvertToLongThenCheckIfIs24BitValue(value);
   if (check >= 0) options.minuend = check;
@@ -50,7 +51,7 @@ static int ParseArguments(ArgumentParser& args, Options& options)
   {
     std::string message =
       "\n  Color Difference - Get the distance between two 24 bit colors from 0"
-      "\n  to 441.672955930064."
+      "\n  to 441.672955930063722007616888732."
       "\n\n  colordiff [SWITCHES] [PARAMETERS <VALUE>] <VALUES>"
       "\n\n  @PARAMETERS"
       "\n    /m, /minuend  Initial hexadecimal color value to test. Ensures"
@@ -129,18 +130,25 @@ int main(int argc, const char* argv[])
     std::cerr << errors.messages[PARSED] << '\n';
     return PARSED;
   }
-  std::map<std::string, double> diffValues;
+  std::vector<std::pair<std::string, double>> diffValues;
   const std::string minuendString = Globals::IntToHexString(static_cast<int>(options.minuend), 6, "0x");
   for (const long long& number : options.subtrahends)
   {
     const std::string subtrahendString = Globals::IntToHexString(static_cast<int>(number), 6, "0x");
-    diffValues[minuendString + " - " + subtrahendString] =
-      Globals::ColorDiff(static_cast<int>(options.minuend), static_cast<int>(number));
+    diffValues.push_back
+    (
+      std::make_pair(minuendString + " - " + subtrahendString,
+        Globals::ColorDiff
+        (
+          static_cast<int>(options.minuend),
+          static_cast<int>(number))
+      )
+    );
   }
   double minOrMax = 0;
   if (options.minimum)
   {
-    std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char> > const, double> > > > min = std::min_element
+    class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<struct std::pair<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char> >, double> > > > min = std::min_element
     (
       std::begin(diffValues),
       std::end(diffValues),
@@ -150,7 +158,7 @@ int main(int argc, const char* argv[])
   }
   if (options.maximum)
   {
-    std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char> > const, double> > > > max = std::max_element
+    class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<struct std::pair<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char> >, double> > > > max = std::max_element
     (
       std::begin(diffValues),
       std::end(diffValues),

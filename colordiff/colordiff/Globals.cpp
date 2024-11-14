@@ -5,9 +5,10 @@ extern struct Errors errors;
 namespace Globals
 {
   unsigned int UINT_MAX_ENSURE = (unsigned int) - 1;
-  bool IsHexadecimalString(const std::string& string)
+  //bool IsHexadecimalString(const std::string& string)
+  bool IsHexadecimalString(std::string_view string)
   {
-    std::string string_ = string;
+    std::string string_ = std::string(string);
     StripHexadecimalPrefix(string_);
     if ((string_.empty()) || (string_.size() > 16)) return false;
     return (string_.find_first_not_of("0123456789abcdefABCDEF", 0) == std::string::npos);
