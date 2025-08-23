@@ -15,16 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="boxgen.cpp">
+    <ClCompile Include="hitmanpro_reset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="box_characters.cpp">
+    <ClCompile Include="env_var.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ArgsParser.cpp">
+    <ClCompile Include="path_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="error_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,10 +38,13 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="box_characters.h">
+    <ClInclude Include="env_var.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ArgsParser.h">
+    <ClInclude Include="path_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="error_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
