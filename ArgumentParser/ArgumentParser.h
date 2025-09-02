@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 class ArgumentParser {
-
 public:
 	ArgumentParser(int argc, char* argv[]);
 	~ArgumentParser() = default;
