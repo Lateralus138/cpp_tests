@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 class ArgumentParser {
+
 public:
 	ArgumentParser(int argc, char* argv[]);
 	~ArgumentParser() = default;
@@ -16,6 +17,7 @@ public:
 	void printHelp(std::string header, bool hasNonSwitchArguments) const;
 	std::string getSwitchValue(std::string name) const;
 	std::string getArgvValue(size_t index) const;
+
 private:
 	std::string executableName;
 	int argc;
