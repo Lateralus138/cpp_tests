@@ -49,22 +49,34 @@ static void BuildArgumentParser(ArgumentParser& argParser) {
 	argParser.setSwitchPair("u", "uppercase");
 	argParser.setSwitchPair("f", "format");
 }
+static void printRGB(const int& colorInt) {
+	const auto rgb = colorIntToRGBStrings(colorInt);
+	const std::string rgbMessage =
+		rgb.at("red") + " " +
+		rgb.at("green") + " " +
+		rgb.at("blue");
+	std::cout << rgbMessage << std::endl;
+}
+static void printHex(const int& colorInt, bool& uppercase, const std::string& prefix) {
+	const std::string hexedecimalMessage =
+		prefix +
+		intColorToHexString(colorInt, uppercase);
+	std::cout << hexedecimalMessage << std::endl;
+}
+static void printHex(ArgumentParser& argParser, int invertedColorValue, bool uppercase) {
+	const std::string hexadecimalMessagePrefix =
+		argParser.isSwitchSet("f") ? argParser.getSwitchValue("f") : "";
+	const std::string hexedecimalMessage =
+		hexadecimalMessagePrefix +
+		intColorToHexString(invertedColorValue, const_cast<bool&>(uppercase));
+	std::cout << hexedecimalMessage << std::endl;
+}
+// TODO Reduce complexity of main() function.
 int main(int argc, char* argv[]) {
 	ArgumentParser argParser(argc, argv);
 	BuildArgumentParser(argParser);
-	//const bool noParam = false;
-	//const bool hasParam = true;
-	//argParser.addSwitch("h", "This HELP message.");
-	//argParser.addSwitch("help", "This HELP message.");
-	//argParser.addSwitch("u", "Output in uppercase hexadecimal format.", noParam);
-	//argParser.addSwitch("uppercase", "Output in uppercase hexadecimal format.", noParam);
-	//argParser.addSwitch("f", "Prepend any series of characters to hexadecimal output.", hasParam);
-	//argParser.addSwitch("format", "Prepend '#' or '0x' to hexadecimal output.", hasParam);
-	//argParser.addSwitch("rgb", "Output in RGB format instead of hexadecimal.", noParam);
-	//argParser.setSwitchPair("h", "help");
-	//argParser.setSwitchPair("u", "uppercase");
-	//argParser.setSwitchPair("f", "format");
 
+	// TODO 
 	try {
 		const int argParseResult = argParser.parse();
 		const int errorCode = argParser.getErrorCode();
@@ -123,19 +135,21 @@ int main(int argc, char* argv[]) {
 		const int invertedColorValue = (~colorValue) & 0xFFFFFF;
 
 		if (isRGBOutput) {
-			const auto rgb = colorIntToRGBStrings(invertedColorValue);
-			const std::string rgbMessage =
-				rgb.at("red") + " " +
-				rgb.at("green") + " " +
-				rgb.at("blue");
-			std::cout << rgbMessage << std::endl;
+			printRGB(invertedColorValue);
+			//const auto rgb = colorIntToRGBStrings(invertedColorValue);
+			//const std::string rgbMessage =
+			//	rgb.at("red") + " " +
+			//	rgb.at("green") + " " +
+			//	rgb.at("blue");
+			//std::cout << rgbMessage << std::endl;
 		} else {
-			const std::string hexadecimalMessagePrefix =
-				argParser.isSwitchSet("f") ? argParser.getSwitchValue("f") : "";
-			const std::string hexedecimalMessage =
-				hexadecimalMessagePrefix +
-				intColorToHexString(invertedColorValue, const_cast<bool&>(uppercase));
-			std::cout << hexedecimalMessage << std::endl;
+			printHex(argParser, invertedColorValue, uppercase);
+			//const std::string hexadecimalMessagePrefix =
+			//	argParser.isSwitchSet("f") ? argParser.getSwitchValue("f") : "";
+			//const std::string hexedecimalMessage =
+			//	hexadecimalMessagePrefix +
+			//	intColorToHexString(invertedColorValue, const_cast<bool&>(uppercase));
+			//std::cout << hexedecimalMessage << std::endl;
 		}
 	}
 
