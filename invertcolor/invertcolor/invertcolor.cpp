@@ -71,12 +71,7 @@ static void printHex(ArgumentParser& argParser, int invertedColorValue, bool upp
 		intColorToHexString(invertedColorValue, const_cast<bool&>(uppercase));
 	std::cout << hexedecimalMessage << std::endl;
 }
-// TODO Reduce complexity of main() function.
-int main(int argc, char* argv[]) {
-	ArgumentParser argParser(argc, argv);
-	BuildArgumentParser(argParser);
-
-	// TODO 
+static int parseArguments(ArgumentParser& argParser) {
 	try {
 		const int argParseResult = argParser.parse();
 		const int errorCode = argParser.getErrorCode();
@@ -86,10 +81,36 @@ int main(int argc, char* argv[]) {
 				"Error: Missing parameter for switch '" +
 				argParser.getArgvValue(argParseResult) + "'.");
 		}
-	} catch (const std::runtime_error& err) {
-		std::cerr << err.what() << '\n';
-		return argParser.getErrorCode();
 	}
+	catch (const std::runtime_error& err) {
+		std::cerr << err.what() << '\n';
+		//return argParser.getErrorCode();
+	}
+	return argParser.getErrorCode();
+}
+// TODO Reduce complexity of main() function.
+int main(int argc, char* argv[]) {
+	ArgumentParser argParser(argc, argv);
+	BuildArgumentParser(argParser);
+
+	// TODO 
+	const int parseResult = parseArguments(argParser);
+	if (parseResult != 0) {
+		return parseResult;
+	}
+	//try {
+	//	const int argParseResult = argParser.parse();
+	//	const int errorCode = argParser.getErrorCode();
+	//	if (errorCode != 0) {
+	//		throw std::runtime_error(
+	//			"[" + std::to_string(errorCode) + "]: Error while parsing command line arguments.\n" +
+	//			"Error: Missing parameter for switch '" +
+	//			argParser.getArgvValue(argParseResult) + "'.");
+	//	}
+	//} catch (const std::runtime_error& err) {
+	//	std::cerr << err.what() << '\n';
+	//	return argParser.getErrorCode();
+	//}
 
 	if (argParser.isSwitchSet("h") || argParser.isSwitchSet("help")) {
 		argParser.printHelp(
