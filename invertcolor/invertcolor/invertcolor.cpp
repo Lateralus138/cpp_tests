@@ -1,40 +1,5 @@
 #include "stdafx.h"
-static bool is24BitValue(const int& value) {
-	return (value & ~0xFFFFFF) == 0;
-}
-static bool isHexValue(const std::string& str) {
-	std::string_view s = str;
-	if (!s.empty() && s.front() == '#') s.remove_prefix(1);
-	if (s.size() >= 2 && s.substr(0, 2) == "0x") s.remove_prefix(2);
-	if (s.empty() || s.size() > 6) return false;
-	for (char ch : s) {
-		if (!std::isxdigit(static_cast<unsigned char>(ch))) return false;
-	}
-	return true;
-}
-static std::map<std::string, std::string> colorIntToRGBStrings(const int& colorInt) {
-	std::map<std::string, std::string> rgb = {
-		{"red", std::to_string((colorInt >> 16) & 0xFF)},
-		{"green", std::to_string((colorInt >> 8) & 0xFF)},
-		{ "blue", std::to_string((colorInt & 0xFF))}
-	};
-	return rgb;
-}
-static std::string intColorToHexString(const int& value, bool& uppercase) {
-	std::array<char, 7> buffer{};
-	auto [ptr, ec] = std::to_chars(buffer.data(), buffer.data() + buffer.size(), value, 16);
-	if (ec != std::errc()) {
-		return "";
-	}
-	std::string hexStr(buffer.data(), ptr);
-	if (hexStr.length() < 6) {
-		hexStr.insert(0, 6 - hexStr.length(), '0');
-	}
-	if (uppercase) {
-		std::transform(hexStr.begin(), hexStr.end(), hexStr.begin(), [](unsigned char c) { return std::toupper(c); });
-	}
-	return hexStr;
-}
+#include "utils.h"
 static void BuildArgumentParser(ArgumentParser& argParser) {
 	const bool noParam = false;
 	const bool hasParam = true;
@@ -50,7 +15,7 @@ static void BuildArgumentParser(ArgumentParser& argParser) {
 	argParser.setSwitchPair("f", "format");
 }
 static void printRGB(const int& colorInt) {
-	const auto rgb = colorIntToRGBStrings(colorInt);
+	const auto rgb = InvertColorUtils::colorIntToRGBStrings(colorInt);
 	const std::string rgbMessage =
 		rgb.at("red") + " " +
 		rgb.at("green") + " " +
@@ -60,7 +25,7 @@ static void printRGB(const int& colorInt) {
 static void printHex(const int& colorInt, bool& uppercase, const std::string& prefix) {
 	const std::string hexedecimalMessage =
 		prefix +
-		intColorToHexString(colorInt, uppercase);
+		InvertColorUtils::intColorToHexString(colorInt, uppercase);
 	std::cout << hexedecimalMessage << std::endl;
 }
 static void printHex(ArgumentParser& argParser, int invertedColorValue, bool uppercase) {
@@ -68,7 +33,7 @@ static void printHex(ArgumentParser& argParser, int invertedColorValue, bool upp
 		argParser.isSwitchSet("f") ? argParser.getSwitchValue("f") : "";
 	const std::string hexedecimalMessage =
 		hexadecimalMessagePrefix +
-		intColorToHexString(invertedColorValue, const_cast<bool&>(uppercase));
+		InvertColorUtils::intColorToHexString(invertedColorValue, const_cast<bool&>(uppercase));
 	std::cout << hexedecimalMessage << std::endl;
 }
 static int parseArguments(ArgumentParser& argParser) {
@@ -84,11 +49,9 @@ static int parseArguments(ArgumentParser& argParser) {
 	}
 	catch (const std::runtime_error& err) {
 		std::cerr << err.what() << '\n';
-		//return argParser.getErrorCode();
 	}
 	return argParser.getErrorCode();
 }
-// TODO Reduce complexity of main() function.
 int main(int argc, char* argv[]) {
 	ArgumentParser argParser(argc, argv);
 	BuildArgumentParser(argParser);
@@ -98,19 +61,6 @@ int main(int argc, char* argv[]) {
 	if (parseResult != 0) {
 		return parseResult;
 	}
-	//try {
-	//	const int argParseResult = argParser.parse();
-	//	const int errorCode = argParser.getErrorCode();
-	//	if (errorCode != 0) {
-	//		throw std::runtime_error(
-	//			"[" + std::to_string(errorCode) + "]: Error while parsing command line arguments.\n" +
-	//			"Error: Missing parameter for switch '" +
-	//			argParser.getArgvValue(argParseResult) + "'.");
-	//	}
-	//} catch (const std::runtime_error& err) {
-	//	std::cerr << err.what() << '\n';
-	//	return argParser.getErrorCode();
-	//}
 
 	if (argParser.isSwitchSet("h") || argParser.isSwitchSet("help")) {
 		argParser.printHelp(
@@ -132,7 +82,7 @@ int main(int argc, char* argv[]) {
 	const bool uppercase = argParser.isSwitchSet("u");
 
 	for (const auto& arg : argParser.getArguments()) {
-		if (!isHexValue(arg)) {
+		if (!InvertColorUtils::isHexValue(arg)) {
 			std::cerr << "[2]: Invalid color value '" << arg << "'.\n";
 			return 2;
 		}
@@ -148,7 +98,7 @@ int main(int argc, char* argv[]) {
 			return 2;
 		}
 
-		if (!is24BitValue(colorValue)) {
+		if (!InvertColorUtils::is24BitValue(colorValue)) {
 			std::cerr << "[3]: Color value '" << arg << "' is out of range.\n";
 			return 3;
 		}
@@ -157,20 +107,8 @@ int main(int argc, char* argv[]) {
 
 		if (isRGBOutput) {
 			printRGB(invertedColorValue);
-			//const auto rgb = colorIntToRGBStrings(invertedColorValue);
-			//const std::string rgbMessage =
-			//	rgb.at("red") + " " +
-			//	rgb.at("green") + " " +
-			//	rgb.at("blue");
-			//std::cout << rgbMessage << std::endl;
 		} else {
 			printHex(argParser, invertedColorValue, uppercase);
-			//const std::string hexadecimalMessagePrefix =
-			//	argParser.isSwitchSet("f") ? argParser.getSwitchValue("f") : "";
-			//const std::string hexedecimalMessage =
-			//	hexadecimalMessagePrefix +
-			//	intColorToHexString(invertedColorValue, const_cast<bool&>(uppercase));
-			//std::cout << hexedecimalMessage << std::endl;
 		}
 	}
 
