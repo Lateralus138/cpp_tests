@@ -35,9 +35,7 @@ static std::string intColorToHexString(const int& value, bool& uppercase) {
 	}
 	return hexStr;
 }
-
-int main(int argc, char* argv[]) {
-	ArgumentParser argParser(argc, argv);
+static void BuildArgumentParser(ArgumentParser& argParser) {
 	const bool noParam = false;
 	const bool hasParam = true;
 	argParser.addSwitch("h", "This HELP message.");
@@ -50,6 +48,22 @@ int main(int argc, char* argv[]) {
 	argParser.setSwitchPair("h", "help");
 	argParser.setSwitchPair("u", "uppercase");
 	argParser.setSwitchPair("f", "format");
+}
+int main(int argc, char* argv[]) {
+	ArgumentParser argParser(argc, argv);
+	BuildArgumentParser(argParser);
+	//const bool noParam = false;
+	//const bool hasParam = true;
+	//argParser.addSwitch("h", "This HELP message.");
+	//argParser.addSwitch("help", "This HELP message.");
+	//argParser.addSwitch("u", "Output in uppercase hexadecimal format.", noParam);
+	//argParser.addSwitch("uppercase", "Output in uppercase hexadecimal format.", noParam);
+	//argParser.addSwitch("f", "Prepend any series of characters to hexadecimal output.", hasParam);
+	//argParser.addSwitch("format", "Prepend '#' or '0x' to hexadecimal output.", hasParam);
+	//argParser.addSwitch("rgb", "Output in RGB format instead of hexadecimal.", noParam);
+	//argParser.setSwitchPair("h", "help");
+	//argParser.setSwitchPair("u", "uppercase");
+	//argParser.setSwitchPair("f", "format");
 
 	try {
 		const int argParseResult = argParser.parse();
