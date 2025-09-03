@@ -16,6 +16,8 @@ public:
 	void printHelp(std::string header, bool hasNonSwitchArguments) const;
 	std::string getSwitchValue(std::string name) const;
 	std::string getArgvValue(size_t index) const;
+	size_t getArgumentCount() const;
+	const std::vector<std::string>& getArguments() const;
 
 private:
 	std::string executableName;

@@ -133,7 +133,7 @@ ArgumentParser::AddedSwitch::AddedSwitch(std::string name, std::string descripti
 	this->throwIfNotSet = throwIfNotSet;
 }
 std::string ArgumentParser::formatSwitchList() const {
-	std::string result;
+	std::string result = "";
 	for (const auto& sw : this->switches) {
 		if (!sw.pair.empty() && sw.name > sw.pair) {
 			continue;
@@ -172,9 +172,14 @@ std::string ArgumentParser::formatSwitchLine(bool hasNonSwitchArguments) const {
 		}
 	}
 	if (hasNonSwitchArguments) {
-		result +=
-			std::string((result.length() > 0) ? "\n" + newLinePadding : " ") +
-			"<ARGUMENTS>" + '\n';
+		if (!result.empty()) {
+			result += "\n" + newLinePadding + "<ARGUMENTS>";
+		} else {
+			result += "<ARGUMENTS>";
+		}
+		// TODO test aboe if works with no switches and FIXME if not
+		//std::string((result.length() > 0) ? "\n" + newLinePadding : " ") +
+		//"<ARGUMENTS>"; // Possibly add space if no switches
 	}
 	return result;
 }
@@ -191,4 +196,10 @@ std::string ArgumentParser::getArgvValue(size_t index) const {
 		return this->argv[index];
 	}
 	return "";
+}
+size_t ArgumentParser::getArgumentCount() const {
+	return this->arguments.size();
+}
+std::vector<std::string> const& ArgumentParser::getArguments() const {
+	return this->arguments;
 }
