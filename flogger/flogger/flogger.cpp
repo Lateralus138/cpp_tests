@@ -42,6 +42,7 @@ std::map<const int, std::wstring_view> errorMessages = {
 	{0, L"No error."},
 	{1, L"No arguments passed to the program."},
 	{2, L"Failed to create log file."},
+	{3, L"Failed to write to log file: "},
 	{255, L"Error in parsing parameters. No parameter was provided."}
 };
 int main(int argc, char* argv[]) {
@@ -64,7 +65,9 @@ int main(int argc, char* argv[]) {
 	}
 	if (argument_parser.isSwitchSet("h")) {
 		std::wstring wmessage =
-			L"File Logger\n© 2025 Ian Pride - New Pride Software/Services";
+			L"File Logger"
+			"\n  © 2025 Ian Pride - New Pride Software/Services"
+			"\n  Log anything to a file with options.";
 		argument_parser.printHelpW(wmessage, true);
 		return 0;
 	}
@@ -102,13 +105,17 @@ int main(int argc, char* argv[]) {
 			return 2;
 		}
 	}
+	bool writeStatus = false;
 	for (auto &value : strings) {
 		const std::wstring wvalue(value.begin(), value.end());
 		if (argument_parser.isSwitchSet("t")) {
 			const std::wstring timestamp = flogger::timestampW();
-			logFile.writeFileW(L"[" + timestamp + L"] " + wvalue + L"\n");
+			writeStatus = logFile.writeFileW(L"[" + timestamp + L"] " + wvalue + L"\n");
 			continue;
 		}
-		logFile.writeFileW(wvalue + L"\n");
+		writeStatus = logFile.writeFileW(wvalue + L"\n");
+		if (!writeStatus) {
+			std::wcerr << errorMessages[3] << logFile.getFilePath().wstring() << std::endl;
+		}
 	}
 }

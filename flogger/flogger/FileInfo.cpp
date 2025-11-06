@@ -2,7 +2,7 @@
 #include "FileInfo.h"
 namespace fileutils {
 	FileInfo::FileInfo(const std::filesystem::path& filepath)
-		: filePath(filepath) {
+		: filePath(filepath), fileExists(false), append(false) {
 		fileExists = std::filesystem::exists(filePath);
 		if (fileExists) {
 			if (std::filesystem::is_directory(filePath)) {
@@ -90,27 +90,6 @@ namespace fileutils {
 		ofs.close();
 		return true;
 	}
-	//bool FileInfo::writeFileW(const std::wstring& content) const {
-	//	std::wofstream wofs(filePath, std::ios::trunc);
-	//	if (!wofs.is_open()) {
-	//		return false;
-	//	}
-	//	wofs << content;
-	//	wofs.close();
-	//	return true;
-	//}
-	//bool FileInfo::writeFileA(const std::string& content, bool apend) const {
-	//	if (fileType != FileType::RegularFile) {
-	//		return false;
-	//	}
-	//	std::ofstream ofs(filePath, std::ios::trunc);
-	//	if (!ofs.is_open()) {
-	//		return false;
-	//	}
-	//	ofs << content;
-	//	ofs.close();
-	//	return true;
-	//}
 	bool FileInfo::isDirectory() const {
 		return fileType == FileType::Directory;
 	}
