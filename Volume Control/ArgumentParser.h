@@ -86,6 +86,13 @@ private:
     [[nodiscard]] std::string determine_prefix(std::string_view name) const;
     void validate_switch_name(std::string_view name) const;
     void handle_missing_parameter(const SwitchInfo& switch_info, size_t argv_index);
+    
+    // New helper methods for parsing
+    [[nodiscard]] bool is_switch_argument(std::string_view arg) const;
+    size_t process_switch_argument(std::string_view arg, size_t index);
+    size_t process_parameter_switch(SwitchInfo& switch_info, size_t index);
+    void update_paired_switch(const SwitchInfo& switch_info);
+    void validate_required_switches() const;
 };
 
 } // namespace argparser
