@@ -37,7 +37,6 @@ int main(int argc, char *argv[]) {
                        parser.is_switch_set("max") || parser.is_switch_set("min") ||
                        !parser.get_arguments().empty();
     display_volume_status(controller, !has_commands);
-
   } catch (const std::exception &e) {
     std::cerr << "Error: " << e.what() << "\n";
     return 1;
