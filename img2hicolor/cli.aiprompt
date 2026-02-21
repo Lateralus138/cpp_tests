@@ -1,0 +1,56 @@
+Goal:
+  This command line utility should take a single image file or icon file and convert it into a linux style hicolor icon system them and install wher necessary.
+  Build in /tmp with a custom id each time: e.g.: /tmp/img2hicolor_<ID>/<TREE> and then copy tp the appropriate location.
+
+Language: C++20
+  Stack:
+    - my custom make system (view @Makefile and @prebuild).
+    - Use my custom ArgumentParser in @src/include to parse and populate argument pairs and switches.
+
+Interface:
+
+  Command name: img2hicolor
+  
+  Args/flags:
+    -h, --help    This help message.
+    -i, --input   Image or ico file.
+    -s, --system  Output is for the system.
+                  /usr/share/icons/hicolor
+                  Output defaults to user;
+                  ~/.local/share/icons/hicolor.
+                  When installing for system
+                  root (sudo) privileges must
+                  be granted.
+    -p, --path    Custom output; overrides
+                  user and system. Great for
+                  if we need to package for an
+                  application.
+
+Input: file (possibly from standard input and pipe. see Args/flags -i)
+
+Output: trees of .png and an .svg as a hicolor them either as system or user. Of course and svg should only be in scalable/apps
+  Tree:
+    ├── 16x16/
+    │   └── apps/<image>.png
+    ├── 22x22/
+    │   └── apps/<image>.png
+    ├── 24x24/
+    │   └── apps/<image>.png
+    ├── 32x32/
+    │   └── apps/<image>.png
+    ├── 48x48/
+    │   └── apps/<image>.png
+    ├── 64x64/
+    │   └── apps/<image>.png
+    ├── 128x128/
+    │   └── apps/<image>.png
+    ├── 256x256/
+    │   └── apps/<image>.png
+    └── scalable/
+        └── apps/<image>.svg
+
+Constraints: performance as always
+
+Non-Goals: no external executable calls, all work must be done in the program either libraries, sys calls, etc.
+
+Deliver: single file excutable

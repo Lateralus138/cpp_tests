@@ -172,7 +172,7 @@ std::string ArgumentParser::format_switch_list() const {
             result += " <parameter>";
         }
         
-        result += "\n    " + switch_info.description;
+        result += "\n  " + switch_info.description;
         
         if (switch_info.requirement == Requirement::REQUIRED) {
             result += " (Required)";
