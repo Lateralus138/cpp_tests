@@ -294,8 +294,8 @@ install: installdynamic
 
 installdynamic:
 	@echo Installing $(PROJNM)
-	cp -f $(TGTDYN) /usr/bin/$(PROJNM)
+	cp -f $(TGTDYN) /usr/local/bin/$(PROJNM)
 
 installstatic:
 	@echo Installing $(PROJNM)
-	cp -f $(TGTSTC) /usr/bin/$(PROJNM)
+	cp -f $(TGTSTC) /usr/local/bin/$(PROJNM)

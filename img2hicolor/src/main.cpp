@@ -44,14 +44,39 @@ cairo_status_t read_from_stdin(void *closure, unsigned char *data, unsigned int 
 // Helper functions to reduce main complexity
 
 cairo_surface_t* load_image(const std::optional<std::string>& input_file) {
-    cairo_surface_t* surface;
-    if (input_file) {
-        surface = cairo_image_surface_create_from_png(input_file->c_str());
-    } else {
-        surface = cairo_image_surface_create_from_png_stream(read_from_stdin, NULL);
+    cairo_surface_t* surface = nullptr;
+    try {
+        if (input_file) {
+            // Use C GdkPixbuf API to avoid GTKMM wrapping issues
+            GError *error = nullptr;
+            GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file(input_file->c_str(), &error);
+            if (!pixbuf) {
+                std::cerr << "Error loading image: " << (error ? error->message : "unknown") << std::endl;
+                if (error) g_error_free(error);
+                return nullptr;
+            }
+            int width = gdk_pixbuf_get_width(pixbuf);
+            int height = gdk_pixbuf_get_height(pixbuf);
+            // Create ARGB32 Cairo surface
+            surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
+            cairo_t* cr = cairo_create(surface);
+            // Draw pixbuf onto surface
+            gdk_cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
+            cairo_paint(cr);
+            cairo_destroy(cr);
+            g_object_unref(pixbuf);
+        } else {
+            // For stdin, assume PNG format
+            surface = cairo_image_surface_create_from_png_stream(read_from_stdin, NULL);
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Error loading image: " << e.what() << std::endl;
+        if (surface) cairo_surface_destroy(surface);
+        return nullptr;
     }
-    if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
-        std::cerr << "Error loading image: " << cairo_status_to_string(cairo_surface_status(surface)) << std::endl;
+    if (!surface || cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
+        std::cerr << "Error creating surface: " << (surface ? cairo_status_to_string(cairo_surface_status(surface)) : "null surface") << std::endl;
+        if (surface) cairo_surface_destroy(surface);
         return nullptr;
     }
     return surface;
@@ -195,9 +220,12 @@ int main(int argc, char* argv[])
 {
     using namespace argparser;
 
+    Glib::init();
+    gtk_init(&argc, &argv);
     ArgumentParser parser(argc, argv);
     parser.add_switch_pair("h", "help", "  This help message.", SwitchType::FLAG, Requirement::OPTIONAL);
-    parser.add_switch_pair("i", "input", "  Image or ico file.", SwitchType::PARAMETER, Requirement::OPTIONAL);
+    parser.add_switch_pair("i", "input", "  Image file (PNG, JPG, BMP, ICO, etc.) or stdin (PNG only).", SwitchType::PARAMETER, Requirement::OPTIONAL);
+    parser.add_switch_pair("n", "name", "  Custom name for the output icon (without extension).", SwitchType::PARAMETER, Requirement::OPTIONAL);
     parser.add_switch_pair("s", "system", "  Output is for the system. /usr/share/icons/hicolor.\n    Output defaults to user; ~/.local/share/icons/hicolor.\n    When installing for system root (sudo) privileges must\n    be granted.", SwitchType::FLAG, Requirement::OPTIONAL);
     parser.add_switch_pair("p", "path", "  Custom output; overrides user and system. Great for\n    if we need to package for an application.", SwitchType::PARAMETER, Requirement::OPTIONAL);
 
@@ -217,6 +245,7 @@ int main(int argc, char* argv[])
     // Get options
     std::optional<std::string> input_file = parser.get_switch_value("input");
     std::optional<std::string> custom_path = parser.get_switch_value("path");
+    std::optional<std::string> custom_name = parser.get_switch_value("name");
     bool system_install = parser.is_switch_set("system");
 
     // Load image
@@ -226,7 +255,12 @@ int main(int argc, char* argv[])
     }
 
     // Determine icon name
-    std::string icon_name = determine_icon_name(input_file);
+    std::string icon_name;
+    if (custom_name) {
+        icon_name = *custom_name;
+    } else {
+        icon_name = determine_icon_name(input_file);
+    }
 
     // Determine output base
     std::string output_base = determine_output_base(custom_path, system_install);

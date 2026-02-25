@@ -11,4 +11,8 @@
 #include <ctime> // for time
 #include <cairomm/cairomm.h>
 #include <gdk/gdk.h>
+#include <gdkmm/pixbuf.h>
+#include <gdk/gdkcairo.h>
+#include <gtk/gtk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #endif // PCH_H
