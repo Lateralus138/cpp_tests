@@ -568,77 +568,66 @@ struct Config {
 // Helpers extracted from main()
 // ─────────────────────────────────────────────────────────────────────────────
 
-static void setup_args(argparser::ArgumentParser& parser) {
-    using argparser::SwitchType, argparser::Requirement;
-    parser.add_switch_pair("h", "help",             "\tShow this help message",           SwitchType::FLAG,      Requirement::OPTIONAL);
-    parser.add_switch_pair("t", "text",             "\tDirect text input",                SwitchType::PARAMETER, Requirement::OPTIONAL);
-    parser.add_switch_pair("W", "width",            "\tImage width in pixels",            SwitchType::PARAMETER, Requirement::REQUIRED);
-    parser.add_switch_pair("H", "height",           "\tImage height in pixels",           SwitchType::PARAMETER, Requirement::OPTIONAL);
-    parser.add_switch_pair("T", "trim-height",      "\tTrim image height to content",     SwitchType::FLAG,      Requirement::OPTIONAL);
-    parser.add_switch_pair("r", "raw",              "\tTreat escape sequences as literal",SwitchType::FLAG,      Requirement::OPTIONAL);
-    parser.add_switch_pair("n", "file-name",        "\tOutput image file name",           SwitchType::PARAMETER, Requirement::OPTIONAL);
-    parser.add_switch_pair("o", "output-directory", "\tOutput directory",                 SwitchType::PARAMETER, Requirement::OPTIONAL);
-    parser.add_switch("fg",        "\tForeground/text colour",  SwitchType::PARAMETER, Requirement::OPTIONAL);
-    parser.add_switch("bg",        "\tBackground colour",       SwitchType::PARAMETER, Requirement::OPTIONAL);
-    parser.add_switch("font",      "\tPath to a TTF/OTF font",  SwitchType::PARAMETER, Requirement::OPTIONAL);
-    parser.add_switch("font-size", "\tFont size in points",     SwitchType::PARAMETER, Requirement::OPTIONAL);
-    parser.add_switch("padding",   "\tPadding inside the image",SwitchType::PARAMETER, Requirement::OPTIONAL);
-    parser.add_switch("tabsize",   "\tTab stop width",          SwitchType::PARAMETER, Requirement::OPTIONAL);
+static void setup_args(argparser::ArgumentParser& p) {
+    using namespace argparser;
+    p.add_switch_pair("h", "help",             "\tShow help message",           SwitchType::FLAG,      Requirement::OPTIONAL);
+    p.add_switch_pair("t", "text",             "\tDirect text input",           SwitchType::PARAMETER, Requirement::OPTIONAL);
+    p.add_switch_pair("W", "width",            "\tImage width",                 SwitchType::PARAMETER, Requirement::REQUIRED);
+    p.add_switch_pair("H", "height",           "\tImage height",                SwitchType::PARAMETER, Requirement::OPTIONAL);
+    p.add_switch_pair("T", "trim-height",      "\tTrim height to content",      SwitchType::FLAG,      Requirement::OPTIONAL);
+    p.add_switch_pair("r", "raw",              "\tNo ANSI parsing",             SwitchType::FLAG,      Requirement::OPTIONAL);
+    p.add_switch_pair("n", "file-name",        "\tOutput filename",             SwitchType::PARAMETER, Requirement::OPTIONAL);
+    p.add_switch_pair("o", "output-directory", "\tOutput directory",            SwitchType::PARAMETER, Requirement::OPTIONAL);
+    p.add_switch("fg",        "\tForeground colour",   SwitchType::PARAMETER, Requirement::OPTIONAL);
+    p.add_switch("bg",        "\tBackground colour",   SwitchType::PARAMETER, Requirement::OPTIONAL);
+    p.add_switch("font",      "\tPath to TTF/OTF",     SwitchType::PARAMETER, Requirement::OPTIONAL);
+    p.add_switch("font-size", "\tFont size",           SwitchType::PARAMETER, Requirement::OPTIONAL);
+    p.add_switch("padding",   "\tImage padding",       SwitchType::PARAMETER, Requirement::OPTIONAL);
+    p.add_switch("tabsize",   "\tTab stop width",      SwitchType::PARAMETER, Requirement::OPTIONAL);
 }
 
 static Config parse_config(const argparser::ArgumentParser& parser) {
+    auto get_val = [&](std::string_view k, std::string_view def) { return parser.get_switch_value(k).value_or(std::string(def)); };
+    auto get_int = [&](std::string_view k, int def) { return std::stoi(get_val(k, std::to_string(def))); };
+
     Config cfg;
     cfg.width       = std::stoi(parser.get_switch_value("width").value());
     cfg.trim_height = parser.is_switch_set("trim-height");
     cfg.raw         = parser.is_switch_set("raw");
-    cfg.out_name    = parser.get_switch_value("file-name").value_or("output.png");
-    cfg.out_dir     = parser.get_switch_value("output-directory").value_or(".");
-    cfg.font_path   = parser.get_switch_value("font").value_or("");
-    cfg.font_size   = std::stoi(parser.get_switch_value("font-size").value_or("20"));
-    cfg.padding     = std::stoi(parser.get_switch_value("padding").value_or("20"));
-    cfg.tabsize     = std::stoi(parser.get_switch_value("tabsize").value_or("4"));
+    cfg.out_name    = get_val("file-name", "output.png");
+    cfg.out_dir     = get_val("output-directory", ".");
+    cfg.font_path   = get_val("font", "");
+    cfg.font_size   = get_int("font-size", 20);
+    cfg.padding     = get_int("padding", 20);
+    cfg.tabsize     = get_int("tabsize", 4);
 
-    if (parser.is_switch_set("height"))
-        cfg.height = std::stoi(parser.get_switch_value("height").value());
+    if (auto h = parser.get_switch_value("height")) cfg.height = std::stoi(*h);
 
-    // Pre-parse fg/bg colors cleanly
-    auto parse_color = [](const std::string& hex, std::string_view def) -> uint32_t {
-        Color c = hexToRgb(hex.empty() ? def : std::string_view(hex));
+    auto parse_color = [](std::optional<std::string> hex, std::string_view def) {
+        Color c = hexToRgb(hex && !hex->empty() ? *hex : def);
         return packRgb(c.r, c.g, c.b);
     };
-    cfg.fg_packed = parse_color(parser.get_switch_value("fg").value_or(""), DEFAULT_FG);
-    cfg.bg_packed = parse_color(parser.get_switch_value("bg").value_or(""), DEFAULT_BG);
+    cfg.fg_packed = parse_color(parser.get_switch_value("fg"), DEFAULT_FG);
+    cfg.bg_packed = parse_color(parser.get_switch_value("bg"), DEFAULT_BG);
     return cfg;
 }
 
 static std::string read_input(const argparser::ArgumentParser& parser) {
-    std::string text;
-
-    if (parser.is_switch_set("text")) {
-        text = parser.get_switch_value("text").value();
-        // Replace literal \n sequences with real newlines
-        size_t pos = 0;
-        while ((pos = text.find("\\n", pos)) != std::string::npos) {
-            text.replace(pos, 2, "\n");
-            pos += 1;
-        }
-        return text;
+    if (auto text_opt = parser.get_switch_value("text")) {
+        std::string t = *text_opt;
+        for (size_t p = 0; (p = t.find("\\n", p)) != std::string::npos; p++) t.replace(p, 2, "\n");
+        return t;
     }
 
     const std::string path = parser.get_arguments().empty() ? "-" : parser.get_arguments()[0];
-
     if (path != "-") {
         std::ifstream ifs(path);
-        if (!ifs) throw std::runtime_error("Cannot open input file: " + path);
-        text.assign(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
-        return text;
+        if (!ifs) throw std::runtime_error("Cannot open: " + path);
+        return {std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>()};
     }
 
-    // stdin (piped or interactive)
-    if (isatty(fileno(stdin)))
-        std::cerr << "Enter text. Press Ctrl-D (Unix) / Ctrl-Z Enter (Windows) when done:\n";
-
-    std::string line;
+    if (isatty(fileno(stdin))) std::cerr << "Enter text (Ctrl-D/Z to finish):\n";
+    std::string text, line;
     while (std::getline(std::cin, line)) { text += line; text += '\n'; }
     return text;
 }
