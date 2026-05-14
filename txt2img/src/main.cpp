@@ -53,36 +53,43 @@ struct Color {
     uint8_t r, g, b;
 };
 
+// Returns 0-15 for a valid hex digit, -1 otherwise.
+static constexpr int hexdigit(char c) noexcept {
+    if (c >= '0' && c <= '9') return c - '0';
+    if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+    if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+    return -1;
+}
+
+// Parse a single channel from either one nibble (#rgb) or two (#rrggbb).
+// Returns -1 if any digit is invalid.
+static constexpr int parse_channel(char hi, char lo) noexcept {
+    int h = hexdigit(hi), l = hexdigit(lo);
+    if (h < 0 || l < 0) return -1;
+    return (h << 4) | l;
+}
+
 // Parse "#rrggbb" / "#rgb" hex strings.  Returns {0,0,0} on error.
+// Both formats share one code path: #rgb expands each nibble to xx (n -> nn).
 static Color hexToRgb(std::string_view hex) noexcept {
     if (hex.empty()) return {};
     if (hex[0] == '#') hex.remove_prefix(1);
 
-    // Fast manual parse — avoids std::stoul's string copy and exception overhead.
-    auto hexdigit = [](char c) -> int {
-        if (c >= '0' && c <= '9') return c - '0';
-        if (c >= 'a' && c <= 'f') return c - 'a' + 10;
-        if (c >= 'A' && c <= 'F') return c - 'A' + 10;
-        return -1;
-    };
-
+    int r, g, b;
     if (hex.size() == 3) {
-        int r = hexdigit(hex[0]), g = hexdigit(hex[1]), b = hexdigit(hex[2]);
-        if (r < 0 || g < 0 || b < 0) return {};
-        return { static_cast<uint8_t>(r | (r << 4)),
-                 static_cast<uint8_t>(g | (g << 4)),
-                 static_cast<uint8_t>(b | (b << 4)) };
+        r = parse_channel(hex[0], hex[0]);
+        g = parse_channel(hex[1], hex[1]);
+        b = parse_channel(hex[2], hex[2]);
+    } else if (hex.size() == 6) {
+        r = parse_channel(hex[0], hex[1]);
+        g = parse_channel(hex[2], hex[3]);
+        b = parse_channel(hex[4], hex[5]);
+    } else {
+        return {};
     }
-    if (hex.size() == 6) {
-        int r0 = hexdigit(hex[0]), r1 = hexdigit(hex[1]);
-        int g0 = hexdigit(hex[2]), g1 = hexdigit(hex[3]);
-        int b0 = hexdigit(hex[4]), b1 = hexdigit(hex[5]);
-        if (r0 < 0 || r1 < 0 || g0 < 0 || g1 < 0 || b0 < 0 || b1 < 0) return {};
-        return { static_cast<uint8_t>((r0 << 4) | r1),
-                 static_cast<uint8_t>((g0 << 4) | g1),
-                 static_cast<uint8_t>((b0 << 4) | b1) };
-    }
-    return {};
+
+    if (r < 0 || g < 0 || b < 0) return {};
+    return { static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b) };
 }
 
 // Pack r,g,b into a uint32 for storage in Style (avoids a 7-byte string).
@@ -761,7 +768,6 @@ int main(int argc, char* argv[]) {
             // Show help and exit cleanly in that case.
             if (argc > 1 && (std::string_view(argv[1]) == "-h" || std::string_view(argv[1]) == "--help")) {
                 parser.print_help(HELP_HEADER, true);
-                std::cout << '\n';
                 return 0;
             }
             throw;
@@ -769,7 +775,6 @@ int main(int argc, char* argv[]) {
 
         if (parser.is_switch_set("help")) {
             parser.print_help(HELP_HEADER, true);
-            std::cout << '\n';
             return 0;
         }
 
@@ -814,7 +819,9 @@ int main(int argc, char* argv[]) {
             // ── Render ───────────────────────────────────────────────────────
             render_pages(run_lines, fonts, cfg, line_total_height, ascent);
         }
+
         FT_Done_FreeType(library);
+
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
         return 1;
