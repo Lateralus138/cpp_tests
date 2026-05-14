@@ -814,9 +814,7 @@ int main(int argc, char* argv[]) {
             // ── Render ───────────────────────────────────────────────────────
             render_pages(run_lines, fonts, cfg, line_total_height, ascent);
         }
-
         FT_Done_FreeType(library);
-
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
         return 1;
