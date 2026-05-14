@@ -821,7 +821,6 @@ int main(int argc, char* argv[]) {
         }
 
         FT_Done_FreeType(library);
-
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
         return 1;
