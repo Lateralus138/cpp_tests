@@ -300,54 +300,43 @@ static std::vector<StyledChar> expand_tabs_styled(
 // Word-wrap
 // ─────────────────────────────────────────────────────────────────────────────
 
-static std::vector<std::vector<StyledChar>> wrap_styled_text(
-    const std::vector<StyledChar>& styled_chars, int width)
-{
-    // Split on newlines first
-    std::vector<std::vector<StyledChar>> logical_lines;
-    {
-        std::vector<StyledChar> cur;
-        cur.reserve(static_cast<size_t>(width));
-        for (const auto& sc : styled_chars) {
-            if (sc.ch == U'\n') { logical_lines.push_back(std::move(cur)); cur.clear(); cur.reserve(width); }
-            else                 cur.push_back(sc);
-        }
-        logical_lines.push_back(std::move(cur));
+static std::vector<std::vector<StyledChar>> split_logical_lines(const std::vector<StyledChar>& in) {
+    std::vector<std::vector<StyledChar>> logical;
+    std::vector<StyledChar> cur;
+    for (const auto& sc : in) {
+        if (sc.ch == U'\n') { logical.push_back(std::move(cur)); cur.clear(); }
+        else cur.push_back(sc);
     }
+    logical.push_back(std::move(cur));
+    return logical;
+}
 
+static void wrap_line(std::vector<std::vector<StyledChar>>& out, const std::vector<StyledChar>& line, size_t w) {
+    if (line.empty()) { out.emplace_back(); return; }
+    for (size_t pos = 0; pos < line.size(); ) {
+        size_t len = std::min(w, line.size() - pos);
+        if (pos + len < line.size()) {
+            size_t bp = len;
+            while (bp > 0 && line[pos + bp - 1].ch != U' ') --bp;
+            if (bp > 0) len = bp;
+        }
+
+        std::vector<StyledChar> chunk(line.begin() + pos, line.begin() + pos + len);
+        if (pos + len < line.size() && len == w && line[pos + len - 1].ch != U' ' && chunk.size() > 1) {
+            chunk.back() = { U'-', chunk.back().style };
+            --len;
+        }
+        out.push_back(std::move(chunk));
+        pos += len;
+        if (pos < line.size() && line[pos].ch == U' ') ++pos;
+    }
+}
+
+static std::vector<std::vector<StyledChar>> wrap_styled_text(const std::vector<StyledChar>& in, int width) {
+    auto logical = split_logical_lines(in);
     std::vector<std::vector<StyledChar>> wrapped;
-    wrapped.reserve(logical_lines.size());
-    const auto w = static_cast<size_t>(width);
-
-    for (const auto& line : logical_lines) {
-        if (line.empty()) { wrapped.emplace_back(); continue; }
-
-        size_t pos = 0;
-        while (pos < line.size()) {
-            size_t len = std::min(w, line.size() - pos);
-
-            // Try to break at a space
-            if (pos + len < line.size()) {
-                size_t bp = len;
-                while (bp > 0 && line[pos + bp - 1].ch != U' ') --bp;
-                if (bp > 0) len = bp;
-            }
-
-            std::vector<StyledChar> chunk(line.begin() + pos, line.begin() + pos + len);
-
-            // Insert hyphen when breaking mid-word
-            if (pos + len < line.size() && len == w && line[pos + len - 1].ch != U' ') {
-                if (chunk.size() > 1) {
-                    chunk.back() = { U'-', chunk.back().style };
-                    --len;
-                }
-            }
-
-            wrapped.push_back(std::move(chunk));
-            pos += len;
-            if (pos < line.size() && line[pos].ch == U' ') ++pos; // skip leading space
-        }
-    }
+    wrapped.reserve(logical.size());
+    for (const auto& line : logical) wrap_line(wrapped, line, static_cast<size_t>(width));
     return wrapped;
 }
 
@@ -355,35 +344,33 @@ static std::vector<std::vector<StyledChar>> wrap_styled_text(
 // Compress StyledChar lines into runs of same-style characters
 // ─────────────────────────────────────────────────────────────────────────────
 
-static std::vector<std::vector<Run>> lines_to_runs(
-    const std::vector<std::vector<StyledChar>>& lines)
-{
+static std::vector<Run> convert_to_runs(const std::vector<StyledChar>& line) {
+    if (line.empty()) return {};
+    std::vector<Run> runs;
+    runs.reserve(8);
+    std::u32string text;
+    text.reserve(line.size());
+    text += line[0].ch;
+    Style style = line[0].style;
+
+    for (size_t i = 1; i < line.size(); ++i) {
+        if (line[i].style == style) {
+            text += line[i].ch;
+        } else {
+            runs.push_back({ std::move(text), style });
+            text.clear();
+            text += line[i].ch;
+            style = line[i].style;
+        }
+    }
+    runs.push_back({ std::move(text), style });
+    return runs;
+}
+
+static std::vector<std::vector<Run>> lines_to_runs(const std::vector<std::vector<StyledChar>>& lines) {
     std::vector<std::vector<Run>> run_lines;
     run_lines.reserve(lines.size());
-
-    for (const auto& line : lines) {
-        std::vector<Run> runs;
-        if (line.empty()) { run_lines.emplace_back(); continue; }
-
-        runs.reserve(8); // most lines have few color changes
-        std::u32string cur_text;
-        cur_text.reserve(line.size());
-        cur_text += line[0].ch;
-        Style cur_style = line[0].style;
-
-        for (size_t i = 1; i < line.size(); ++i) {
-            if (line[i].style == cur_style) {
-                cur_text += line[i].ch;
-            } else {
-                runs.push_back({ std::move(cur_text), cur_style });
-                cur_text.clear();
-                cur_text += line[i].ch;
-                cur_style = line[i].style;
-            }
-        }
-        runs.push_back({ std::move(cur_text), cur_style });
-        run_lines.push_back(std::move(runs));
-    }
+    for (const auto& line : lines) run_lines.push_back(convert_to_runs(line));
     return run_lines;
 }
 
